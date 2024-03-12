@@ -42,4 +42,31 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    protected $appends = ['dashboard_route'];
+
+    public function getDashboardRouteAttribute()
+    {
+        switch ($this->user_type) {
+            case 'admin':
+                return 'admin_dashboard';
+            case 'patient':
+                return 'patient_dashboard';
+            case 'doctor':
+                return 'doctor_dashboard';
+            default:
+                return 'home'; // Default route if user_type is not recognized
+        }
+    }
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
+    public function patient()
+    {
+        return $this->hasOne(Patient::class);
+    }
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class);
+    }
 }
