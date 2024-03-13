@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 
@@ -22,11 +25,13 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/admin', [LoginController::class, 'admin'])->name('admin_dashboard');
-Route::get('/patient', [LoginController::class, 'patient'])->name('patient_dashboard');
-Route::get('/doctor', [LoginController::class, 'doctor'])->name('doctor_dashboard');
+
 
 Route::middleware('auth')->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin_dashboard');
+    Route::get('/patient', [PatientController::class, 'index'])->name('patient_dashboard');
+    Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor_dashboard');
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

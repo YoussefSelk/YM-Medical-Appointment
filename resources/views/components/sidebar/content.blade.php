@@ -17,9 +17,10 @@
     <div x-transition x-show="isSidebarOpen || isSidebarHovered" class="text-sm text-gray-500">
         Links
     </div>
+    @if(auth()->user()->user_type === 'admin')
     <x-sidebar.link title="Doctors" href="#" />
     <x-sidebar.link title="Patients" href="#" />
     <x-sidebar.link title="Apointments" href="#" />
     <x-sidebar.link title="Schedules" href="#" />
-
+    @endif
 </x-perfect-scrollbar>

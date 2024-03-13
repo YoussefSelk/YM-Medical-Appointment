@@ -13,13 +13,14 @@
         {!! __("Welcome <strong>:name</strong> To Admin Panel", ['name' => auth()->user()->name]) !!}
     </div>
     <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+        {!! __("<strong>Counts</strong> :") !!}
 
         <div class="card mini_dashboard">
             <div class="sub-card mini_dash">
                 <div class="card_content">
                     <div class="card_title">
                         <p class="card_title_number">
-
+                            {{ count($doctors) }}
                         </p>
                         <p class="card_title_name">
                             Doctors
@@ -35,7 +36,7 @@
                 <div class="card_content">
                     <div class="card_title">
                         <p class="card_title_number">
-
+                            {{ count($patients) }}
                         </p>
                         <p class="card_title_name">
                             Patients
@@ -51,7 +52,7 @@
                 <div class="card_content">
                     <div class="card_title">
                         <p class="card_title_number">
-
+                            {{ count($appointments) }}
                         </p>
                         <p class="card_title_name">
                             Bookings
@@ -63,8 +64,20 @@
                 </div>
             </div>
         </div>
-
-
-
+    </div>
+    <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+       
+    </div>
+    <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+       
+    </div>
+    <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+       
+    </div>
+    <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+       
+    </div>
+    <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+       
     </div>
 </x-admin-layout>
