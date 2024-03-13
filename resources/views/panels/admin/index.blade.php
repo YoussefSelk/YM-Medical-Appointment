@@ -1,18 +1,70 @@
+
 <x-admin-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Admin Dashboard') }}
-        </h2>
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <h2 class="text-xl font-semibold leading-tight">
+                {{ __('Admin\'s Dashboard') }}
+            </h2>
+
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
+    <div class="p-6 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+        {!! __("Welcome <strong>:name</strong> To Admin Panel", ['name' => auth()->user()->name]) !!}
+    </div>
+    <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+
+        <div class="card mini_dashboard">
+            <div class="sub-card mini_dash">
+                <div class="card_content">
+                    <div class="card_title">
+                        <p class="card_title_number">
+
+                        </p>
+                        <p class="card_title_name">
+                            Doctors
+                        </p>
+                    </div>
+                    <div class="card_icon">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="sub-card mini_dash ">
+                <div class="card_content">
+                    <div class="card_title">
+                        <p class="card_title_number">
+
+                        </p>
+                        <p class="card_title_name">
+                            Patients
+                        </p>
+                    </div>
+                    <div class="card_icon">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="sub-card mini_dash">
+                <div class="card_content">
+                    <div class="card_title">
+                        <p class="card_title_number">
+
+                        </p>
+                        <p class="card_title_name">
+                            Bookings
+                        </p>
+                    </div>
+                    <div class="card_icon">
+
+                    </div>
                 </div>
             </div>
         </div>
+
+
+
     </div>
-    
 </x-admin-layout>
