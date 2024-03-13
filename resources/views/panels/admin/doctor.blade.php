@@ -1,5 +1,6 @@
 <head>
     <link rel="stylesheet" href="{{ asset('css/admin_doctor.css') }}">
+    
 </head>
 <x-admin-layout>
     <x-slot name="header">
@@ -19,9 +20,10 @@
             </div>
             <div class="AddDoc_container">
                 <p class="AddDoc">Add New Doctor</p>
-                <button id="AddDoc" > + Add New</button>
+                <button id="AddDoc"onclick="showModal()"> + Add New</button>
             </div>
         </div>
     </div>
+    @include('modals.add_doctor')
     
 </x-admin-layout>
