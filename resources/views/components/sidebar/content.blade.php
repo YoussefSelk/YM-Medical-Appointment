@@ -18,7 +18,7 @@
         Links
     </div>
     @if(auth()->user()->user_type === 'admin')
-    <x-sidebar.link title="Doctors" href="#" />
+    <x-sidebar.link title="Doctors" href="{{route('admin.doctor')}}" />
     <x-sidebar.link title="Patients" href="#" />
     <x-sidebar.link title="Apointments" href="#" />
     <x-sidebar.link title="Schedules" href="#" />

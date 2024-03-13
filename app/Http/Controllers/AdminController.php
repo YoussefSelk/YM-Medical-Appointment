@@ -17,4 +17,8 @@ class AdminController extends Controller
         $appointments = Appointment::all();
         return view('panels.admin.index')->with('shedules',$shedules)->with('doctors',$doctors)->with('patients',$Patients)->with('appointments',$appointments);
     }
+    public function doctor(){
+        $doctors = Doctor::all();
+        return view('panels.admin.doctor')->with('doctors',$doctors);
+    }
 }

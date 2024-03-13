@@ -28,10 +28,19 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware('auth')->group(function () {
+
+
+    //Admin's routes
     Route::get('/admin', [AdminController::class, 'index'])->name('admin_dashboard');
-    Route::get('/patient', [PatientController::class, 'index'])->name('patient_dashboard');
+    Route::get('/admin/doctor', [AdminController::class, 'doctor'])->name('admin.doctor');
+    //Doctor's routes
     Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor_dashboard');
-    
+
+    //Patient's routes
+    Route::get('/patient', [PatientController::class, 'index'])->name('patient_dashboard');
+
+    //Profile's routes
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
