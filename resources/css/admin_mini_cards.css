@@ -6,6 +6,7 @@
     align-items: center;
     flex-direction: row;
 }
+
 .card_title_number {
     font-size: 20px;
     margin-bottom: 7px;

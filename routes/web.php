@@ -33,6 +33,8 @@ Route::middleware('auth')->group(function () {
     //Admin's routes
     Route::get('/admin', [AdminController::class, 'index'])->name('admin_dashboard');
     Route::get('/admin/doctor', [AdminController::class, 'doctor'])->name('admin.doctor');
+    Route::post('/admin/doctor/add', [AdminController::class, 'add_doctor'])->name('admin.doctor.add');
+
     //Doctor's routes
     Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor_dashboard');
 
@@ -61,4 +63,3 @@ Route::get('/buttons/text-icon', function () {
 })->middleware(['auth'])->name('buttons.text-icon');
 
 require __DIR__ . '/auth.php';
-

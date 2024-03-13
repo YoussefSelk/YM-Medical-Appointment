@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Address extends Model
 {
     use HasFactory;
-
+    protected $fillable = [
+        'rue',
+        'ville',
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);
