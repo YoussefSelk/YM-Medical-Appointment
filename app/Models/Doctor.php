@@ -19,9 +19,9 @@ class Doctor extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function  specialty()
+    public function speciality()
     {
-        return $this->hasOne(Speciality::class);
+        return $this->belongsTo(Speciality::class, 'specialty_id');
     }
     public function schedules()
     {

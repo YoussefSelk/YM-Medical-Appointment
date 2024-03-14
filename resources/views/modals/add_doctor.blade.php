@@ -33,7 +33,7 @@
                     <div class="form_group nom_container">
                         <label for="nom">Nom Complet:</label>
                         <input type="text" name="nom" id="nom_input" placeholder="Enter Your Full Name">
-                        <div class="error">
+                        <div class="error_input">
                             @error('nom')
                             <p>{{ $message }}</p>
                             @enderror
@@ -42,7 +42,7 @@
                     <div class="form_group birthday_container">
                         <label for="birthday">Birthday:</label>
                         <input type="date" name="birthdate" id="birthday_input" placeholder="Enter Your Birthday">
-                        <div class="error">
+                        <div class="error_input">
                             @error('birthdate')
                             <p>{{ $message }}</p>
                             @enderror
@@ -53,7 +53,7 @@
                     <div class="form_group city_container">
                         <label for="city">City:</label>
                         <input type="text" name="city" placeholder="Enter Your City" id="city_input">
-                        <div class="error">
+                        <div class="error_input">
                             @error('city')
                             <p>{{ $message }}</p>
                             @enderror
@@ -62,7 +62,7 @@
                     <div class="form_group Rue_container">
                         <label for="rue">Street:</label>
                         <input type="text" name="rue" id="rue_input" placeholder="Enter Your Street">
-                        <div class="error">
+                        <div class="error_input">
                             @error('rue')
                             <p>{{ $message }}</p>
                             @enderror
@@ -73,7 +73,7 @@
                     <div class="form_group email_container">
                         <label for="email">Email:</label>
                         <input type="email" name="email" id="email_input" placeholder="test@exemple.com">
-                        <div class="error">
+                        <div class="error_input">
                             @error('email')
                             <p>{{ $message }}</p>
                             @enderror
@@ -83,7 +83,7 @@
                     <div class="form_group password_container">
                         <label for="password">Password:</label>
                         <input type="password" name="password" id="password_input" placeholder="Minimum 8 characters">
-                        <div class="error">
+                        <div class="error_input">
                             @error('password')
                             <p>{{ $message }}</p>
                             @enderror
@@ -95,7 +95,7 @@
                     <div class="form_group phone_container">
                         <label for="phone">Phone:</label>
                         <input type="number" name="phone" id="phone_input" placeholder="(06 / 05) 00 00 00 00">
-                        <div class="error">
+                        <div class="error_input">
                             @error('phone')
                             <p>{{ $message }}</p>
                             @enderror
@@ -110,7 +110,7 @@
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                         </select>
-                        <div class="error">
+                        <div class="error_input">
                             @error('gender')
                             <p>{{ $message }}</p>
                             @enderror
@@ -144,7 +144,7 @@
                             <option value="JD">Doctor of Jurisprudence (JD)</option>
                             <option value="DrPH">Doctor of Public Health (DrPH)</option>
                         </select>
-                        <div class="error">
+                        <div class="error_input">
                             @error('degree')
                             <p>{{ $message }}</p>
                             @enderror
@@ -162,7 +162,7 @@
                             <option value="{{ $speciality->id }}">{{ $speciality->name  }}</option>
                             @endforeach
                         </select>
-                        <div class="error">
+                        <div class="error_input">
                             @error('speciality')
                             <p>{{ $message }}</p>
                             @enderror

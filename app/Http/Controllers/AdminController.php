@@ -30,6 +30,13 @@ class AdminController extends Controller
         $doctors = Doctor::all();
         return view('panels.admin.doctor')->with('doctors', $doctors)->with('specialities', $specialities);
     }
+
+    public function getDoctors()
+    {
+        $doctors = Doctor::with('user', 'speciality')->get();
+        return response()->json($doctors);
+    }
+
     public function add_doctor(Request $request)
     {
         $name = $request->input('nom');
