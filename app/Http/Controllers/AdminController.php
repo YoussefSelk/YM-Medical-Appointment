@@ -8,7 +8,7 @@ use App\Models\Patient;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-
+use 
 class AdminController extends Controller
 {
     public function index()
@@ -51,7 +51,8 @@ class AdminController extends Controller
             'speciality' => 'required|string|max:255',
         ];
 
-        
+        $validator = Validator::make($request->all(), $rules);
+
 
 
     }
