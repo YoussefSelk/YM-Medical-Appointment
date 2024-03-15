@@ -157,6 +157,9 @@
             margin-left: 10px;
         }
 
+        .dataTables_info {
+            margin-top: 1rem;
+        }
 
         /* Custom styling for DataTables length menu and search input */
         .dataTables_length select {
@@ -202,6 +205,7 @@
                     <th>Phone</th>
                     <th>Speciality</th>
                     <th>Birthdate</th>
+                    <th>Actions</th>
                     <!-- Add more table headers as needed -->
                 </tr>
             </thead>
@@ -243,10 +247,11 @@
                     <td class="border px-4 py-2">${doctor.user.phone}</td>
                     <td class="border px-4 py-2">${doctor.speciality.name}</td>
                     <td class="border px-4 py-2">${doctor.birth_date}</td>
-
+                    <td class="border px-4 py-2"><a href="" class="text-blue-600">Edit </a><a href="" class="text-red-500"> Delete</a> </td>
                 `;
                 tableBody.appendChild(row);
             });
         }
     </script>
+
 </body>

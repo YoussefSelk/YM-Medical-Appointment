@@ -58,12 +58,12 @@ class User extends Authenticatable
             case 'doctor':
                 return 'doctor_dashboard';
             default:
-                return 'home'; // Default route if user_type is not recognized
+                return ''; // Default route if user_type is not recognized
         }
     }
     public function address()
     {
-        return $this->hasOne(Address::class);
+        return $this->belongsTo(Address::class);
     }
     public function patient()
     {

@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="p-6 mt-6 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
-        <x-doctor-table></x-doctor-table>
+        <x-admin.tables.doctor-table></x-admin.tables.doctor-table>
     </div>
     @include('modals.add_doctor')
 
