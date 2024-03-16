@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+
 class RouteServiceProvider extends ServiceProvider
 {
     /**
@@ -18,7 +19,8 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/dashboard';
+    //public const HOME = '/dashboard';
+    public const HOME = '/login';
     public const ADMIN_HOME = '/admin';
     public const PATIENT_HOME = '/patient';
     public const DOCTOR_HOME = '/doctor';
@@ -40,5 +42,4 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
     }
-
 }

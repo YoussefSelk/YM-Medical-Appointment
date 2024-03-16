@@ -61,11 +61,12 @@
 
 
 
-    <div class="main mt-10 md:mt-20 lg:mt-40 animate__animated animate__zoomIn animate__delay-2s">
-        <div class="relative heading_container flex justify-center items-center flex-col">
+    <div class="main mt-10 md:mt-20 lg:mt-40  animate__animated animate__zoomIn animate__delay-2s">
+        <div class=" relative   heading_container flex justify-center items-center flex-col ">
 
-            <div class="absolute inset-0 flex flex-col justify-center items-center text-center">
-                <div class="container   p-8 flex justify-center items-center flex-col shadow-lg">
+            <div class="container flex flex-col justify-center items-center text-center">
+
+                <div class="container relative p-8 flex justify-center items-center flex-col shadow-lg">
                     <h1
                         class="mb-4 text-3xl md:text-4xl lg:text-5xl xl:text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white">
                         Want To Book Your Medical Appointment, It should be easy then
@@ -88,9 +89,9 @@
             </div>
         </div>
 
-        <div class="middle mt-60  flex justify-center items-center flex-row ">
+        <div class="middle mt-60  flex justify-center items-center flex-row  ">
 
-            <div class="container p-7 flex justify-center items-center flex-row shadow-lg">
+            <div class="container p-7 flex justify-center items-center flex-col md:flex-row shadow-lg">
 
                 <div class="content mr-4">
 

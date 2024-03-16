@@ -1,6 +1,6 @@
 <head>
     <style>
-        .error {
+        .error_success {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             width: 320px;
             padding: 12px;
@@ -48,7 +48,7 @@
 </head>
 
 @if (session()->has('success'))
-    <div class="error" x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show">
+    <div class="error_success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show">
         <div class="error__icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                 <path fill="#393a37"

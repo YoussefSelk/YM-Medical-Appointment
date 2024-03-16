@@ -18,12 +18,12 @@ return new class extends Migration
             $table->string('Patient_Disponibility')->nullable(true);
             $table->text('doctor_comment');
             $table->unsignedBigInteger('patient_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('doctor_id');
             $table->unsignedBigInteger('schedule_id');
             $table->timestamps();
 
             $table->foreign('patient_id')->references('id')->on('patients');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('doctor_id')->references('id')->on('doctors');
             $table->foreign('schedule_id')->references('id')->on('schedules');
         });
     }

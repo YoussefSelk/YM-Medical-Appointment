@@ -5,12 +5,8 @@
                 {{ __('Text Buttons with icons') }}
             </h2>
 
-            <x-button
-                target="_blank"
-                href="https://github.com/kamona-wd/kui-laravel-breeze"
-                variant="black"
-                class="items-center max-w-xs gap-2"
-            >
+            <x-button target="_blank" href="https://github.com/kamona-wd/kui-laravel-breeze" variant="black"
+                class="items-center max-w-xs gap-2">
                 <x-icons.github class="w-6 h-6" aria-hidden="true" />
 
                 <span>Star on Github</span>
@@ -32,15 +28,9 @@
             @foreach ($variants as $variant)
                 <div class="grid items-start grid-cols-3 gap-4 justify-items-center">
                     @foreach ($sizes as $size)
-                        <x-button
-                            :variant="$variant"
-                            size="{{ $size }}"
-                            class="items-center gap-2"
-                        >
-                            <x-heroicon-o-home
-                                aria-hidden="true"
-                                class="{{ $size == 'sm' ? 'w-4 h-4' : ($size == 'base' ? 'w-6 h-6' : 'w-7 h-7' ) }}"
-                            />
+                        <x-button :variant="$variant" size="{{ $size }}" class="items-center gap-2">
+                            <x-heroicon-o-home aria-hidden="true"
+                                class="{{ $size == 'sm' ? 'w-4 h-4' : ($size == 'base' ? 'w-6 h-6' : 'w-7 h-7') }}" />
 
                             <span>Button</span>
                         </x-button>

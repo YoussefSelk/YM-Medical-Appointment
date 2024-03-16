@@ -1,4 +1,3 @@
-
 <x-admin-layout>
     <x-slot name="header">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -10,10 +9,10 @@
     </x-slot>
 
     <div class="p-6 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
-        {!! __("Welcome <strong>:name</strong> To Admin Panel", ['name' => auth()->user()->name]) !!}
+        {!! __('Welcome <strong>:name</strong> To Admin Panel', ['name' => auth()->user()->name]) !!}
     </div>
     <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
-        {!! __("<strong>Counts</strong> :") !!}
+        {!! __('<strong>Counts</strong> :') !!}
 
         <div class="card mini_dashboard">
             <div class="sub-card mini_dash">
@@ -65,19 +64,24 @@
             </div>
         </div>
     </div>
+    <div
+        class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex justify-center flex-row">
+
+        <div class="p-6 mt-7 mr-6   overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+            {!! __('<strong>Doctor Number By Geneder </strong> :') !!}
+            @include('includes.charts.doctor-chart')
+        </div>
+        <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+            {!! __('<strong>Doctor Registred By Date </strong> :') !!}
+            @include('includes.charts.doctor-chart-register')
+        </div>
+    </div>
+
+
     <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
-       
+
     </div>
     <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
-       
-    </div>
-    <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
-       
-    </div>
-    <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
-       
-    </div>
-    <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
-       
+
     </div>
 </x-admin-layout>

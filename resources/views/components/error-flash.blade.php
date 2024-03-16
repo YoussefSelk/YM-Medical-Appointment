@@ -47,7 +47,7 @@
     </style>
 </head>
 
-@if (session()->has('success'))
+@if (session()->has('error'))
     <div class="error" x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show">
         <div class="error__icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
