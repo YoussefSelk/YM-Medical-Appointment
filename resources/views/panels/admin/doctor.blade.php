@@ -23,10 +23,13 @@
             </div>
             <div class="AddDoc_container">
                 <p class="AddDoc">Add New Doctor</p>
-                <button id="AddDoc" onclick="showModal()"> + Add New</button>
+                <button x-on:click="$dispatch('open-modal', 'example-modal')" name="AddDoc" class="">Add Doctor</button>
+                {{-- <button id="AddDoc" onclick="showModal()"> + Add New</button> --}}
             </div>
         </div>
     </div>
+
+
     <div class="p-6 mt-6 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
         <x-download-botton route="{{ route('admin.table.doctors.pdf') }}" />
         {{-- <a href="{{route('admin.table.doctors.pdf')}}" class=" top-4 right-4 font-medium text-blue-600 dark:text-blue-500 mr-2">Export PDF</a> --}}
