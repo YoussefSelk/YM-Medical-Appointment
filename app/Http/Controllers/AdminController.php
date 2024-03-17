@@ -215,11 +215,24 @@ class AdminController extends Controller
             }
         }
     }
+    // public function export_doctors_pdf()
+    // {
+    //     $doctors = Doctor::all();
+    //     $pdf = Pdf::loadView('pdf.doctors-table-pdf', ['doctors' => $doctors]);
+    //     return $pdf->download('doctors.pdf');
+    //     //return $pdf->stream();
+    // }
     public function export_doctors_pdf()
     {
         $doctors = Doctor::all();
-        $pdf = Pdf::loadView('pdf.doctors-table-pdf', ['doctors' => $doctors]);
-        //return $pdf->download('doctors.pdf');
-        return $pdf->stream();
+        $pdf = PDF::loadView('pdf.doctors-table-pdf', ['doctors' => $doctors]);
+
+        // Set headers for streaming
+        return response()->stream(function () use ($pdf) {
+            echo $pdf->output();
+        }, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="doctors.pdf"',
+        ]);
     }
 }

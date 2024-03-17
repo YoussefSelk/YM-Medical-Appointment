@@ -56,6 +56,6 @@
                 </path>
             </svg>
         </div>
-        <div class="error__title">{{ session('success') }}</div>
+        <div class="error__title">{{ session('error') }}</div>
     </div>
 @endif
