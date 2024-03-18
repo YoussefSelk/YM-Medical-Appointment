@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
-            $table->integer('cin');
+            $table->string('cin');
             $table->date('birth_date');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();

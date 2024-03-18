@@ -17,6 +17,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdminController extends Controller
 {
+
+    //index function return the home page for admin panel
     public function index()
     {
         $shedules = Schedule::all();
@@ -25,6 +27,7 @@ class AdminController extends Controller
         $appointments = Appointment::all();
         return view('panels.admin.index')->with('shedules', $shedules)->with('doctors', $doctors)->with('patients', $Patients)->with('appointments', $appointments);
     }
+    //doctor function return the doctor page for admin panel
     public function doctor()
     {
         $specialities = Speciality::all();
@@ -32,6 +35,11 @@ class AdminController extends Controller
         return view('panels.admin.doctor')->with('doctors', $doctors)->with('specialities', $specialities);
     }
 
+    public function patient()
+    {
+        $patients = Patient::all();
+        return view('panels.admin.patient')->with(compact("patients"));
+    }
     public function getDoctors()
     {
         $doctors = Doctor::with('user', 'speciality')->get();
@@ -44,7 +52,12 @@ class AdminController extends Controller
     {
         $specialities = Speciality::all();
         $doctor = Doctor::where("id", $id)->first();
-        return view('panels.admin.CRUD.edit')->with('doctor', $doctor)->with('specialities', $specialities);
+        return view('panels.admin.CRUD.doctor-edit')->with('doctor', $doctor)->with('specialities', $specialities);
+    }
+    public function edit_patient_view($id)
+    {
+        $patient = Patient::where("id", $id)->first();
+        return view('panels.admin.CRUD.patient-edit')->with('patient', $patient);
     }
     public function edit_doctor(Request $request, $id)
     {
@@ -117,7 +130,74 @@ class AdminController extends Controller
             }
         }
     }
+    public function edit_patient(Request $request, $id)
+    {
+        $name = $request->input('nom');
+        $birthdate = $request->input('birthdate');
+        $ville = $request->input('city');
+        $rue = $request->input('rue');
+        $email = $request->input('email');
+        $phone = $request->input('phone');
+        $gender = $request->input('gender');
+        $cin = $request->input('cin');
 
+        $rules = [
+            'nom' => 'required|string|max:255',
+            'birthdate' => 'required|date',
+            'city' => 'required|string|max:255',
+            'rue' => 'required|string|max:255',
+            'email' => 'required|email|',
+            'phone' => [
+                'required',
+                'string',
+                'regex:/^(06|05)\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/',
+            ],
+            'gender' => 'required',
+            'cin' => 'required|string|max:255',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        } else {
+            $patient = Patient::find($id);
+            // Update the address
+            $address = Address::find($patient->user->address->id);
+            if ($address) {
+                $address->update([
+                    'ville' => $ville,
+                    'rue' => $rue,
+                ]);
+
+                // Update the user
+                $user = User::find($patient->user->id);
+                if ($user) {
+                    $user->update([
+                        'name' => $name,
+                        'email' => $email,
+                        'gender' => $gender,
+                        'phone' => $phone,
+                    ]);
+
+                    if ($patient) {
+                        $patient->update([
+                            'birth_date' => $birthdate,
+                            'cin' => $cin,
+                        ]);
+
+                        return redirect()->route('admin.patient')->with('success', 'Patient updated successfully.');
+                    } else {
+                        return redirect()->back()->with('error', 'Patient not found.');
+                    }
+                } else {
+                    return redirect()->back()->with('error', 'User not found.');
+                }
+            } else {
+                return redirect()->back()->with('error', 'Address not found.');
+            }
+        }
+    }
     public function delete_doctor($id)
     {
         $doctor = Doctor::find($id);
@@ -139,7 +219,29 @@ class AdminController extends Controller
             return redirect()->route('admin.doctor')->with('success', 'Doctor deleted successfully.');
         }
     }
+    public function delete_patient($id)
+    {
+        $patient = Patient::find($id);
+        if ($patient) {
 
+            $user = User::find($patient->user->id);
+            $address = Address::find($patient->user->address->id);
+            $patient->delete();
+            if ($user) {
+                $user->delete();
+
+                if ($address) {
+                    $address->delete();
+                }
+            }
+
+
+
+            return redirect()->route('admin.patient')->with('success', 'Doctor deleted successfully.');
+        } else {
+            return redirect()->route('admin.patient')->with('error', 'Patient not found.');
+        }
+    }
     public function add_doctor(Request $request)
     {
         $name = $request->input('nom');
@@ -215,6 +317,81 @@ class AdminController extends Controller
             }
         }
     }
+
+    public function add_patient(Request $request)
+    {
+        $name = $request->input('nom');
+        $birthdate = $request->input('birthdate');
+        $ville = $request->input('city');
+        $rue = $request->input('rue');
+        $email = $request->input('email');
+        $password = $request->input('password');
+        $phone = $request->input('phone');
+        $gender = $request->input('gender');
+        $cin = $request->input('cin');
+
+        $rules = [
+            'nom' => 'required|string|max:255',
+            'birthdate' => 'required|date',
+            'city' => 'required|string|max:255',
+            'rue' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+            'phone' => [
+                'required',
+                'string',
+                'regex:/^(06|05)\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/',
+            ],
+            'gender' => 'required',
+            'cin' => 'required|string|max:255',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        } else {
+
+            // Create the Address
+            $address = Address::create([
+                'ville' => $ville,
+                'rue' => $rue,
+            ]);
+            if ($address) {
+                $user = User::create([
+                    'name' => $name,
+                    'email' => $email,
+                    'password' => Hash::make($password),
+                    'user_type' => 'patient',
+                    'gender' => $gender,
+                    'phone' => $phone,
+                    'address_id' => $address->id,
+                ]);
+
+                if ($user) {
+
+                    $patient = Patient::create([
+                        'user_id' => $user->id,
+                        'birth_date' => $birthdate,
+                        'cin' => $cin,
+                    ]);
+                    if ($patient) {
+                        return redirect()->back()->with('success', 'Patient created successfully.');
+                    } else {
+                        $patient->delete();
+                        $user->delete();
+                        $address->delete();
+                        return redirect()->back()->with('error', 'Error creating the Patient record. Please try again.');
+                    }
+                } else {
+                    $address->delete();
+                    return redirect()->back()->with('error', 'Error creating the user. Please try again.');
+                }
+            } else {
+                return redirect()->back()->with('error', 'Error creating the address. Please try again.');
+            }
+        }
+    }
+
     // public function export_doctors_pdf()
     // {
     //     $doctors = Doctor::all();
@@ -233,6 +410,19 @@ class AdminController extends Controller
         }, 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="doctors.pdf"',
+        ]);
+    }
+    public function export_patients_pdf()
+    {
+        $patients = Patient::all();
+        $pdf = PDF::loadView('pdf.patients-table-pdf', ['patients' => $patients]);
+
+        // Set headers for streaming
+        return response()->stream(function () use ($pdf) {
+            echo $pdf->output();
+        }, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="patients.pdf"',
         ]);
     }
 }

@@ -1,0 +1,36 @@
+.content_All_patients {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 9px;
+    padding: 15px;
+}
+.patient_count_number {
+    color: rgb(25, 105, 188);
+}
+.AddPatient_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.AddPatient_container p {
+    font-size: 18px;
+}
+.AddPatient_container button {
+    width: max-content;
+    padding: 10px;
+    border-radius: 7px;
+    border: none;
+    background-color: rgb(220, 237, 250);
+    color: rgb(25, 105, 188);
+    transition: 0.3s;
+}
+.AddPatient_container button:hover {
+    background-color: rgb(197, 214, 226);
+}
+.patient_count_container {
+    display: flex;
+    flex-direction: row;
+    font-size: 18px;
+}

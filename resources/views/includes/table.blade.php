@@ -11,6 +11,9 @@
 
 <script>
     $(document).ready(function() {
-        $('#DataTable').DataTable();
+        $('#DataTable').DataTable({
+            responsive: true,
+            
+        });
     });
 </script>
