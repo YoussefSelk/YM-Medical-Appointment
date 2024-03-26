@@ -38,7 +38,6 @@ class AuthenticatedSessionController extends Controller
         } elseif ($user->user_type === 'doctor') {
             return redirect()->intended(RouteServiceProvider::DOCTOR_HOME);
         }
-
     }
 
     /**

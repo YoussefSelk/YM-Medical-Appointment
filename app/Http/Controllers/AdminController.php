@@ -18,6 +18,20 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class AdminController extends Controller
 {
 
+    //XSS Attacks Functions
+
+    private function isXssAttackDetected(array $originalInputs, array $sanitizedInputs): bool
+    {
+        foreach ($originalInputs as $index => $originalInput) {
+            if ($originalInput !== $sanitizedInputs[$index]) {
+                return true; // XSS attack detected
+            }
+        }
+        return false; // No XSS attack detected
+    }
+
+
+
     //index function return the home page for admin panel
     public function index()
     {
@@ -244,17 +258,27 @@ class AdminController extends Controller
     }
     public function add_doctor(Request $request)
     {
-        $name = $request->input('nom');
-        $birthdate = $request->input('birthdate');
-        $ville = $request->input('city');
-        $rue = $request->input('rue');
-        $email = $request->input('email');
-        $password = $request->input('password');
-        $phone = $request->input('phone');
-        $gender = $request->input('gender');
-        $degree = $request->input('degree');
-        $speciality = $request->input('speciality');
+        $originalName = $request->input('nom');
+        $originalVille = $request->input('city');
+        $originalRue = $request->input('rue');
+        $originalEmail = $request->input('email');
+        $originalDegree = $request->input('degree');
+        $originalSpeciality = $request->input('speciality');
 
+
+        $name = htmlspecialchars($request->input('nom'));
+        $birthdate = $request->input('birthdate');
+        $ville = htmlspecialchars($request->input('city'));
+        $rue = htmlspecialchars($request->input('rue'));
+        $email = htmlspecialchars($request->input('email'));
+        $password = htmlspecialchars($request->input('password'));
+        $phone = htmlspecialchars($request->input('phone'));
+        $gender = $request->input('gender');
+        $degree = htmlspecialchars($request->input('degree'));
+        $speciality = htmlspecialchars($request->input('speciality'));
+        if ($this->isXssAttackDetected([$originalName, $originalVille, $originalRue, $originalEmail, $originalDegree, $originalSpeciality], [$name, $ville, $rue, $email, $degree, $speciality])) {
+            return redirect()->back()->with('error', 'XSS attack detected. Please provide valid input.');
+        }
         $rules = [
             'nom' => 'required|string|max:255',
             'birthdate' => 'required|date',
@@ -318,18 +342,36 @@ class AdminController extends Controller
         }
     }
 
+
     public function add_patient(Request $request)
     {
-        $name = $request->input('nom');
-        $birthdate = $request->input('birthdate');
-        $ville = $request->input('city');
-        $rue = $request->input('rue');
-        $email = $request->input('email');
-        $password = $request->input('password');
-        $phone = $request->input('phone');
-        $gender = $request->input('gender');
-        $cin = $request->input('cin');
+        // Sanitize Inputs
+        $originalName = $request->input('nom');
+        $originalBirthdate = $request->input('birthdate');
+        $originalVille = $request->input('city');
+        $originalRue = $request->input('rue');
+        $originalEmail = $request->input('email');
+        $originalPassword = $request->input('password');
+        $originalPhone = $request->input('phone');
+        $originalGender = $request->input('gender');
+        $originalCin = $request->input('cin');
 
+        $name = htmlspecialchars($originalName);
+        $birthdate = htmlspecialchars($originalBirthdate);
+        $ville = htmlspecialchars($originalVille);
+        $rue = htmlspecialchars($originalRue);
+        $email = htmlspecialchars($originalEmail);
+        $password = htmlspecialchars($originalPassword);
+        $phone = htmlspecialchars($originalPhone);
+        $gender = htmlspecialchars($originalGender);
+        $cin = htmlspecialchars($originalCin);
+
+        // Check for XSS Attacks
+        if ($this->isXssAttackDetected([$originalName, $originalVille, $originalRue, $originalEmail, $originalCin], [$name, $ville, $rue, $email, $cin])) {
+            return redirect()->back()->with('error', 'XSS attack detected. Please provide valid input.');
+        }
+
+        // Validation Rules
         $rules = [
             'nom' => 'required|string|max:255',
             'birthdate' => 'required|date',
@@ -346,17 +388,18 @@ class AdminController extends Controller
             'cin' => 'required|string|max:255',
         ];
 
+        // Validate Inputs
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         } else {
-
             // Create the Address
             $address = Address::create([
                 'ville' => $ville,
                 'rue' => $rue,
             ]);
             if ($address) {
+                // Create the User
                 $user = User::create([
                     'name' => $name,
                     'email' => $email,
@@ -368,7 +411,7 @@ class AdminController extends Controller
                 ]);
 
                 if ($user) {
-
+                    // Create the Patient
                     $patient = Patient::create([
                         'user_id' => $user->id,
                         'birth_date' => $birthdate,
@@ -377,12 +420,13 @@ class AdminController extends Controller
                     if ($patient) {
                         return redirect()->back()->with('success', 'Patient created successfully.');
                     } else {
-                        $patient->delete();
+                        // Rollback operations if creating patient fails
                         $user->delete();
                         $address->delete();
                         return redirect()->back()->with('error', 'Error creating the Patient record. Please try again.');
                     }
                 } else {
+                    // Rollback operations if creating user fails
                     $address->delete();
                     return redirect()->back()->with('error', 'Error creating the user. Please try again.');
                 }
@@ -391,6 +435,7 @@ class AdminController extends Controller
             }
         }
     }
+
 
     // public function export_doctors_pdf()
     // {

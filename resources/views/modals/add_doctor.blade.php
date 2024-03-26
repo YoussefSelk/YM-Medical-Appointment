@@ -13,173 +13,6 @@
         });
     </script>
 @endif
-{{--
-<div class="create_doctor_modal hidden" id="create_doctor_modal">
-    <div class="items_to_hide ">
-
-        <div class="close_modal">
-            <button onclick="closeModal()">X</button>
-        </div>
-
-        <div class="form_container">
-
-            <form action="{{route('admin.doctor.add')}}" method="POST" class="form" id="form">
-                @csrf
-                <div class="form_title">
-                    <h1>Add Doctor</h1>
-                </div>
-
-
-                <div class="form_groups">
-                    <div class="form_group nom_container">
-                        <label for="nom">Nom Complet:</label>
-                        <input type="text" name="nom" id="nom_input" placeholder="Enter Your Full Name">
-                        <div class="error_input">
-                            @error('nom')
-                            <p>{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="form_group birthday_container">
-                        <label for="birthday">Birthday:</label>
-                        <input type="date" name="birthdate" id="birthday_input" placeholder="Enter Your Birthday">
-                        <div class="error_input">
-                            @error('birthdate')
-                            <p>{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-                <div class="form_groups">
-                    <div class="form_group city_container">
-                        <label for="city">City:</label>
-                        <input type="text" name="city" placeholder="Enter Your City" id="city_input">
-                        <div class="error_input">
-                            @error('city')
-                            <p>{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="form_group Rue_container">
-                        <label for="rue">Street:</label>
-                        <input type="text" name="rue" id="rue_input" placeholder="Enter Your Street">
-                        <div class="error_input">
-                            @error('rue')
-                            <p>{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-                <div class="form_groups">
-                    <div class="form_group email_container">
-                        <label for="email">Email:</label>
-                        <input type="email" name="email" id="email_input" placeholder="test@exemple.com">
-                        <div class="error_input">
-                            @error('email')
-                            <p>{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form_group password_container">
-                        <label for="password">Password:</label>
-                        <input type="password" name="password" id="password_input" placeholder="Minimum 8 characters">
-                        <div class="error_input">
-                            @error('password')
-                            <p>{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form_groups">
-                    <div class="form_group phone_container">
-                        <label for="phone">Phone:</label>
-                        <input type="number" name="phone" id="phone_input" placeholder="(06 / 05) 00 00 00 00">
-                        <div class="error_input">
-                            @error('phone')
-                            <p>{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form_group">
-                        <label for="gender">Gender:</label>
-                        <select name="gender" id="gender_input">
-                            <option selected value="">Chose The Doctor Gender</option>
-
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                        </select>
-                        <div class="error_input">
-                            @error('gender')
-                            <p>{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form_groups">
-                    <div class="form_group degree_container">
-                        <label for="degree">Degree:</label>
-                        <select name="degree" id="degree_input">
-                            <option selected value="">Chose The Doctor Degree</option>
-                            <option value="MD">Doctor of Medicine (MD)</option>
-                            <option value="DO">Doctor of Osteopathic Medicine (DO)</option>
-                            <option value="MBBS">Bachelor of Medicine, Bachelor of Surgery (MBBS)</option>
-                            <option value="BDS">Bachelor of Dental Surgery (BDS)</option>
-                            <option value="DMD">Doctor of Dental Medicine (DMD)</option>
-                            <option value="DDS">Doctor of Dental Surgery (DDS)</option>
-                            <option value="DPM">Doctor of Podiatric Medicine (DPM)</option>
-                            <option value="PharmD">Doctor of Pharmacy (PharmD)</option>
-                            <option value="DPT">Doctor of Physical Therapy (DPT)</option>
-                            <option value="DVM">Doctor of Veterinary Medicine (DVM)</option>
-                            <option value="MD-PhD">Doctor of Medicine, Doctor of Philosophy (MD-PhD)</option>
-                            <option value="MS">Master of Surgery (MS)</option>
-                            <option value="MCh">Master of Chirurgery (MCh)</option>
-                            <option value="MDS">Master of Dental Surgery (MDS)</option>
-                            <option value="DC">Doctor of Chiropractic (DC)</option>
-                            <option value="DSc">Doctor of Science (DSc)</option>
-                            <option value="EdD">Doctor of Education (EdD)</option>
-                            <option value="PsyD">Doctor of Psychology (PsyD)</option>
-                            <option value="JD">Doctor of Jurisprudence (JD)</option>
-                            <option value="DrPH">Doctor of Public Health (DrPH)</option>
-                        </select>
-                        <div class="error_input">
-                            @error('degree')
-                            <p>{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-
-                    <div class="form_group">
-                        <label for="speciality">Speciality:</label>
-
-                        <select name="speciality" id="speciality_input">
-                            <option selected value="">Chose The Doctor Speciality</option>
-
-                            @foreach ($specialities as $speciality)
-                            <option value="{{ $speciality->id }}">{{ $speciality->name  }}</option>
-                            @endforeach
-                        </select>
-                        <div class="error_input">
-                            @error('speciality')
-                            <p>{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="form_btn">
-                    <input type="submit" value="+ Add Doctor">
-                    <input type="reset" value="Reset">
-                </div>
-            </form>
-        </div>
-    </div>
-</div> --}}
 @php
     $hasErrors = $errors->any();
     $temp = false;
@@ -203,8 +36,9 @@
                 <div class="form_groups">
                     <div class="form_group nom_container">
                         <label for="nom">Nom Complet:</label>
-                        <input type="text" name="nom" id="nom_input" placeholder="Enter Your Full Name">
-                        <div class="error_input">
+                        <input type="text" name="nom" id="nom_input" value="{{ old('nom') }}"
+                            placeholder="Enter Your Full Name">
+                        <div class="error_input" id="nom_error">
                             @error('nom')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -212,8 +46,9 @@
                     </div>
                     <div class="form_group birthday_container">
                         <label for="birthday">Birthday:</label>
-                        <input type="date" name="birthdate" id="birthday_input" placeholder="Enter Your Birthday">
-                        <div class="error_input">
+                        <input type="date" name="birthdate" value="{{ old('birthdate') }}" id="birthday_input"
+                            placeholder="Enter Your Birthday">
+                        <div class="error_input" id="birthday_error">
                             @error('birthdate')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -223,8 +58,9 @@
                 <div class="form_groups">
                     <div class="form_group city_container">
                         <label for="city">City:</label>
-                        <input type="text" name="city" placeholder="Enter Your City" id="city_input">
-                        <div class="error_input">
+                        <input type="text" name="city" value="{{ old('city') }}" placeholder="Enter Your City"
+                            id="city_input">
+                        <div class="error_input" id="city_error">
                             @error('city')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -232,8 +68,9 @@
                     </div>
                     <div class="form_group Rue_container">
                         <label for="rue">Street:</label>
-                        <input type="text" name="rue" id="rue_input" placeholder="Enter Your Street">
-                        <div class="error_input">
+                        <input type="text" name="rue" value="{{ old('rue') }}" id="rue_input"
+                            placeholder="Enter Your Street">
+                        <div class="error_input" id="rue_error">
                             @error('rue')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -243,8 +80,9 @@
                 <div class="form_groups">
                     <div class="form_group email_container">
                         <label for="email">Email:</label>
-                        <input type="email" name="email" id="email_input" placeholder="test@exemple.com">
-                        <div class="error_input">
+                        <input type="email" name="email" value="{{ old('email') }}" id="email_input"
+                            placeholder="test@exemple.com">
+                        <div class="error_input" id="email_error">
                             @error('email')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -253,8 +91,9 @@
 
                     <div class="form_group password_container">
                         <label for="password">Password:</label>
-                        <input type="password" name="password" id="password_input" placeholder="Minimum 8 characters">
-                        <div class="error_input">
+                        <input type="password" name="password" value="{{ old('password') }}" id="password_input"
+                            placeholder="Minimum 8 characters">
+                        <div class="error_input" id="password_error">
                             @error('password')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -265,8 +104,9 @@
                 <div class="form_groups">
                     <div class="form_group phone_container">
                         <label for="phone">Phone:</label>
-                        <input type="number" name="phone" id="phone_input" placeholder="(06 / 05) 00 00 00 00">
-                        <div class="error_input">
+                        <input type="number" name="phone" value="{{ old('phone') }}" id="phone_input"
+                            placeholder="(06 / 05) 00 00 00 00">
+                        <div class="error_input" id="phone_error">
                             @error('phone')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -276,46 +116,68 @@
                     <div class="form_group">
                         <label for="gender">Gender:</label>
                         <select name="gender" id="gender_input">
-                            <option selected value="">Chose The Doctor Gender</option>
-
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
+                            <option value="" {{ old('gender') == '' ? 'selected' : '' }}>Choose The Doctor Gender
+                            </option>
+                            <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
+                            <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
                         </select>
-                        <div class="error_input">
+                        <div class="error_input" id="gender_error">
                             @error('gender')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
+
                 </div>
 
                 <div class="form_groups">
                     <div class="form_group degree_container">
                         <label for="degree">Degree:</label>
                         <select name="degree" id="degree_input">
-                            <option selected value="">Chose The Doctor Degree</option>
-                            <option value="MD">Doctor of Medicine (MD)</option>
-                            <option value="DO">Doctor of Osteopathic Medicine (DO)</option>
-                            <option value="MBBS">Bachelor of Medicine, Bachelor of Surgery (MBBS)</option>
-                            <option value="BDS">Bachelor of Dental Surgery (BDS)</option>
-                            <option value="DMD">Doctor of Dental Medicine (DMD)</option>
-                            <option value="DDS">Doctor of Dental Surgery (DDS)</option>
-                            <option value="DPM">Doctor of Podiatric Medicine (DPM)</option>
-                            <option value="PharmD">Doctor of Pharmacy (PharmD)</option>
-                            <option value="DPT">Doctor of Physical Therapy (DPT)</option>
-                            <option value="DVM">Doctor of Veterinary Medicine (DVM)</option>
-                            <option value="MD-PhD">Doctor of Medicine, Doctor of Philosophy (MD-PhD)</option>
-                            <option value="MS">Master of Surgery (MS)</option>
-                            <option value="MCh">Master of Chirurgery (MCh)</option>
-                            <option value="MDS">Master of Dental Surgery (MDS)</option>
-                            <option value="DC">Doctor of Chiropractic (DC)</option>
-                            <option value="DSc">Doctor of Science (DSc)</option>
-                            <option value="EdD">Doctor of Education (EdD)</option>
-                            <option value="PsyD">Doctor of Psychology (PsyD)</option>
-                            <option value="JD">Doctor of Jurisprudence (JD)</option>
-                            <option value="DrPH">Doctor of Public Health (DrPH)</option>
+                            <option value="" {{ old('degree') == '' ? 'selected' : '' }}>Choose The Doctor Degree
+                            </option>
+                            <option value="MD" {{ old('degree') == 'MD' ? 'selected' : '' }}>Doctor of Medicine
+                                (MD)</option>
+                            <option value="DO" {{ old('degree') == 'DO' ? 'selected' : '' }}>Doctor of Osteopathic
+                                Medicine (DO)</option>
+                            <option value="MBBS" {{ old('degree') == 'MBBS' ? 'selected' : '' }}>Bachelor of
+                                Medicine, Bachelor of Surgery (MBBS)</option>
+                            <option value="BDS" {{ old('degree') == 'BDS' ? 'selected' : '' }}>Bachelor of Dental
+                                Surgery (BDS)</option>
+                            <option value="DMD" {{ old('degree') == 'DMD' ? 'selected' : '' }}>Doctor of Dental
+                                Medicine (DMD)</option>
+                            <option value="DDS" {{ old('degree') == 'DDS' ? 'selected' : '' }}>Doctor of Dental
+                                Surgery (DDS)</option>
+                            <option value="DPM" {{ old('degree') == 'DPM' ? 'selected' : '' }}>Doctor of Podiatric
+                                Medicine (DPM)</option>
+                            <option value="PharmD" {{ old('degree') == 'PharmD' ? 'selected' : '' }}>Doctor of
+                                Pharmacy (PharmD)</option>
+                            <option value="DPT" {{ old('degree') == 'DPT' ? 'selected' : '' }}>Doctor of Physical
+                                Therapy (DPT)</option>
+                            <option value="DVM" {{ old('degree') == 'DVM' ? 'selected' : '' }}>Doctor of Veterinary
+                                Medicine (DVM)</option>
+                            <option value="MD-PhD" {{ old('degree') == 'MD-PhD' ? 'selected' : '' }}>Doctor of
+                                Medicine, Doctor of Philosophy (MD-PhD)</option>
+                            <option value="MS" {{ old('degree') == 'MS' ? 'selected' : '' }}>Master of Surgery
+                                (MS)</option>
+                            <option value="MCh" {{ old('degree') == 'MCh' ? 'selected' : '' }}>Master of Chirurgery
+                                (MCh)</option>
+                            <option value="MDS" {{ old('degree') == 'MDS' ? 'selected' : '' }}>Master of Dental
+                                Surgery (MDS)</option>
+                            <option value="DC" {{ old('degree') == 'DC' ? 'selected' : '' }}>Doctor of
+                                Chiropractic (DC)</option>
+                            <option value="DSc" {{ old('degree') == 'DSc' ? 'selected' : '' }}>Doctor of Science
+                                (DSc)</option>
+                            <option value="EdD" {{ old('degree') == 'EdD' ? 'selected' : '' }}>Doctor of Education
+                                (EdD)</option>
+                            <option value="PsyD" {{ old('degree') == 'PsyD' ? 'selected' : '' }}>Doctor of
+                                Psychology (PsyD)</option>
+                            <option value="JD" {{ old('degree') == 'JD' ? 'selected' : '' }}>Doctor of
+                                Jurisprudence (JD)</option>
+                            <option value="DrPH" {{ old('degree') == 'DrPH' ? 'selected' : '' }}>Doctor of Public
+                                Health (DrPH)</option>
                         </select>
-                        <div class="error_input">
+                        <div class="error_input" id="degree_error">
                             @error('degree')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -323,22 +185,25 @@
                     </div>
 
 
+
                     <div class="form_group">
                         <label for="speciality">Speciality:</label>
-
                         <select name="speciality" id="speciality_input">
-                            <option selected value="">Chose The Doctor Speciality</option>
-
+                            <option value="" {{ old('speciality') == '' ? 'selected' : '' }}>Choose The Doctor
+                                Speciality</option>
                             @foreach ($specialities as $speciality)
-                                <option value="{{ $speciality->id }}">{{ $speciality->name }}</option>
+                                <option value="{{ $speciality->id }}"
+                                    {{ old('speciality') == $speciality->id ? 'selected' : '' }}>
+                                    {{ $speciality->name }}</option>
                             @endforeach
                         </select>
-                        <div class="error_input">
+                        <div class="error_input" id="speciality_error">
                             @error('speciality')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
+
 
                 </div>
 
@@ -364,3 +229,4 @@
         </div>
     </div>
 </x-modal>
+<script src="{{ asset('js/validations/admin/add_doctor_modal.js') }}"></script>

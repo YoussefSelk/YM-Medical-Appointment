@@ -32,12 +32,12 @@
                     <h1>Add Patient</h1>
                 </div>
 
-
                 <div class="form_groups">
                     <div class="form_group nom_container">
                         <label for="nom">Nom Complet:</label>
-                        <input type="text" name="nom" id="nom_input" placeholder="Enter Your Full Name">
-                        <div class="error_input">
+                        <input type="text" name="nom" id="nom_input" placeholder="Enter Your Full Name"
+                            value="{{ old('nom') }}">
+                        <div class="error_input" id="nom_error">
                             @error('nom')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -45,8 +45,9 @@
                     </div>
                     <div class="form_group birthday_container">
                         <label for="birthday">Birthday:</label>
-                        <input type="date" name="birthdate" id="birthday_input" placeholder="Enter Your Birthday">
-                        <div class="error_input">
+                        <input type="date" name="birthdate" id="birthday_input" placeholder="Enter Your Birthday"
+                            value="{{ old('birthdate') }}">
+                        <div class="error_input" id="birthday_error">
                             @error('birthdate')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -56,8 +57,9 @@
                 <div class="form_groups">
                     <div class="form_group city_container">
                         <label for="city">City:</label>
-                        <input type="text" name="city" placeholder="Enter Your City" id="city_input">
-                        <div class="error_input">
+                        <input type="text" name="city" placeholder="Enter Your City" id="city_input"
+                            value="{{ old('city') }}">
+                        <div class="error_input" id="city_error">
                             @error('city')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -65,19 +67,22 @@
                     </div>
                     <div class="form_group Rue_container">
                         <label for="rue">Street:</label>
-                        <input type="text" name="rue" id="rue_input" placeholder="Enter Your Street">
-                        <div class="error_input">
+                        <input type="text" name="rue" id="rue_input" placeholder="Enter Your Street"
+                            value="{{ old('rue') }}">
+                        <div class="error_input" id="rue_error">
                             @error('rue')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
                 </div>
+
                 <div class="form_groups">
                     <div class="form_group email_container">
                         <label for="email">Email:</label>
-                        <input type="email" name="email" id="email_input" placeholder="test@exemple.com">
-                        <div class="error_input">
+                        <input type="email" name="email" id="email_input" placeholder="test@exemple.com"
+                            value="{{ old('email') }}">
+                        <div class="error_input" id="email_error">
                             @error('email')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -87,7 +92,7 @@
                     <div class="form_group password_container">
                         <label for="password">Password:</label>
                         <input type="password" name="password" id="password_input" placeholder="Minimum 8 characters">
-                        <div class="error_input">
+                        <div class="error_input" id="password_error">
                             @error('password')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -98,8 +103,9 @@
                 <div class="form_groups">
                     <div class="form_group phone_container">
                         <label for="phone">Phone:</label>
-                        <input type="number" name="phone" id="phone_input" placeholder="(06 / 05) 00 00 00 00">
-                        <div class="error_input">
+                        <input type="number" name="phone" id="phone_input" placeholder="(06 / 05) 00 00 00 00"
+                            value="{{ old('phone') }}">
+                        <div class="error_input" id="phone_error">
                             @error('phone')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -109,28 +115,29 @@
                     <div class="form_group">
                         <label for="gender">Gender:</label>
                         <select name="gender" id="gender_input">
-                            <option selected value="">Chose The Doctor Gender</option>
-
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
+                            <option value="">Choose The Patient Gender</option>
+                            <option value="male" {{ old('gender') === 'male' ? 'selected' : '' }}>Male</option>
+                            <option value="female" {{ old('gender') === 'female' ? 'selected' : '' }}>Female</option>
                         </select>
-                        <div class="error_input">
+                        <div class="error_input" id="gender_error">
                             @error('gender')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
                 </div>
-                <div class="form_group">
-                    <label for="gender">Cin :</label>
-                    <input type="text" name="cin" id="cin_input" placeholder="Enter Patient Cin">
 
-                    <div class="error_input">
+                <div class="form_group">
+                    <label for="cin">CIN:</label>
+                    <input type="text" name="cin" id="cin_input" placeholder="Enter Patient Cin"
+                        value="{{ old('cin') }}">
+                    <div class="error_input" id="cin_error">
                         @error('cin')
                             <p>{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
+
                 <div class="form_btn">
                     <button
                         class="rounded-lg mr-3  relative w-48 h-12 cursor-pointer flex items-center border border-green-500 bg-green-500 group hover:bg-green-500 active:bg-green-500 active:border-green-500">
@@ -150,6 +157,8 @@
                     <input type="reset" value="Reset">
                 </div>
             </form>
+
         </div>
     </div>
 </x-modal>
+<script src="{{ asset('js/validations/admin/add_patient_modal.js') }}"></script>
