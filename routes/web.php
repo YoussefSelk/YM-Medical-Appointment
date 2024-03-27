@@ -30,12 +30,13 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
 
-
     //Admin's routes
     Route::middleware('admin')->group(function () {
-        Route::get('/admin', [AdminController::class, 'index'])->name('admin_dashboard');
-        // Admin Doctor Routes
 
+        // Admin Dashboard
+        Route::get('/admin', [AdminController::class, 'index'])->name('admin_dashboard');
+
+        // Admin Doctor Routes
         Route::get('/admin/doctor', [AdminController::class, 'doctor'])->name('admin.doctor');
         Route::post('/admin/doctor/add', [AdminController::class, 'add_doctor'])->name('admin.doctor.add');
         Route::get('/admin/doctors', [AdminController::class, 'getDoctors'])->name('admin.table.doctors');
@@ -44,24 +45,28 @@ Route::middleware('auth')->group(function () {
         Route::delete('/admin/doctor/delete/{id}', [AdminController::class, 'delete_doctor'])->name('admin.doctor.delete');
         Route::get('/admin/doctors/pdf', [AdminController::class, 'export_doctors_pdf'])->name('admin.table.doctors.pdf');
 
-        //Admin Patient Routes
+        // Admin Patient Routes
         Route::get('/admin/patient', [AdminController::class, 'patient'])->name('admin.patient');
         Route::post('/admin/patient/add', [AdminController::class, 'add_patient'])->name('admin.patient.add');
         Route::get('/admin/patient/edit/{id}', [AdminController::class, 'edit_patient_view'])->name('admin.patient.edit.view');
         Route::put('/admin/patient/edit/{id}', [AdminController::class, 'edit_patient'])->name('admin.patient.edit');
         Route::delete('/admin/patient/delete/{id}', [AdminController::class, 'delete_patient'])->name('admin.patient.delete');
         Route::get('/admin/patient/pdf', [AdminController::class, 'export_patients_pdf'])->name('admin.table.patients.pdf');
+        
+    });
+
+    //Doctor's routes
+    Route::middleware('doctor')->group(function () {
+        Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor_dashboard');
     });
 
 
-    //Doctor's routes
-    Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor_dashboard');
-
     //Patient's routes
-    Route::get('/patient', [PatientController::class, 'index'])->name('patient_dashboard');
+    Route::middleware('patient')->group(function () {
+        Route::get('/patient', [PatientController::class, 'index'])->name('patient_dashboard');
+    });
 
     //Profile's routes
-
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
