@@ -2,6 +2,7 @@
     <link rel="stylesheet" href="{{ asset('css/admin_patient.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <title>Admin's Patients Page</title>
 
 </head>
 <x-admin-layout>

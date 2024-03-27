@@ -22,6 +22,8 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="icon" type="image/png" href="{{ asset('img/app-logo.png') }}">
+
 </head>
 
 <body>

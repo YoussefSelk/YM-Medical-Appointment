@@ -51,6 +51,7 @@
     </style>
     <title>YM | Medical Appointment</title>
     <script src="finisher-header.es5.min.js" type="text/javascript"></script>
+    <link rel="icon" type="image/png" href="{{ asset('img/app-logo.png') }}">
 
 </head>
 
@@ -61,7 +62,7 @@
 
 
 
-    <div class="main mt-10 md:mt-20 lg:mt-40  animate__animated animate__zoomIn animate__delay-2s">
+    <div class="main mt-10 md:mt-20 lg:mt-10  animate__animated animate__fadeInDown animate__delay-1s">
         <div class=" relative   heading_container flex justify-center items-center flex-col ">
 
             <div class="container flex flex-col justify-center items-center text-center">
@@ -87,36 +88,6 @@
                 </div>
 
             </div>
-        </div>
-
-        <div class="middle mt-60  flex justify-center items-center flex-row  ">
-
-            <div class="container p-7 flex justify-center items-center flex-col md:flex-row shadow-lg">
-
-                <div class="content mr-4">
-
-                    <h1
-                        class="mb-4 text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-gray-900 dark:text-white">
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">About
-                            Us</span>
-                    </h1>
-                    <p class="w-80 text-base md:text-lg lg:text-xl font-normal text-gray-500 dark:text-gray-400">
-                        At <strong>YM</strong>, we empower patients with the convenience to book appointments with any
-                        doctor effortlessly. Our user-friendly platform seamlessly connects patients with a diverse
-                        range of healthcare providers, offering unparalleled access to medical care. With just a few
-                        clicks, users can schedule appointments, manage their healthcare needs, and prioritize their
-                        well-being. We are committed to revolutionizing the healthcare experience by making it more
-                        accessible, efficient, and patient-centric. Join us on our journey to simplify healthcare
-                        booking and enhance patient outcomes.
-                    </p>
-                </div>
-                <div class="img_container">
-                    <img src="{{ asset('img/graphics.png') }}" alt="">
-                </div>
-            </div>
-
-
-
         </div>
         <div class="middle mt-12 mb-12  flex justify-center items-center flex-row ">
 
@@ -176,6 +147,36 @@
 
 
         </div>
+        <div class="middle mt-60  flex justify-center items-center flex-row  ">
+
+            <div class="container p-7 flex justify-center items-center flex-col md:flex-row shadow-lg">
+
+                <div class="content mr-4">
+
+                    <h1
+                        class="mb-4 text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-gray-900 dark:text-white">
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">About
+                            Us</span>
+                    </h1>
+                    <p class="w-80 text-base md:text-lg lg:text-xl font-normal text-gray-500 dark:text-gray-400">
+                        At <strong>YM</strong>, we empower patients with the convenience to book appointments with any
+                        doctor effortlessly. Our user-friendly platform seamlessly connects patients with a diverse
+                        range of healthcare providers, offering unparalleled access to medical care. With just a few
+                        clicks, users can schedule appointments, manage their healthcare needs, and prioritize their
+                        well-being. We are committed to revolutionizing the healthcare experience by making it more
+                        accessible, efficient, and patient-centric. Join us on our journey to simplify healthcare
+                        booking and enhance patient outcomes.
+                    </p>
+                </div>
+                <div class="img_container">
+                    <img src="{{ asset('img/graphics.png') }}" alt="">
+                </div>
+            </div>
+
+
+
+        </div>
+
     </div>
 
     <x-home.home-footer></x-home.home-footer>
