@@ -2,7 +2,8 @@
     <x-auth-card>
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
-
+        <x-success-flash></x-success-flash>
+        <x-error-flash></x-error-flash>
         <form method="POST" action="{{ route('register') }}">
             @csrf
 
@@ -82,7 +83,7 @@
                             <x-heroicon-o-phone aria-hidden="true" class="w-5 h-5" />
                         </x-slot>
 
-                        <x-form.input withicon id="phone" class="block w-full" type="tel" name="phone"
+                        <x-form.input withicon id="phone" class="block w-full" type="number" name="phone"
                             :value="old('phone')" required placeholder="{{ __('Phone') }}" />
                     </x-form.input-with-icon-wrapper>
                 </div>
@@ -96,7 +97,7 @@
                             <x-heroicon-o-identification aria-hidden="true" class="w-5 h-5" />
                         </x-slot>
 
-                        <x-form.input withicon id="cin" class="block w-full" type="text" name="cin"
+                        <x-form.input withicon id="cin" class="block w-full" type="number" name="cin"
                             :value="old('cin')" required placeholder="{{ __('CIN') }}" />
                     </x-form.input-with-icon-wrapper>
                 </div>

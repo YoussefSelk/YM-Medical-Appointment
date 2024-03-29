@@ -110,7 +110,8 @@
 
         </div>
     </x-slot>
-
+    <x-success-flash></x-success-flash>
+    <x-error-flash></x-error-flash>
     <div class="p-6 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
 
 
@@ -184,8 +185,8 @@
                     <div class="form_groups">
                         <div class="form_group city_container">
                             <label for="city">City:</label>
-                            <input type="text" value="{{ old('city', $doctor->user->address->ville) }}" name="city"
-                                placeholder="Enter Your City" id="city_input">
+                            <input type="text" value="{{ old('city', $doctor->user->address->ville) }}"
+                                name="city" placeholder="Enter Your City" id="city_input">
                             <div class="error_input">
                                 @error('city')
                                     <p>{{ $message }}</p>

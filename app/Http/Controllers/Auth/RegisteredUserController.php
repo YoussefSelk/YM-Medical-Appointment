@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Address;
 use App\Models\Patient;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
@@ -50,9 +51,39 @@ class RegisteredUserController extends Controller
     //     return redirect(RouteServiceProvider::PATIENT_HOME);
     // }
 
-
+    private function isXssAttackDetected(array $originalInputs, array $sanitizedInputs): bool
+    {
+        foreach ($originalInputs as $index => $originalInput) {
+            if ($originalInput !== $sanitizedInputs[$index]) {
+                return true; // XSS attack detected
+            }
+        }
+        return false; // No XSS attack detected
+    }
     public function store(Request $request): RedirectResponse
     {
+
+        $originalName = $request->input('name');
+        $originalVille = $request->input('ville');
+        $originalRue = $request->input('rue');
+        $originalEmail = $request->input('email');
+        $originalPassword = $request->input('password');
+
+
+
+        $name = htmlspecialchars($request->input('name'));
+        $birthdate = $request->input('birth_date');
+        $ville = htmlspecialchars($request->input('ville'));
+        $rue = htmlspecialchars($request->input('rue'));
+        $email = htmlspecialchars($request->input('email'));
+        $password = htmlspecialchars($request->input('password'));
+        $phone = htmlspecialchars($request->input('phone'));
+        $gender = $request->input('gender');
+
+        if ($this->isXssAttackDetected([$originalName, $originalVille, $originalRue, $originalEmail, $originalPassword], [$name, $ville, $rue, $email, $password])) {
+            return redirect()->back()->with('error', 'XSS attack detected. Please provide valid input.');
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
@@ -65,29 +96,28 @@ class RegisteredUserController extends Controller
             'phone' => ['required', 'numeric'],
         ]);
 
-
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'gender' => $request->gender,
-            'phone' => $request->phone,
-            'user_type' => 'patient', // Assuming you're distinguishing users by types
+        $address = Address::create([
+            'rue' => $request->rue,
+            'ville' => $request->ville,
         ]);
 
-        if ($user) {
-            $patient = Patient::create([
-                'cin' => $request->cin,
-                'birth_date' => $request->birth_date,
-                'user_id' => $user->id,
+        if ($address) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'gender' => $request->gender,
+                'phone' => $request->phone,
+                'address_id' => $address->id,
+                'user_type' => 'patient', // Assuming you're distinguishing users by types
             ]);
-            if ($patient) {
-                $address = $user->address()->create([
-                    'rue' => $request->rue,
-                    'ville' => $request->ville,
+            if ($user) {
+                $patient = Patient::create([
+                    'cin' => $request->cin,
+                    'birth_date' => $request->birth_date,
+                    'user_id' => $user->id,
                 ]);
-                if ($address) {
+                if ($patient) {
                     event(new Registered($user));
 
                     Auth::login($user);
@@ -101,12 +131,55 @@ class RegisteredUserController extends Controller
                 }
             } else {
                 $user->delete();
-                $patient->delete();
+                $address->delete();
                 return redirect()->back()->with('error', 'Something went wrong');
             }
         } else {
-            $user->delete();
+            $address->delete();
             return redirect()->back()->with('error', 'Something went wrong');
         }
+
+
+        // $user = User::create([
+        //     'name' => $request->name,
+        //     'email' => $request->email,
+        //     'password' => Hash::make($request->password),
+        //     'gender' => $request->gender,
+        //     'phone' => $request->phone,
+        //     'user_type' => 'patient', // Assuming you're distinguishing users by types
+        // ]);
+
+        // if ($user) {
+        //     $patient = Patient::create([
+        //         'cin' => $request->cin,
+        //         'birth_date' => $request->birth_date,
+        //         'user_id' => $user->id,
+        //     ]);
+        //     if ($patient) {
+        //         $address = $user->address()->create([
+        //             'rue' => $request->rue,
+        //             'ville' => $request->ville,
+        //         ]);
+        //         if ($address) {
+        //             event(new Registered($user));
+
+        //             Auth::login($user);
+
+        //             return redirect(RouteServiceProvider::PATIENT_HOME);
+        //         } else {
+        //             $user->delete();
+        //             $patient->delete();
+        //             $address->delete();
+        //             return redirect()->back()->with('error', 'Something went wrong');
+        //         }
+        //     } else {
+        //         $user->delete();
+        //         $patient->delete();
+        //         return redirect()->back()->with('error', 'Something went wrong');
+        //     }
+        // } else {
+        //     $user->delete();
+        //     return redirect()->back()->with('error', 'Something went wrong');
+        // }
     }
 }

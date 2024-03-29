@@ -45,7 +45,7 @@
                 <x-heroicon-o-bookmark class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
             </x-slot>
         </x-sidebar.link>
-        <x-sidebar.link title="Schedules" href="#">
+        <x-sidebar.link title="Schedules" href="{{ route('admin.schedules') }}" :isActive="request()->routeIs('admin.schedules')">
             <x-slot name="icon">
                 <x-heroicon-o-calendar class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
             </x-slot>

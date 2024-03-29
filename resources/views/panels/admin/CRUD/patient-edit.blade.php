@@ -110,7 +110,8 @@
 
         </div>
     </x-slot>
-
+    <x-success-flash></x-success-flash>
+    <x-error-flash></x-error-flash>
     <div class="p-6 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
 
 

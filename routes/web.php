@@ -52,7 +52,11 @@ Route::middleware('auth')->group(function () {
         Route::put('/admin/patient/edit/{id}', [AdminController::class, 'edit_patient'])->name('admin.patient.edit');
         Route::delete('/admin/patient/delete/{id}', [AdminController::class, 'delete_patient'])->name('admin.patient.delete');
         Route::get('/admin/patient/pdf', [AdminController::class, 'export_patients_pdf'])->name('admin.table.patients.pdf');
-        
+
+        //Admin Schedules Routes
+        Route::get('/admin/doctors/schedules', [AdminController::class, 'schedules'])->name('admin.schedules');
+        Route::get('/admin/doctor/schedule/{id}', [AdminController::class, 'schedule'])->name('admin.doctor.schedule');
+        Route::post('/admin/doctor/schedule/{id}/submit', [AdminController::class, 'add_schedule'])->name('admin.doctor.schedule.submit');
     });
 
     //Doctor's routes

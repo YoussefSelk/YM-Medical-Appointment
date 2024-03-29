@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->time('start');
             $table->time('end');
-            $table->string('status');
+            $table->string('day');
+            $table->string('status')->default('false');
             $table->unsignedBigInteger('doctor_id');
             $table->timestamps();
 
