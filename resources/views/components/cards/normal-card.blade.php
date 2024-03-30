@@ -1,5 +1,5 @@
 <div class="p-4 max-w-sm">
-    <div class="flex rounded-lg h-full dark:bg-blue-500 bg-blue-500 p-8 flex-col">
+    <div class="flex rounded-lg h-full dark:bg-blue-500 bg-blue-500 p-8 flex-col" style="background-image: linear-gradient(120deg, #e0c3fc 0%, #0A76D8 100%);">
         <div class="flex items-center mb-3">
             <div
                 class="w-12 h-12 mr-3 inline-flex items-center justify-center rounded-full  text-white flex-shrink-0">

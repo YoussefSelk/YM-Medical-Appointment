@@ -13,12 +13,5 @@ class AddressesTableSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 0; $i < 10; $i++) {
-            Address::create([
-                'rue' => 'rue ' . rand(1, 100),
-                'ville' => 'ville ' . rand(1, 50)
-            ]);
-        }
-        
     }
 }

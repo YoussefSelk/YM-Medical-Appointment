@@ -57,6 +57,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/doctors/schedules', [AdminController::class, 'schedules'])->name('admin.schedules');
         Route::get('/admin/doctor/schedule/{id}', [AdminController::class, 'schedule'])->name('admin.doctor.schedule');
         Route::post('/admin/doctor/schedule/{id}/submit', [AdminController::class, 'add_schedule'])->name('admin.doctor.schedule.submit');
+
+
+        //Admin Appointments Routes
+        Route::get('/admin/appointments', [AdminController::class, 'appointments'])->name('admin.appointments');
     });
 
     //Doctor's routes
@@ -68,6 +72,8 @@ Route::middleware('auth')->group(function () {
     //Patient's routes
     Route::middleware('patient')->group(function () {
         Route::get('/patient', [PatientController::class, 'index'])->name('patient_dashboard');
+        Route::get('/patient/doctors', [PatientController::class, 'doctors'])->name('patiens.doctors');
+        Route::get('/patient/doctor/{id}/book/appointment', [PatientController::class, 'appointment'])->name('patiens.doctor.book.appointment');
     });
 
     //Profile's routes

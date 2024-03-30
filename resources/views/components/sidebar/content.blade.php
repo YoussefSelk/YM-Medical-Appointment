@@ -40,7 +40,7 @@
                 <x-heroicon-o-user class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
             </x-slot>
         </x-sidebar.link>
-        <x-sidebar.link title="Apointments" href="#">
+        <x-sidebar.link title="Apointments" href="{{ route('admin.appointments') }}" :isActive="request()->routeIs('admin.appointments')">
             <x-slot name="icon">
                 <x-heroicon-o-bookmark class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
             </x-slot>
@@ -52,7 +52,7 @@
         </x-sidebar.link>
     @endif
     @if (auth()->user()->user_type === 'patient')
-        <x-sidebar.link title="Home" href="" :isActive="request()->routeIs('admin.doctor')">
+        <x-sidebar.link title="Home" href="{{ route('patiens.doctors') }}" :isActive="request()->routeIs('patiens.doctors')">
             <x-slot name="icon">
                 <x-heroicon-o-user class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
             </x-slot>

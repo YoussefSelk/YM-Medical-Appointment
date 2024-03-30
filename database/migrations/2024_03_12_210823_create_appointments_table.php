@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('reason');
             $table->string('status');
             $table->string('Patient_Disponibility')->nullable(true);
+            $table->date('appointment_date');
             $table->text('doctor_comment');
             $table->unsignedBigInteger('patient_id');
             $table->unsignedBigInteger('doctor_id');

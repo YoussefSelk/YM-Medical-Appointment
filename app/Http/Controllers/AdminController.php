@@ -31,6 +31,12 @@ class AdminController extends Controller
     }
 
     //Views  Functions
+    public function appointments()
+    {
+        
+        $appointments = Appointment::all();
+        return view('panels.admin.appointments')->with(compact("appointments"));
+    }
     public function schedules() //schedules function return the schedules page of the admin panel
     {
         $doctors = Doctor::all();
@@ -308,9 +314,14 @@ class AdminController extends Controller
     {
         $doctor = Doctor::find($id);
         if ($doctor) {
+            $user = $doctor->user;
+            $address = $user->address;
+            $schedules = Schedule::where('doctor_id', $doctor->id)->get();
 
-            $user = User::find($doctor->user->id);
-            $address = Address::find($doctor->user->address->id);
+            if ($schedules->isNotEmpty()) { // Check if there are schedules to delete
+                $schedules->each->delete(); // Delete each schedule
+            }
+
             $doctor->delete();
             if ($user) {
                 $user->delete();
@@ -322,6 +333,7 @@ class AdminController extends Controller
             return redirect()->route('admin.doctor')->with('success', 'Doctor deleted successfully.');
         }
     }
+
     public function delete_patient($id)
     {
         $patient = Patient::find($id);

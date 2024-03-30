@@ -26,7 +26,19 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validatedData = $request->validated();
+
+        // Vérifier s'il y a des scripts JavaScript dans les données
+        foreach ($validatedData as $key => $value) {
+            if ($this->containsScript($value)) {
+                return redirect()->back()->with('error', 'XSS attack detected. Please provide valid input.');
+            }
+        }
+
+        // Échapper les données avant de les enregistrer dans la base de données
+        $safeData = array_map('htmlspecialchars', $validatedData);
+
+        $request->user()->fill($safeData);
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
@@ -36,6 +48,13 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
+    private function containsScript($value)
+    {
+        // Vérifier si la valeur contient des balises de script
+        return preg_match('/<\s*script.*script\s*>/i', $value);
+    }
+
 
     /**
      * Delete the user's account.
