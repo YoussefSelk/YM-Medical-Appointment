@@ -33,7 +33,7 @@ class AdminController extends Controller
     //Views  Functions
     public function appointments()
     {
-        
+
         $appointments = Appointment::all();
         return view('panels.admin.appointments')->with(compact("appointments"));
     }
@@ -165,7 +165,7 @@ class AdminController extends Controller
 
         if (!empty($name) && !empty($birthdate) && !empty($ville) && !empty($rue) && !empty($email) && !empty($phone) && !empty($gender) && !empty($degree) && !empty($speciality)) {
             if ($this->isXssAttackDetected([$originalName, $originalVille, $originalRue, $originalEmail, $originalDegree, $originalSpeciality], [$name, $ville, $rue, $email, $degree, $speciality])) {
-                return redirect()->back()->with('error', 'XSS attack detected. Please provide valid input.');
+                return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
             }
         }
 
@@ -251,7 +251,7 @@ class AdminController extends Controller
         $cin = htmlspecialchars($originalCin);
 
         if ($this->isXssAttackDetected([$originalName, $originalVille, $originalRue, $originalEmail, $originalCin], [$name, $ville, $rue, $email, $cin])) {
-            return redirect()->back()->with('error', 'XSS attack detected. Please provide valid input.');
+            return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
         }
         $rules = [
             'nom' => 'required|string|max:255',
@@ -379,7 +379,7 @@ class AdminController extends Controller
             [$originalName, $originalVille, $originalRue, $originalEmail, $originalDegree, $originalSpeciality],
             [$name, $ville, $rue, $email, $degree, $speciality]
         )) {
-            return redirect()->back()->with('error', 'XSS attack detected. Please provide valid input.');
+            return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
         }
 
 
@@ -472,7 +472,7 @@ class AdminController extends Controller
 
         // Check for XSS Attacks
         if ($this->isXssAttackDetected([$originalName, $originalVille, $originalRue, $originalEmail, $originalCin], [$name, $ville, $rue, $email, $cin])) {
-            return redirect()->back()->with('error', 'XSS attack detected. Please provide valid input.');
+            return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
         }
 
         // Validation Rules

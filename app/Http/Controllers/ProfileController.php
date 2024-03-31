@@ -55,6 +55,15 @@ class ProfileController extends Controller
         return preg_match('/<\s*script.*script\s*>/i', $value);
     }
 
+    function isSqlInjection($value)
+    {
+        // Recherche de motifs ressemblant à des instructions SQL potentielles
+        $sqlKeywords = array('SELECT', 'INSERT', 'UPDATE', 'DELETE', 'DROP', 'ALTER', 'CREATE', 'UNION', 'TRUNCATE', 'EXEC');
+        $pattern = '/\b(' . implode('|', $sqlKeywords) . ')\b/i';
+
+        // Vérifier si la chaîne de caractères contient des motifs d'injection SQL
+        return preg_match($pattern, $value);
+    }
 
     /**
      * Delete the user's account.

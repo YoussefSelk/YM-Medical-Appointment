@@ -13,26 +13,15 @@
             <div class="grid gap-6">
                 <!-- Password -->
                 <div class="space-y-2">
-                    <x-form.label
-                        for="password"
-                        :value="__('Password')"
-                    />
+                    <x-form.label for="password" :value="__('Password')" />
 
                     <x-form.input-with-icon-wrapper>
                         <x-slot name="icon">
                             <x-heroicon-o-lock-closed aria-hidden="true" class="w-5 h-5" />
                         </x-slot>
 
-                        <x-form.input
-                            withicon
-                            id="password"
-                            class="block w-full"
-                            type="password"
-                            name="password"
-                            required
-                            autocomplete="current-password"
-                            placeholder="{{ __('Password') }}"
-                        />
+                        <x-form.input withicon id="password" class="block w-full" type="password" name="password"
+                            required autocomplete="current-password" placeholder="{{ __('Password') }}" />
                     </x-form.input-with-icon-wrapper>
                 </div>
 
