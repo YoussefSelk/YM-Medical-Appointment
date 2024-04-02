@@ -20,7 +20,15 @@ class ProfileController extends Controller
             'user' => $request->user(),
         ]);
     }
-
+    private function isXssAttackDetected(array $originalInputs, array $sanitizedInputs): bool
+    {
+        foreach ($originalInputs as $index => $originalInput) {
+            if ($originalInput !== $sanitizedInputs[$index]) {
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * Update the user's profile information.
      */
@@ -28,17 +36,15 @@ class ProfileController extends Controller
     {
         $validatedData = $request->validated();
 
-        // Vérifier s'il y a des scripts JavaScript dans les données
-        foreach ($validatedData as $key => $value) {
-            if ($this->containsScript($value)) {
-                return redirect()->back()->with('error', 'XSS attack detected. Please provide valid input.');
-            }
-        }
-
         // Échapper les données avant de les enregistrer dans la base de données
         $safeData = array_map('htmlspecialchars', $validatedData);
 
         $request->user()->fill($safeData);
+
+        // Check for XSS attacks
+        if ($this->isXssAttackDetected($validatedData, $safeData)) {
+            return redirect()->back()->with('error', 'XSS Or Sql Injection attack detected. Please provide valid input.');
+        }
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
@@ -48,6 +54,7 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
 
     private function containsScript($value)
     {

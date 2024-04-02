@@ -19,7 +19,6 @@ class AdminController extends Controller
 {
 
     //XSS Attacks Functions
-
     private function isXssAttackDetected(array $originalInputs, array $sanitizedInputs): bool
     {
         foreach ($originalInputs as $index => $originalInput) {

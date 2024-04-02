@@ -81,7 +81,7 @@ class RegisteredUserController extends Controller
         $gender = $request->input('gender');
 
         if ($this->isXssAttackDetected([$originalName, $originalVille, $originalRue, $originalEmail, $originalPassword], [$name, $ville, $rue, $email, $password])) {
-            return redirect()->back()->with('error', 'XSS attack detected. Please provide valid input.');
+            return redirect()->back()->with('error', 'XSS Or Sql Injection attack detected. Please provide valid input.');
         }
 
         $request->validate([

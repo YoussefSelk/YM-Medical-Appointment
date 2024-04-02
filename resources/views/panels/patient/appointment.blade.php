@@ -26,7 +26,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class=" bg-white divide-y divide-gray-200">
                     @foreach ($schedule as $item)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($item->day) }}</td>
@@ -38,5 +38,72 @@
             </table>
         </div>
     </div>
+
+    <div
+        class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex justify-center flex-col">
+
+        <form action="{{ route('patiens.doctor.book.appointment.submit', [$doctor->id, Auth::user()->patient->id]) }}"
+            method="POST">
+            @csrf
+            <div class="mb-4">
+                <label for="reason_for_appointment" class="block text-gray-700 text-sm font-bold mb-2">Cause pour le
+                    rendez-vous:</label>
+                <textarea name="reason_for_appointment" id="reason_for_appointment" cols="30" rows="5"
+                    placeholder="Donner la cause pour le rendez-vous"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="appointment_date" class="block text-gray-700 text-sm font-bold mb-2">Choose a date:</label>
+                <input type="date" id="appointment_date" name="appointment_date"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    min="{{ date('Y-m-d') }}">
+            </div>
+            <div class="mb-4">
+                <label for="appointment_time" class="block text-gray-700 text-sm font-bold mb-2">Choose a time:</label>
+                <select id="appointment_time" name="appointment_time"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    disabled>
+                    <option value="">Select a date first</option>
+                </select>
+            </div>
+            <div class="flex items-center justify-between">
+                <button type="submit"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Book</button>
+            </div>
+        </form>
+
+
+
+    </div>
 </x-patient-layout>
 @include('includes.table')
+
+<script>
+    $(document).ready(function() {
+        $('#appointment_date').change(function() {
+            var selectedDate = $(this).val();
+            if (selectedDate) {
+                $.ajax({
+                    url: "{{ route('patiens.doctor.book.appointment.getHours', $doctor->id) }}",
+                    type: "GET",
+                    data: {
+                        date: selectedDate
+                    },
+                    success: function(response) {
+                        $('#appointment_time').empty();
+                        $.each(response, function(index, schedule) {
+                            $('#appointment_time').append('<option value="' +
+                                schedule.id + '">' + schedule.start +
+                                '</option>'
+                            );
+                        });
+                        $('#appointment_time').prop('disabled', false);
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+</script>

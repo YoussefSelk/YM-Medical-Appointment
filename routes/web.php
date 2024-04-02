@@ -74,6 +74,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/patient', [PatientController::class, 'index'])->name('patient_dashboard');
         Route::get('/patient/doctors', [PatientController::class, 'doctors'])->name('patiens.doctors');
         Route::get('/patient/doctor/{id}/book/appointment', [PatientController::class, 'appointment'])->name('patiens.doctor.book.appointment');
+        Route::get('/patient/doctor/{id}/book/appointment/getHours', [PatientController::class, 'getAvailableHours'])->name('patiens.doctor.book.appointment.getHours');
+        Route::post('/patient/doctor/{D_ID}/book/appointment/{P_ID}/submit', [PatientController::class, 'bookAppointment'])->name('patiens.doctor.book.appointment.submit');
     });
 
     //Profile's routes

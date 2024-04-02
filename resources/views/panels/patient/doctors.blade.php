@@ -10,16 +10,17 @@
             {{ __('Doctors') }}
         </h2>
         @foreach ($doctors as $doctor)
-            <div class="bg-white shadow-md rounded-lg overflow-hidden flex flex-col">
+            <div class="bg-white m-2 shadow-md rounded-lg overflow-hidden flex flex-col">
                 <div class="p-4">
                     <div class="flex flex-row items-center mb-3">
                         <x-icons.doctor />
                         <h5 class="text-xl font-medium leading-tight mb-2">Dr, {{ $doctor->user->name }}</h5>
                     </div>
-
+                    <hr class="my-2">
                     <p class="text-gray-700 mb-4">Médecin {{ $doctor->speciality->name }}</p>
                     <p class="text-gray-700 text-sm"><strong>Address : </strong>{{ $doctor->user->address->ville }} ,
                         {{ $doctor->user->address->rue }}</p>
+                    <hr class="my-2">
                     <ul class="list-disc space-y-2 pl-4">
                         <li>{{ $doctor->degree }}</li>
                     </ul>
