@@ -52,7 +52,7 @@
         </x-sidebar.link>
     @endif
     @if (auth()->user()->user_type === 'patient')
-        <x-sidebar.link title="Home" href="{{ route('patiens.doctors') }}" :isActive="request()->routeIs('patiens.doctors')">
+        <x-sidebar.link title="Doctor List" href="{{ route('patiens.doctors') }}" :isActive="request()->routeIs('patiens.doctors')">
             <x-slot name="icon">
                 <x-heroicon-o-user class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
             </x-slot>

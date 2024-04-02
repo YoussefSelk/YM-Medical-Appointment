@@ -26,7 +26,7 @@ class PatientController extends Controller
         return false;
     }
 
-    //
+    // views Functions
     public function index()
     {
         $appointments = Auth::user()->patient->Appointments;
@@ -67,14 +67,26 @@ class PatientController extends Controller
         return response()->json($availableHours);
     }
 
+    public function getAppointments(Request $request, $id)
+    {
+        // Retrieve the date from the request
+        $date = $request->input('date');
 
+        // Retrieve appointments for the specified doctor and date
+        $appointments = Appointment::where('doctor_id', $id)
+            ->whereDate('appointment_date', $date)
+            ->get();
+
+        // Return appointments as JSON response
+        return response()->json($appointments);
+    }
     // CRUD Functions
 
     public function bookAppointment(Request $request, $D_ID, $P_ID)
     {
         $reason_for_appointment = $request->input('reason_for_appointment');
         $appointment_date = $request->input('appointment_date');
-        $appointment_time = $request->input('appointment_time');
+        $schedule_id = $request->input('appointment_time');
 
         // Validating form inputs
         $validator = Validator::make($request->all(), [
@@ -91,7 +103,7 @@ class PatientController extends Controller
         $appointment = Appointment::create([
             'reason' => $reason_for_appointment,
             'appointment_date' => $appointment_date,
-            'schedule_id' => $appointment_time, // Storing the selected schedule ID
+            'schedule_id' => $schedule_id, // Storing the selected schedule ID
             'doctor_id' => $D_ID,
             'doctor_comment' => 'none',
             'patient_id' => $P_ID,

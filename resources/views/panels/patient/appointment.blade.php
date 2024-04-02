@@ -77,7 +77,6 @@
     </div>
 </x-patient-layout>
 @include('includes.table')
-
 <script>
     $(document).ready(function() {
         $('#appointment_date').change(function() {
@@ -90,14 +89,56 @@
                         date: selectedDate
                     },
                     success: function(response) {
-                        $('#appointment_time').empty();
-                        $.each(response, function(index, schedule) {
-                            $('#appointment_time').append('<option value="' +
-                                schedule.id + '">' + schedule.start +
-                                '</option>'
-                            );
+                        // Fetch appointments for the selected date
+                        $.ajax({
+                            url: "{{ route('fetch.appointments', $doctor->id) }}",
+                            type: "GET",
+                            data: {
+                                date: selectedDate
+                            },
+                            success: function(appointments) {
+                                $('#appointment_time').empty();
+                                if (response.length === 0) {
+                                    $('#appointment_time').append(
+                                        '<option value="">No schedules available for this date</option>'
+                                    );
+                                } else {
+                                    var availableSchedules = response.filter(
+                                        function(schedule) {
+                                            return !appointments.some(
+                                                function(appointment) {
+                                                    return schedule
+                                                        .id ==
+                                                        appointment
+                                                        .schedule_id &&
+                                                        appointment
+                                                        .status ==
+                                                        'Pending';
+                                                });
+                                        });
+
+                                    if (availableSchedules.length === 0) {
+                                        $('#appointment_time').append(
+                                            '<option value="">No available schedules for this date</option>'
+                                        );
+                                    } else {
+                                        availableSchedules.forEach(function(
+                                            schedule) {
+                                            $('#appointment_time')
+                                                .append(
+                                                    '<option value="' +
+                                                    schedule.id + '">' +
+                                                    schedule.start +
+                                                    '</option>');
+                                        });
+                                    }
+                                }
+                                $('#appointment_time').prop('disabled', false);
+                            },
+                            error: function(xhr) {
+                                console.log(xhr.responseText);
+                            }
                         });
-                        $('#appointment_time').prop('disabled', false);
                     },
                     error: function(xhr) {
                         console.log(xhr.responseText);

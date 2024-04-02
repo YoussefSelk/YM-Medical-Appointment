@@ -26,9 +26,8 @@
         </div>
     </div>
     <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex justify-around ">
-        <div
-            class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex justify-center flex-col ">
-            <h2 class="mb-2 font-semibold text-xl text-gray-800 leading-tight">
+        <div class="p-6 mt-7 overflow-hidden bg-white rounded-md  dark:bg-dark-eval-1 flex justify-center flex-col ">
+            <h2 class="mb-7 font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('My Appointments') }}
             </h2>
 
@@ -78,7 +77,7 @@
                                     {{ $appointment->schedule->start }}
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    {{ $appointment->schedule->appointment_date }}
+                                    {{ $appointment->appointment_date }}
                                 </td>
                             </tr>
                         @endforeach
@@ -89,9 +88,8 @@
             </div>
 
         </div>
-        <div
-            class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex justify-center flex-col">
-            <h2 class="mb-2 font-semibold text-xl text-gray-800 leading-tight">
+        <div class="p-6 mt-7 overflow-hidden bg-white rounded-md  dark:bg-dark-eval-1 flex justify-center flex-col">
+            <h2 class="mb-7 font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('My Medical History') }}
             </h2>
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
