@@ -14,11 +14,59 @@
             {{ __('Appointments List') }}
         </h2>
         <div class="flex flex-wrap justify-center mt-10">
-            @foreach ($appointments as $appointment)
-                <x-cards.normal-card title="{{ $appointment->patient->user->name }}"
-                    description="{{ $appointment->doctor->user->name }}"
-                    link-url="{{ route('admin.appointments.edit', $appointment->id) }}" link-text="Edit" />
-            @endforeach
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            #
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Patient Name
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Doctor Name
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Appointment Date
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Appointment Start Hour
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Appointment Reason
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Appointment Day
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach ($appointments as $appointment)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($appointment->id) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->patient->user->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->doctor->user->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->appointment_date }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->schedule->start }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->reason }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->schedule->day }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+
+                                <button type="button" class="text-red-600 hover:text-red-900"
+                                    onclick="confirmDelete({{ $appointment->id }})">Delete</button>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
+
     </div>
 </x-admin-layout>

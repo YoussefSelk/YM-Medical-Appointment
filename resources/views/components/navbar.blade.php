@@ -21,8 +21,9 @@
 
             <x-heroicon-o-sun x-show="isDarkMode" aria-hidden="true" class="w-6 h-6" />
         </x-button>
-
+        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}" alt="test" class="w-14 rounded-full">
         <x-dropdown align="right" width="48">
+
             <x-slot name="trigger">
                 <button
                     class="flex items-center p-2 text-sm font-medium text-gray-500 rounded-md transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none focus:ring focus:ring-blue-500 focus:ring-offset-1 focus:ring-offset-white dark:focus:ring-offset-dark-eval-1 dark:text-gray-400 dark:hover:text-gray-200">

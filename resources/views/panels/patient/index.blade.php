@@ -18,7 +18,7 @@
             <div class="text-card-container mt-4">
                 <p class="text-base">
                     Vous n'avez aucune idée des médecins ? pas de problème, passons à la section
-                    <a href="#" class="text-blue-500">"Tous les médecins"</a><br>
+                    <a href="{{ route('patiens.doctors') }}" class="text-blue-500">"Tous les médecins"</a><br>
                     Suivez l'historique de vos rendez-vous passés et futurs. <br>
                     Renseignez-vous également sur l'heure d'arrivée prévue de votre médecin ou médecin-conseil.
                 </p>

@@ -57,7 +57,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/doctors/schedules', [AdminController::class, 'schedules'])->name('admin.schedules');
         Route::get('/admin/doctor/schedule/{id}', [AdminController::class, 'schedule'])->name('admin.doctor.schedule');
         Route::post('/admin/doctor/schedule/{id}/submit', [AdminController::class, 'add_schedule'])->name('admin.doctor.schedule.submit');
-
+        Route::get('/admin/doctor-schedules',  [AdminController::class, 'getDoctorSchedules'])->name('admin.doctor.schedules');
+        Route::get('/admin/doctor-schedules/{id}/edit', [AdminController::class, 'editSchedule'])->name('admin.doctor.schedule.edit');
+        Route::put('/admin/doctor-schedules/{id}', [AdminController::class, 'updateSchedule'])->name('admin.doctor.schedule.update');
+        Route::delete('/admin/doctor-schedules/{id}/delete', [AdminController::class, 'deleteSchedule'])->name('admin.doctor.schedule.delete');
 
         //Admin Appointments Routes
         Route::get('/admin/appointments', [AdminController::class, 'appointments'])->name('admin.appointments');
@@ -77,6 +80,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/patient/doctor/{id}/book/appointment/getHours', [PatientController::class, 'getAvailableHours'])->name('patiens.doctor.book.appointment.getHours');
         Route::post('/patient/doctor/{D_ID}/book/appointment/{P_ID}/submit', [PatientController::class, 'bookAppointment'])->name('patiens.doctor.book.appointment.submit');
         Route::get('/patient/doctor/{id}/appointments', [PatientController::class, 'getAppointments'])->name('fetch.appointments');
+        Route::get('/patient/filter/doctors', [PatientController::class, 'filterDoctors'])->name('filter.doctors');
+        Route::get('/patient/all/doctors', [PatientController::class, 'allDoctors'])->name('patiens.all.doctors');
+
+
     });
 
     //Profile's routes

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Schedule;
+use App\Models\Speciality;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -35,9 +36,9 @@ class PatientController extends Controller
 
     public function doctors()
     {
-
+        $specialities = Speciality::all();
         $doctors = Doctor::all();
-        return view('panels.patient.doctors')->with(compact('doctors'));
+        return view('panels.patient.doctors')->with(compact('doctors'))->with(compact('specialities'));
     }
     public function appointment(Request $request, $id)
     {
@@ -47,6 +48,50 @@ class PatientController extends Controller
     }
 
     //Operation Functions
+
+    public function allDoctors()
+    {
+        $doctors = Doctor::with(['user.address', 'speciality'])->get();
+        return response()->json($doctors);
+    }
+
+    public function filterDoctors(Request $request)
+    {
+        // Validate and sanitize inputs
+        $specialityId = $request->input('speciality_id', null);
+        $city = $request->input('city', null);
+
+        // Prepare the query
+        $doctorsQuery = Doctor::with('user.address', 'speciality');
+
+        // Apply filters
+        if ($specialityId) {
+            $doctorsQuery->whereHas('speciality', function ($query) use ($specialityId) {
+                $query->where('id', $specialityId);
+            });
+        }
+
+        if ($city) {
+            // Sanitize the city input to remove potentially harmful characters
+            $sanitizedCity = filter_var($city, FILTER_SANITIZE_STRING);
+
+            // Apply the city filter using parameterized query to prevent SQL injection
+            $doctorsQuery->whereHas('user.address', function ($query) use ($sanitizedCity) {
+                $query->where('ville', 'like', "%{$sanitizedCity}%");
+            });
+        }
+
+        // Execute the query
+        $doctors = $doctorsQuery->get();
+
+        // Return the result
+        return response()->json($doctors);
+    }
+
+
+
+
+
 
     public function getAvailableHours(Request $request, $id)
     {
@@ -80,6 +125,9 @@ class PatientController extends Controller
         // Return appointments as JSON response
         return response()->json($appointments);
     }
+
+
+
     // CRUD Functions
 
     public function bookAppointment(Request $request, $D_ID, $P_ID)

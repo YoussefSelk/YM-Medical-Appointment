@@ -84,8 +84,54 @@ class AdminController extends Controller
         return view('panels.admin.CRUD.patient-edit')->with('patient', $patient);
     }
 
-    // Operations Functions
+    public function deleteSchedule($id)
+    {
+        // Find the schedule by its ID
+        $schedule = Schedule::find($id);
 
+        // If the schedule doesn't exist, redirect back with an error message
+        if (!$schedule) {
+            return redirect()->back()->with('error', 'Schedule not found.');
+        }
+
+        $appointments = Appointment::where('schedule_id', $id)->get();
+        if ($appointments) {
+            foreach ($appointments as $appointment) {
+                $appointment->delete();
+            }
+        }
+
+        // Delete the schedule
+        $schedule->delete();
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Schedule deleted successfully.');
+    }
+    // Operations Functions
+    public function getDoctorSchedules(Request $request)
+    {
+        // Validate the request...
+        $request->validate([
+            'doctor_id' => 'required|exists:doctors,id',
+        ]);
+
+        // Get the doctor's schedules...
+        $doctor = Doctor::find($request->doctor_id);
+        $schedules = $doctor->schedules;
+
+        // Format the schedules...
+        $formattedSchedules = $schedules->map(function ($schedule) {
+            return [
+                'day' => $schedule->day,
+                'start' => substr($schedule->start, 0, 5), // Remove the seconds from the time
+            ];
+        });
+
+        // Return the schedules as a JSON response...
+        return response()->json([
+            'schedules' => $formattedSchedules,
+        ]);
+    }
     public function getDoctors()
     {
         $doctors = Doctor::with('user', 'speciality')->get();
@@ -102,6 +148,11 @@ class AdminController extends Controller
                 'start_times.*' => 'nullable|array', // Each item inside 'start_times' should be an array
                 'start_times.*.*' => 'nullable|date_format:H:i', // Validate as time format (HH:MM)
             ]);
+
+            // Check if 'start_times' is empty
+            if (empty($validatedData['start_times'])) {
+                return redirect()->back()->with('error', 'Please select at least one time slot.');
+            }
 
             // Iterate through the submitted data and store in the database
             foreach ($validatedData['start_times'] as $day => $startTimes) {
@@ -140,6 +191,7 @@ class AdminController extends Controller
             dd($e->getMessage());
         }
     }
+
 
 
     public function edit_doctor(Request $request, $id)
