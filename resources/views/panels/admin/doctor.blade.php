@@ -32,9 +32,7 @@
 
 
     <div class="p-6 mt-6 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
-        <x-download-botton route="{{ route('admin.table.doctors.pdf') }}" />
-        {{-- <a href="{{route('admin.table.doctors.pdf')}}" class=" top-4 right-4 font-medium text-blue-600 dark:text-blue-500 mr-2">Export PDF</a> --}}
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div class="relative overflow-x-auto sm:rounded-lg">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400" id="DataTable">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>

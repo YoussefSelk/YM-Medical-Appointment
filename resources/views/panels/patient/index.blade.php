@@ -1,6 +1,7 @@
 <head>
-
+    <title>YM | Home</title>
 </head>
+
 <x-patient-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -18,7 +19,7 @@
             <div class="text-card-container mt-4">
                 <p class="text-base">
                     Vous n'avez aucune idée des médecins ? pas de problème, passons à la section
-                    <a href="#" class="text-blue-500">"Tous les médecins"</a><br>
+                    <a href="{{ route('patiens.doctors') }}" class="text-blue-500">"Tous les médecins"</a><br>
                     Suivez l'historique de vos rendez-vous passés et futurs. <br>
                     Renseignez-vous également sur l'heure d'arrivée prévue de votre médecin ou médecin-conseil.
                 </p>
@@ -30,7 +31,6 @@
             <h2 class="mb-7 font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('My Appointments') }}
             </h2>
-
 
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -81,12 +81,9 @@
                                 </td>
                             </tr>
                         @endforeach
-
-
                     </tbody>
                 </table>
             </div>
-
         </div>
         <div class="p-6 mt-7 overflow-hidden bg-white rounded-md  dark:bg-dark-eval-1 flex justify-center flex-col">
             <h2 class="mb-7 font-semibold text-xl text-gray-800 leading-tight">
@@ -116,13 +113,10 @@
                                     </td>
                                 </tr>
                             @endforeach
-
-
                         </tbody>
                     @else
                         <img src="" alt="">
                     @endif
-
                 </table>
             </div>
         </div>

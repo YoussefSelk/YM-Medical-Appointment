@@ -63,6 +63,12 @@
                 <x-heroicon-o-user class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
             </x-slot>
         </x-sidebar.link>
+        <x-sidebar.link title="My Appointments" href="{{ route('patiens.my.appointments', authUser()->patient->id) }}"
+            :isActive="request()->routeIs('patiens.my.appointments')">
+            <x-slot name="icon">
+                <x-heroicon-o-user class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+            </x-slot>
+        </x-sidebar.link>
     @endif
 
     @if (auth()->user()->user_type === 'doctor')
