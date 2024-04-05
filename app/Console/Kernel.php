@@ -13,8 +13,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job(new UpdateAppointmentStatus)->daily(); // Run the job daily
+        $schedule->command('appointments:update-status')->everyMinute();
     }
+
 
     /**
      * Register the commands for the application.

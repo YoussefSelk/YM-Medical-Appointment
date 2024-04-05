@@ -11,8 +11,8 @@
         <h2 class="text-xl font-semibold leading-tight">
             {{ __('Doctors List') }}
         </h2>
-        <div class="flex flex-wrap justify-center mt-10">
-            <table class="min-w-full divide-y divide-gray-200">
+        <div class="mt-10">
+            <table class="min-w-full divide-y divide-gray-200" id="DataTable">
                 <thead class="bg-gray-50">
                     <tr>
                         <th scope="col"
@@ -50,3 +50,4 @@
         </div>
     </div>
 </x-admin-layout>
+@include('includes.table')

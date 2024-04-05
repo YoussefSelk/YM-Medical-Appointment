@@ -82,8 +82,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/patient/doctor/{id}/appointments', [PatientController::class, 'getAppointments'])->name('fetch.appointments');
         Route::get('/patient/filter/doctors', [PatientController::class, 'filterDoctors'])->name('filter.doctors');
         Route::get('/patient/all/doctors', [PatientController::class, 'allDoctors'])->name('patiens.all.doctors');
-
-
+        Route::get('/patient/my/appointments/{id}', [PatientController::class, 'patient_appointments'])->name('patiens.my.appointments');
+        Route::get('/patient/appointment/detail/{id}', [PatientController::class, 'appointment_detail'])->name('patiens.appointment.detail');
+        Route::put('/patient/appointment/detail/{id}/cancel', [PatientController::class, 'cancel_appointment'])->name('patiens.appointment.detail.cancel');
     });
 
     //Profile's routes
