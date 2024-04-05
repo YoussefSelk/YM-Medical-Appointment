@@ -66,7 +66,11 @@ Route::middleware('auth')->group(function () {
     //Doctor's routes
     Route::middleware('doctor')->group(function () {
         Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor_dashboard');
+
+        Route::get('/doctor/appointments', [DoctorController::class, 'appointments'])->name('doctor.appointments');
+        Route::get('doctor/schedule', [DoctorController::class, 'schedule'])->name('doctor.schedule');
     });
+
 
 
     //Patient's routes

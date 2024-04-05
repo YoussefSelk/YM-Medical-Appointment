@@ -13,6 +13,12 @@
                 <x-heroicon-o-view-grid class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
             </x-slot>
         </x-sidebar.link>
+    @elseif (auth()->user()->user_type === 'doctor')
+        <x-sidebar.link title="Dashboard" href="{{ route(auth()->user()->getDashboardRouteAttribute()) }}" :isActive="request()->routeIs(auth()->user()->getDashboardRouteAttribute())">
+            <x-slot name="icon">
+                <x-heroicon-o-view-grid class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+            </x-slot>
+        </x-sidebar.link>
     @endif
 
 
@@ -57,5 +63,19 @@
                 <x-heroicon-o-user class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
             </x-slot>
         </x-sidebar.link>
+    @endif
+
+    @if (auth()->user()->user_type === 'doctor')
+    <x-sidebar.link title="Appointments" href="{{ route('doctor.appointments') }}" :isActive="request()->routeIs('doctor.appointments')">
+        <x-slot name="icon">
+            <x-heroicon-o-bookmark class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+        </x-slot>
+    </x-sidebar.link>
+    <x-sidebar.link title="Schedules" href="{{ route('doctor.schedule') }}" :isActive="request()->routeIs('doctor.schedule')">
+        <x-slot name="icon">
+            <x-heroicon-o-calendar class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+        </x-slot>
+    </x-sidebar.link>
+
     @endif
 </x-perfect-scrollbar>
