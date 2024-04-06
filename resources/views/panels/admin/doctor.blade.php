@@ -101,9 +101,10 @@
                             <td class="px-6 py-4">
                                 {{ $doctor->speciality->name }}
                             </td>
-                            <td class="px-6 py-4 text-right flex flex-row">
+                            <td class="px-6 py-4 text-right flex justify-around items-center flex-row">
                                 <a href="{{ route('admin.doctor.edit.view', $doctor->id) }}"
-                                    class="font-medium text-blue-600 dark:text-blue-500 mr-2">Edit</a>
+                                    class="font-medium text-blue-600 dark:text-blue-500 mr-2"><i
+                                        class="fa-regular fa-pen-to-square"></i></a>
 
                                 <!-- In your Blade view file -->
                                 <form id="deleteForm_{{ $doctor->id }}"
@@ -111,8 +112,9 @@
                                     class="font-medium text-red-600 dark:text-red-500 ">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button" class="btn btn-danger"
-                                        onclick="confirmDelete('{{ $doctor->id }}')">Delete</button>
+                                    <button type="button" class="btn btn-danger h-0"
+                                        onclick="confirmDelete('{{ $doctor->id }}')"><i
+                                            class="fa-solid fa-trash"></i></button>
                                 </form>
 
                             </td>

@@ -13,8 +13,8 @@
         </h2>
         <div class="mt-10">
             <table class="min-w-full divide-y divide-gray-200" id="DataTable">
-                <thead class="bg-gray-50">
-                    <tr>
+                <thead class="bg-gray-50 dark:bg-gray-800">
+                    <tr class="dark:bg-dark-eval-1">
                         <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Doctor Name
@@ -35,13 +35,14 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @foreach ($doctors as $doctor)
-                        <tr>
+                        <tr class="dark:bg-dark-eval-1">
                             <td class="px-6 py-4 whitespace-nowrap">{{ $doctor->user->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $doctor->speciality->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $doctor->user->email }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <a href="{{ route('admin.doctor.schedule', $doctor->id) }}"
-                                    class="text-blue-600 hover:text-blue-900">Schedule</a>
+                                    class="text-blue-600 hover:text-blue-900"> <i
+                                        class="fa-regular fa-calendar-days"></i></a>
                             </td>
                         </tr>
                     @endforeach

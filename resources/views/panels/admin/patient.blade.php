@@ -89,19 +89,27 @@
                             <td class="px-6 py-4">
                                 {{ $patient->cin }}
                             </td>
-                            <td class="px-6 py-4 text-right flex flex-row">
-                                <a href="{{ route('admin.patient.edit.view', $patient->id) }}"
-                                    class="font-medium text-blue-600 dark:text-blue-500 mr-2">Edit</a>
+                            <td class="px-6 py-4 text-right flex flex-row justify-around items-center">
+                                <span class="mr-2">
+                                    <a href="{{ route('admin.patient.edit.view', $patient->id) }}"
+                                        class="font-medium text-blue-600 dark:text-blue-500 "><i
+                                            class="fa-regular fa-pen-to-square"></i></a>
+                                </span>
 
-                                <!-- In your Blade view file -->
-                                <form id="deleteForm_{{ $patient->id }}"
-                                    action="{{ route('admin.patient.delete', $patient->id) }}" method="POST"
-                                    class="font-medium text-red-600 dark:text-red-500">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn btn-danger"
-                                        onclick="confirmDelete('{{ $patient->id }}')">Delete</button>
-                                </form>
+                                <span class="mr-2 ">
+                                    <form id="deleteForm_{{ $patient->id }}"
+                                        action="{{ route('admin.patient.delete', $patient->id) }}" method="POST"
+                                        class=" text-red-600 dark:text-red-500 ">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" onclick="confirmDelete('{{ $patient->id }}')"><i
+                                                class="fa-solid fa-trash h-0"></i></button>
+                                    </form>
+                                </span>
+                                <span>
+                                    <a href="{{ route('admin.table.patient.details', $patient->id) }}"><i
+                                            class="fa-regular fa-eye"></i></a>
+                                </span>
 
                             </td>
                         </tr>

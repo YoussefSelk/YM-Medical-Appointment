@@ -30,6 +30,16 @@ class AdminController extends Controller
     }
 
     //Views  Functions
+    public function patient_details($id)
+    {
+        $patient = Patient::find($id);
+        return view('panels.admin.CRUD.patient-details')->with(compact("patient"));
+    }
+    public function appointment_detail($id)
+    {
+        $appointment = Appointment::find($id);
+        return view('panels.admin.CRUD.appointment-detail')->with(compact("appointment"));
+    }
     public function appointments()
     {
 
@@ -108,6 +118,28 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Schedule deleted successfully.');
     }
     // Operations Functions
+    public function cancel_appointment($id)
+    {
+        $appointment = Appointment::find($id);
+        if ($appointment) {
+            $appointment->update(['status' => 'Cancelled']);
+            $appointment->save();
+            return redirect()->back()->with('success', 'Appointment Canceled !!');
+        } else {
+            return redirect()->back()->with('error', 'Appointment Not Found !!');
+        }
+    }
+    public function approve_appointment($id)
+    {
+        $appointment = Appointment::find($id);
+        if ($appointment) {
+            $appointment->update(['status' => 'Approved']);
+            $appointment->save();
+            return redirect()->back()->with('success', 'Appointment Approved !!');
+        } else {
+            return redirect()->back()->with('error', 'Appointment Not Found !!');
+        }
+    }
     public function getDoctorSchedules(Request $request)
     {
         // Validate the request...

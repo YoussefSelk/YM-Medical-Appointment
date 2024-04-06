@@ -59,16 +59,13 @@
 </nav>
 
 <!-- Mobile bottom bar -->
-<div class="fixed inset-x-0 bottom-0 flex items-center justify-between px-4 py-4 sm:px-6 transition-transform duration-500 bg-white md:hidden dark:bg-dark-eval-1"
+<div class="fixed z-50 inset-x-0 bottom-0 flex items-center justify-between px-4 py-4 sm:px-6 transition-transform duration-500 bg-white md:hidden dark:bg-dark-eval-1"
     :class="{
         'translate-y-full': scrollingDown,
         'translate-y-0': scrollingUp,
     }">
-    <x-button type="button" icon-only variant="secondary" sr-text="Search">
-        <x-heroicon-o-search aria-hidden="true" class="w-6 h-6" />
-    </x-button>
 
-    <a href="{{ route('dashboard') }}">
+    <a href="{{ route(authUser()->getDashboardRouteAttribute()) }}">
         <x-application-logo aria-hidden="true" class="w-10 h-10" />
 
         <span class="sr-only">Dashboard</span>
