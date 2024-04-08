@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
@@ -44,7 +45,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/admin/doctor/edit/{id}', [AdminController::class, 'edit_doctor'])->name('admin.doctor.edit');
         Route::delete('/admin/doctor/delete/{id}', [AdminController::class, 'delete_doctor'])->name('admin.doctor.delete');
         Route::get('/admin/doctors/pdf', [AdminController::class, 'export_doctors_pdf'])->name('admin.table.doctors.pdf');
-
+        Route::get('/admin/doctor/view/details/{id}', [AdminController::class, 'doctor_details'])->name('admin.table.doctor.details');
         // Admin Patient Routes
         Route::get('/admin/patient', [AdminController::class, 'patient'])->name('admin.patient');
         Route::post('/admin/patient/add', [AdminController::class, 'add_patient'])->name('admin.patient.add');
@@ -52,6 +53,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/admin/patient/edit/{id}', [AdminController::class, 'edit_patient'])->name('admin.patient.edit');
         Route::delete('/admin/patient/delete/{id}', [AdminController::class, 'delete_patient'])->name('admin.patient.delete');
         Route::get('/admin/patient/pdf', [AdminController::class, 'export_patients_pdf'])->name('admin.table.patients.pdf');
+        Route::get('/admin/patient/view/details/{id}', [AdminController::class, 'patient_details'])->name('admin.table.patient.details');
 
         //Admin Schedules Routes
         Route::get('/admin/doctors/schedules', [AdminController::class, 'schedules'])->name('admin.schedules');
@@ -64,6 +66,17 @@ Route::middleware('auth')->group(function () {
 
         //Admin Appointments Routes
         Route::get('/admin/appointments', [AdminController::class, 'appointments'])->name('admin.appointments');
+        Route::get('/admin/appointment/view/{id}', [AdminController::class, 'appointment_detail'])->name('admin.appointment.view');
+        Route::put('/admin/appointment/detail/{id}/cancel', [AdminController::class, 'cancel_appointment'])->name('admin.appointment.detail.cancel');
+        Route::put('/admin/appointment/detail/{id}/approve', [AdminController::class, 'approve_appointment'])->name('admin.appointment.detail.approve');
+
+        //Admin Specialities Routes
+        Route::get('/admin/specialities', [AdminController::class, 'specialities'])->name('admin.specialities');
+        Route::post('/admin/specialities/add', [AdminController::class, 'add_speciality'])->name('admin.specialities.add');
+        Route::get('/admin/specialities/edit/{id}', [AdminController::class, 'edit_speciality_view'])->name('admin.specialities.edit.view');
+        Route::put('/admin/specialities/edit/{id}', [AdminController::class, 'edit_speciality'])->name('admin.specialities.edit');
+        Route::delete('/admin/specialities/delete/{id}', [AdminController::class, 'delete_speciality'])->name('admin.specialities.delete');
+        Route::get('/admin/specialitie/details/{id}', [AdminController::class, 'speciality_details'])->name('admin.speciality.details');
     });
 
     //Doctor's routes
@@ -86,8 +99,13 @@ Route::middleware('auth')->group(function () {
 
     //Patient's routes
     Route::middleware('patient')->group(function () {
+        //Home Routes
         Route::get('/patient', [PatientController::class, 'index'])->name('patient_dashboard');
+
+        //Doctor Routes
         Route::get('/patient/doctors', [PatientController::class, 'doctors'])->name('patiens.doctors');
+
+        //Book Appointment Routes
         Route::get('/patient/doctor/{id}/book/appointment', [PatientController::class, 'appointment'])->name('patiens.doctor.book.appointment');
         Route::get('/patient/doctor/{id}/book/appointment/getHours', [PatientController::class, 'getAvailableHours'])->name('patiens.doctor.book.appointment.getHours');
         Route::post('/patient/doctor/{D_ID}/book/appointment/{P_ID}/submit', [PatientController::class, 'bookAppointment'])->name('patiens.doctor.book.appointment.submit');
@@ -103,6 +121,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //Notifications Routes
+    Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('user.notifications');
+    Route::put('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('user.notification.readed');
 });
 
 // useless routes

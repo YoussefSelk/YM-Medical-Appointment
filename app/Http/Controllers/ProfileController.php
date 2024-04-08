@@ -3,6 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Address;
+use App\Models\Appointment;
+use App\Models\Doctor;
+use App\Models\Patient;
+use App\Models\Schedule;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -85,7 +91,48 @@ class ProfileController extends Controller
 
         Auth::logout();
 
-        $user->delete();
+        if ($user->user_type === 'patient') {
+            $id = $user->patient->id;
+            $patient = Patient::find($id);
+            if ($patient) {
+                $user = User::find($patient->user->id);
+                $address = Address::find($patient->user->address->id);
+                $appointments = Appointment::where('patient_id', $patient->id)->get();
+                if ($appointments->isNotEmpty()) {
+                    $appointments->each->delete();
+                }
+                $patient->delete();
+                if ($user) {
+                    $user->delete();
+
+                    if ($address) {
+                        $address->delete();
+                    }
+                }
+            }
+        } else if ($user->user_type === 'doctor') {
+            $id = $user->doctor->id;
+            $doctor = Doctor::find($id);
+            if ($doctor) {
+                $address = $user->address;
+                $schedules = Schedule::where('doctor_id', $doctor->id)->get();
+
+                if ($schedules->isNotEmpty()) { // Check if there are schedules to delete
+                    $schedules->each->delete(); // Delete each schedule
+                }
+
+                $doctor->delete();
+                if ($user) {
+                    $user->delete();
+
+                    if ($address) {
+                        $address->delete();
+                    }
+                }
+            }
+        } else {
+            $user->delete();
+        }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

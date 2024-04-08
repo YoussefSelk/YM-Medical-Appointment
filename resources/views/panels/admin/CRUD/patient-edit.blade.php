@@ -230,7 +230,7 @@
                     <div class="form_groups">
                         <div class="form_group phone_container">
                             <label for="phone">Phone:</label>
-                            <input type="number" name="phone" value="0{{ old('phone', $patient->user->phone) }}"
+                            <input type="number" name="phone" value="{{ old('phone', $patient->user->phone) }}"
                                 id="phone_input" placeholder="(06 / 05) 00 00 00 00">
                             <div class="error_input">
                                 @error('phone')
