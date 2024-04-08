@@ -1,7 +1,6 @@
 <head>
     <link rel="stylesheet" href="{{ asset('css/admin_doctor.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
     <title>Admin's Doctors Page</title>
 </head>
 <x-admin-layout>
@@ -43,6 +42,9 @@
                             Doctor name
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Total Appointments
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             Email
                         </th>
                         <th scope="col" class="px-6 py-3">
@@ -64,7 +66,7 @@
                             Speciality
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            <span class="sr-only">Edit</span>
+                            Actions
                         </th>
                     </tr>
                 </thead>
@@ -79,6 +81,10 @@
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $doctor->user->name }}
+                            </th>
+                            <th scope="row"
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ count($doctor->Appointments) }}
                             </th>
                             <td class="px-6 py-4">
                                 {{ $doctor->user->email }}
@@ -109,7 +115,7 @@
                                 <!-- In your Blade view file -->
                                 <form id="deleteForm_{{ $doctor->id }}"
                                     action="{{ route('admin.doctor.delete', $doctor->id) }}" method="POST"
-                                    class="font-medium text-red-600 dark:text-red-500 ">
+                                    class="font-medium text-red-600 dark:text-red-500 mr-2">
                                     @csrf
                                     @method('DELETE')
                                     <button type="button" class="btn btn-danger h-0"
@@ -117,6 +123,9 @@
                                             class="fa-solid fa-trash"></i></button>
                                 </form>
 
+                                <a href="{{ route('admin.table.doctor.details', $doctor->id) }}"
+                                    class="font-medium text-blue-600 dark:text-blue-500 mr-2"> <i
+                                        class="fa-regular fa-eye"></i> </a>
                             </td>
                         </tr>
                     @endforeach

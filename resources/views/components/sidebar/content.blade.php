@@ -4,13 +4,13 @@
         <x-sidebar.link title="Dashboard" href="{{ route(auth()->user()->getDashboardRouteAttribute()) }}"
             :isActive="request()->routeIs(auth()->user()->getDashboardRouteAttribute())">
             <x-slot name="icon">
-                <x-heroicon-o-view-grid class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+                <i class="fa-solid fa-house"></i>
             </x-slot>
         </x-sidebar.link>
     @elseif (auth()->user()->user_type === 'patient')
         <x-sidebar.link title="Home" href="{{ route(auth()->user()->getDashboardRouteAttribute()) }}" :isActive="request()->routeIs(auth()->user()->getDashboardRouteAttribute())">
             <x-slot name="icon">
-                <x-heroicon-o-view-grid class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+                <i class="fa-solid fa-house"></i>
             </x-slot>
         </x-sidebar.link>
     @endif
@@ -32,35 +32,40 @@
     @if (auth()->user()->user_type === 'admin')
         <x-sidebar.link title="Doctors" href="{{ route('admin.doctor') }}" :isActive="request()->routeIs('admin.doctor')">
             <x-slot name="icon">
-                <x-heroicon-o-user class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+                <i class="fa-solid fa-user-doctor"></i>
             </x-slot>
         </x-sidebar.link>
         <x-sidebar.link title="Patients" href="{{ route('admin.patient') }}" :isActive="request()->routeIs('admin.patient')">
             <x-slot name="icon">
-                <x-heroicon-o-user class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+                <i class="fa-solid fa-bed-pulse"></i>
             </x-slot>
         </x-sidebar.link>
         <x-sidebar.link title="Apointments" href="{{ route('admin.appointments') }}" :isActive="request()->routeIs('admin.appointments')">
             <x-slot name="icon">
-                <x-heroicon-o-bookmark class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+                <i class="fa-regular fa-calendar-check"></i>
             </x-slot>
         </x-sidebar.link>
         <x-sidebar.link title="Schedules" href="{{ route('admin.schedules') }}" :isActive="request()->routeIs('admin.schedules')">
             <x-slot name="icon">
-                <x-heroicon-o-calendar class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+                <i class="fa-solid fa-calendar-days"></i>
+            </x-slot>
+        </x-sidebar.link>
+        <x-sidebar.link title="Specialities" href="{{ route('admin.specialities') }}" :isActive="request()->routeIs('admin.specialities')">
+            <x-slot name="icon">
+                <i class="fa-solid fa-briefcase"></i>
             </x-slot>
         </x-sidebar.link>
     @endif
     @if (auth()->user()->user_type === 'patient')
         <x-sidebar.link title="Doctor List" href="{{ route('patiens.doctors') }}" :isActive="request()->routeIs('patiens.doctors')">
             <x-slot name="icon">
-                <x-heroicon-o-user class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+                <i class="fa-solid fa-user-doctor"></i>
             </x-slot>
         </x-sidebar.link>
         <x-sidebar.link title="My Appointments" href="{{ route('patiens.my.appointments', authUser()->patient->id) }}"
             :isActive="request()->routeIs('patiens.my.appointments')">
             <x-slot name="icon">
-                <x-heroicon-o-user class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+                <i class="fa-regular fa-calendar-check"></i>
             </x-slot>
         </x-sidebar.link>
     @endif

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
@@ -30,6 +31,27 @@ class AdminController extends Controller
     }
 
     //Views  Functions
+    public function doctor_details($id)
+    {
+        $doctor = Doctor::find($id);
+        return view('panels.admin.CRUD.doctor-view')->with(compact("doctor"));
+    }
+    public function speciality_details($id)
+    {
+
+        $speciality = Speciality::find($id);
+        return view('panels.admin.CRUD.specialities-view')->with(compact("speciality"));
+    }
+    public function edit_speciality_view($id)
+    {
+        $speciality = Speciality::find($id);
+        return view('panels.admin.CRUD.specialities-edit')->with(compact("speciality"));
+    }
+    public function specialities()
+    {
+        $specialities = Speciality::all();
+        return view('panels.admin.specialities')->with(compact("specialities"));
+    }
     public function patient_details($id)
     {
         $patient = Patient::find($id);
@@ -171,6 +193,73 @@ class AdminController extends Controller
     }
 
     // CRUD Functions
+    public function edit_speciality(Request $request, $id)
+    {
+        $speciality = Speciality::find($id);
+        if (!$speciality) {
+            return redirect()->back()->with('error', 'Speciality Not Found !!');
+        }
+        $OriginalName = $request->input('speciality');
+
+        $name = htmlspecialchars($request->input('speciality'));
+        if (!empty($name)) {
+            if ($this->isXssAttackDetected([$OriginalName], [$name])) {
+                return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
+            }
+        }
+        $rules = [
+            'speciality' => 'required|unique:specialities,name',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        } else {
+            $speciality->update(['name' => $name]);
+            $speciality->save();
+        }
+
+        return redirect()->back()->with('success', 'Speciality Edited Successfully');
+    }
+    public function add_speciality(Request $request)
+    {
+        $OriginalName = $request->input('speciality');
+
+        $name = htmlspecialchars($request->input('speciality'));
+
+        if (!empty($name)) {
+            if ($this->isXssAttackDetected([$OriginalName], [$name])) {
+                return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
+            }
+        }
+
+        $rules = [
+            'speciality' => 'required|unique:specialities,name',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        } else {
+            Speciality::create(['name' => $name]);
+        }
+
+        return redirect()->back()->with('success', 'Speciality Added Successfully');
+    }
+    public function delete_speciality($id)
+    {
+        $speciality = Speciality::find($id);
+        if ($speciality) {
+            if (count($speciality->doctors) > 0) {
+                return redirect()->back()->with('error', 'Speciality is Used By Some Doctors !!');
+            }
+            $speciality->delete();
+            return redirect()->back()->with('success', 'Speciality Deleted Successfully');
+        } else {
+            return redirect()->back()->with('error', 'Speciality Not Found');
+        }
+    }
     public function add_schedule(Request $request, $id)
     {
         try {

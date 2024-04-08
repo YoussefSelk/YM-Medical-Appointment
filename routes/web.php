@@ -45,7 +45,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/admin/doctor/edit/{id}', [AdminController::class, 'edit_doctor'])->name('admin.doctor.edit');
         Route::delete('/admin/doctor/delete/{id}', [AdminController::class, 'delete_doctor'])->name('admin.doctor.delete');
         Route::get('/admin/doctors/pdf', [AdminController::class, 'export_doctors_pdf'])->name('admin.table.doctors.pdf');
-
+        Route::get('/admin/doctor/view/details/{id}', [AdminController::class, 'doctor_details'])->name('admin.table.doctor.details');
         // Admin Patient Routes
         Route::get('/admin/patient', [AdminController::class, 'patient'])->name('admin.patient');
         Route::post('/admin/patient/add', [AdminController::class, 'add_patient'])->name('admin.patient.add');
@@ -69,6 +69,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/appointment/view/{id}', [AdminController::class, 'appointment_detail'])->name('admin.appointment.view');
         Route::put('/admin/appointment/detail/{id}/cancel', [AdminController::class, 'cancel_appointment'])->name('admin.appointment.detail.cancel');
         Route::put('/admin/appointment/detail/{id}/approve', [AdminController::class, 'approve_appointment'])->name('admin.appointment.detail.approve');
+
+        //Admin Specialities Routes
+        Route::get('/admin/specialities', [AdminController::class, 'specialities'])->name('admin.specialities');
+        Route::post('/admin/specialities/add', [AdminController::class, 'add_speciality'])->name('admin.specialities.add');
+        Route::get('/admin/specialities/edit/{id}', [AdminController::class, 'edit_speciality_view'])->name('admin.specialities.edit.view');
+        Route::put('/admin/specialities/edit/{id}', [AdminController::class, 'edit_speciality'])->name('admin.specialities.edit');
+        Route::delete('/admin/specialities/delete/{id}', [AdminController::class, 'delete_speciality'])->name('admin.specialities.delete');
+        Route::get('/admin/specialitie/details/{id}', [AdminController::class, 'speciality_details'])->name('admin.speciality.details');
     });
 
     //Doctor's routes
