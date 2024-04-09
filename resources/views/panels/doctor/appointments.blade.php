@@ -9,47 +9,8 @@
             {{ __('My appointments') }}
         </h2>
     </x-slot>
-    {{-- <div class=" p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1" >
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <table id="appointmentsTable" class="w-full">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason for visit</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach ($appointments as $appointment)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->appointment_date }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->reason }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->patient->user->name }}</td>
-                                    <td class=" @if($appointment->status === 'Pending')
-                                    text-yellow-500
-                                @elseif($appointment->status === 'Expired')
-                                    text-red-500
-                                @elseif($appointment->status === 'Cancelled')
-                                    text-gray-500
-                                @else
-                                    text-green-500
-                                @endif">{{$appointment->status}}</td>
-                                <td> <a href="{{route('doctor.CRUD.appointment.edit', [$appointment->id])}}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit appointment</a> </td>
-                                </tr>
 
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-
-
-    <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+    {{-- <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
         <div class="overflow-x-auto">
             <table id="appointmentsTable" class="w-full">
                 <thead>
@@ -118,8 +79,15 @@
                 </tbody>
             </table>
         </div>
+    </div> --}}
+    <div class="overflow-x-auto p-6 bg-white text-dark-eval-1 shadow-md flex justify-center dark:bg-dark-eval-1">
+        <div id="calendar" class="w-full lg:w-3/4 xl:w-2/3"></div>
     </div>
+
+
+
 
 
 </x-doctor-layout>
 @include('includes.table')
+<script src="{{ asset('js/fullcalendar/doctor_calendar.js') }}"></script>
