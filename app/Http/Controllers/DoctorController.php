@@ -11,6 +11,7 @@ use App\Models\Schedule;
 use App\Models\Speciality;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class DoctorController extends Controller
 {
@@ -240,5 +241,48 @@ class DoctorController extends Controller
         $appointment->save();
 
         return redirect()->route('doctor.appointments')->with('success', 'Appointment updated successfully.');
+    }
+
+    public function getSchedules()
+    {
+        $user = Auth::user();
+        $doctor = $user->doctor;
+
+        // Retrieve all schedules for the doctor with the given ID
+        $schedules = Schedule::where('doctor_id', $doctor->id)->get();
+
+        // Get the start and end of the current week
+        $startDate = Carbon::now()->startOfWeek();
+        $endDate = Carbon::now()->endOfWeek();
+
+        // Transform the schedule data into the format expected by FullCalendar
+        $events = [];
+        foreach ($schedules as $schedule) {
+            // Parse the start and end times for the current schedule
+            $startTime = Carbon::parse($schedule->start);
+            $endTime = Carbon::parse($schedule->end);
+
+            // Get the current date (Monday) and iterate through each day of the week
+            $currentDate = clone $startDate;
+
+            while ($currentDate->lte($endDate)) {
+                // Check if the current date matches the schedule day
+                if ($currentDate->englishDayOfWeek == $schedule->day) {
+                    // Assign the schedule to the current day of the week
+                    $events[] = [
+                        'id' => $schedule->id,
+                        'title' => 'Available', // Customize as needed
+                        'start' => $currentDate->copy()->setTime($startTime->hour, $startTime->minute)->toDateTimeString(),
+                        'end' => $currentDate->copy()->setTime($endTime->hour, $endTime->minute)->toDateTimeString(),
+                    ];
+                }
+
+                // Move to the next day
+                $currentDate->addDay();
+            }
+        }
+
+        // Return the events as a JSON response
+        return response()->json($events);
     }
 }
