@@ -81,18 +81,27 @@ Route::middleware('auth')->group(function () {
 
     //Doctor's routes
     Route::middleware('doctor')->group(function () {
+
+        //Doctor Home Routes
         Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor_dashboard');
 
+        //Doctor Appointments Routes
         Route::get('/doctor/appointments', [DoctorController::class, 'appointments'])->name('doctor.appointments');
+        Route::get('doctor/appointment/edit/{id}', [DoctorController::class, 'editAppointmentView'])->name('doctor.CRUD.appointment.edit');
+        Route::put('doctor/appointment/edit/{id}', [DoctorController::class, 'updateAppointment'])->name('doctor.appointment.update');
+        Route::get('/doctor/appointments/calendar', [DoctorController::class, 'getAppointments'])->name('doctor.appointments.calendar');
+        Route::get('/doctor/appointments/{id}', [DoctorController::class, 'getAppointmentDetails'])->name('doctor.appointments.details');
+
+        //Doctor Schedule Routes
         Route::get('doctor/schedule', [DoctorController::class, 'schedule'])->name('doctor.schedule');
         Route::get('doctor/schedule/edit/{id}', [DoctorController::class, 'editSchedule'])->name('doctor.CRUD.schedule.edit');
         Route::put('doctor/schedule/{id}', [DoctorController::class, 'updateSchedule'])->name('doctor.schedule.update');
-        Route::get('doctor/appointment/edit/{id}', [DoctorController::class, 'editAppointmentView'])->name('doctor.CRUD.appointment.edit');
-        Route::put('doctor/appointment/edit/{id}', [DoctorController::class, 'updateAppointment'])->name('doctor.appointment.update');
-
-
         Route::delete('/doctor/schedule/{id}', [DoctorController::class, 'deleteSchedule'])->name('doctor.schedule.delete');
 
+
+        Route::get('/doctor/schedules/index', [DoctorController::class, 'getSchedules'])->name('doctor.schedules.index');
+
+        //Doctor Patients Routes
     });
 
 

@@ -22,6 +22,7 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
-        "flowbite": "^2.3.0"
+        "flowbite": "^2.3.0",
+        "fullcalendar": "^6.1.11"
     }
 }
