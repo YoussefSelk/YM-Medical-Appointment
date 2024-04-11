@@ -93,13 +93,13 @@ class DoctorController extends Controller
 
         $validator = Validator::make($request->all(), [
         'day' => 'required|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
-        'start_time' => 'required|date_format:H:i',
-        'end_time' => 'required|date_format:H:i|after:start_time',
+        'start_time' => 'required',
+        'end_time' => 'required|after:start_time',
     ], [
         'day.required' => 'Please select a day.',
         'day.in' => 'Invalid day selected.',
         'start_time.required' => 'Please enter a start time.',
-        'start_time.date_format' => 'Invalid start time format. Please use HH:MM format.',
+
         'end_time.required' => 'Please enter an end time.',
         'end_time.date_format' => 'Invalid end time format. Please use HH:MM format.',
         'end_time.after' => 'End time must be after start time.',
