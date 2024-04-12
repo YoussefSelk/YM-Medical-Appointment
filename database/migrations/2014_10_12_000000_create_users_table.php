@@ -21,6 +21,7 @@ return new class extends Migration
             $table->unsignedBigInteger('address_id')->nullable();
             $table->string('user_type');
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('img')->nullable(); // Add this line for the profile picture
             $table->rememberToken();
             $table->timestamps();
 

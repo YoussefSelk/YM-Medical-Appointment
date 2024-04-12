@@ -35,6 +35,34 @@ class ProfileController extends Controller
         }
         return false;
     }
+    public function img(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'img' => 'required|image|mimes:jpeg,png,gif|max:2048', // Adjust the max file size as needed
+        ]);
+
+        // Check if the request has a file attached
+        if ($request->hasFile('img')) {
+            // Get the uploaded file
+            $image = $request->file('img');
+
+            // Generate a unique filename for the image
+            $imageName = uniqid('profile_img_') . '.' . $image->getClientOriginalExtension();
+
+            // Store the image in the public storage directory
+            $image->storeAs('public/profile_pictures', $imageName);
+
+            // Update the user's profile image path in the database
+            $request->user()->update(['img' => $imageName]);
+
+            // Redirect back with success message
+            return redirect()->back()->with('status', 'Profile picture uploaded successfully.');
+        }
+
+        // If no file is attached or upload fails, redirect back with error message
+        return redirect()->back()->with('error', 'Failed to upload profile picture.');
+    }
     /**
      * Update the user's profile information.
      */

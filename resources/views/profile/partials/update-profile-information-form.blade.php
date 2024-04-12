@@ -54,7 +54,6 @@
                 </div>
             @endif
         </div>
-
         <div class="flex items-center gap-4">
             <x-button>
                 {{ __('Save') }}
@@ -68,4 +67,5 @@
             @endif
         </div>
     </form>
+    
 </section>

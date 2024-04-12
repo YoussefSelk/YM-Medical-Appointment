@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -193,6 +194,28 @@ class AdminController extends Controller
     }
 
     // CRUD Functions
+
+    public function uploadProfilePicture(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust validation rules as needed
+        ]);
+
+        // Retrieve the authenticated user
+        $user = authUser()->user;
+
+        // Store the uploaded image
+        $imagePath = $request->file('img')->store('profile_pictures', 'public');
+
+        // Update the user's profile picture path in the database
+        $user->img = $imagePath;
+        $user->save();
+
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Profile picture uploaded successfully.');
+    }
+
     public function edit_speciality(Request $request, $id)
     {
         $speciality = Speciality::find($id);

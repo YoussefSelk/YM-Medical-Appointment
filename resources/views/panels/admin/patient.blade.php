@@ -61,6 +61,9 @@
                             CIN
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Registred At
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             <span class="sr-only">Edit</span>
                         </th>
                     </tr>
@@ -92,8 +95,12 @@
                             <td class="px-6 py-4">
                                 {{ $patient->user->address->rue }} , {{ $patient->user->address->ville }}
                             </td>
+
                             <td class="px-6 py-4">
                                 {{ $patient->cin }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $patient->user->created_at }}
                             </td>
                             <td class="px-6 py-4 text-right flex flex-row justify-around items-center">
                                 <span class="mr-2">

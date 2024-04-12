@@ -3,7 +3,7 @@
 @props(['notifications'])
 
 <div x-data="{ open: false }" @click.away="open = false"
-    class="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400">
+    class="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900  dark:hover:text-white dark:text-gray-400">
     <button id="dropdownNotificationButton" @click="open = !open" type="button">
         <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 20">
             <path
