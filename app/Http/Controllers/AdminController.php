@@ -16,6 +16,8 @@ use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
+use App\Charts\DoctorCharts;
+use App\Charts\PatientCharts;
 
 class AdminController extends Controller
 {
@@ -89,7 +91,53 @@ class AdminController extends Controller
         $doctors = Doctor::all();
         $Patients = Patient::all();
         $appointments = Appointment::all();
-        return view('panels.admin.index')->with('shedules', $shedules)->with('doctors', $doctors)->with('patients', $Patients)->with('appointments', $appointments);
+
+        //-------------------------------------------------//
+
+        $doctors_chart_Created_At_Data = Doctor::orderBy('created_at')
+            ->get()
+            ->groupBy(function ($doctor) {
+                return $doctor->created_at->format('Y-m-d');
+            })
+            ->map(function ($group) {
+                return $group->count();
+            });
+
+        $Doctor_Chart_Created_At = new DoctorCharts;
+        $Doctor_Chart_Created_At->labels($doctors_chart_Created_At_Data->keys());
+        $Doctor_Chart_Created_At->dataset('Number Of Doctors', 'bar', $doctors_chart_Created_At_Data->values())
+            ->backgroundColor('#3B82F6');
+
+        //-------------------------------------------------//
+
+        $male_doctor_count = User::where('gender', 'male')->where('user_type', 'doctor')->count();
+        $female_doctor_count = User::where('gender', 'female')->where('user_type', 'doctor')->count();
+
+        $gender_chart = new DoctorCharts;
+        $gender_chart->labels(['Male', 'Female']);
+        $gender_chart->dataset('Number Of Doctors by Gender', 'bar', [$male_doctor_count, $female_doctor_count])
+            ->backgroundColor(['#3B82F6', '#FF00CC']);
+
+        //-------------------------------------------------//
+
+        $patients_chart_Created_At_Data = Patient::orderBy('created_at')
+            ->get()
+            ->groupBy(function ($patient) {
+                return $patient->created_at->format('Y-m-d');
+            })
+            ->map(function ($group) {
+                return $group->count();
+            });
+
+        $Patient_Chart_Created_At = new PatientCharts;
+        $Patient_Chart_Created_At->labels($patients_chart_Created_At_Data->keys());
+        $Patient_Chart_Created_At->dataset('Number Of Patient', 'bar', $patients_chart_Created_At_Data->values())
+            ->backgroundColor('#3B82F6');
+
+        //-------------------------------------------------//
+
+
+        return view('panels.admin.index')->with(compact('Patient_Chart_Created_At'))->with(compact('gender_chart'))->with(compact('Doctor_Chart_Created_At'))->with('shedules', $shedules)->with('doctors', $doctors)->with('patients', $Patients)->with('appointments', $appointments);
     }
 
     public function doctor() //doctor function return the doctor page for admin panel
