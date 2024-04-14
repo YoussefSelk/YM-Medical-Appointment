@@ -64,7 +64,7 @@
                             Registred At
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            <span class="sr-only">Edit</span>
+                            Actions
                         </th>
                     </tr>
                 </thead>
@@ -123,7 +123,10 @@
                                     <a href="{{ route('admin.table.patient.details', $patient->id) }}"><i
                                             class="fa-regular fa-eye"></i></a>
                                 </span>
-
+                                <span>
+                                    <a href="{{ route('admin.patient.notify', $patient->id) }}" class=""><i
+                                            class="fa-regular fa-bell"></i></a>
+                                </span>
                             </td>
                         </tr>
                     @endforeach

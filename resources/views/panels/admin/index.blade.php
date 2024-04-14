@@ -12,7 +12,8 @@
         </div>
     </x-slot>
 
-    <div class="p-6 bg-white rounded-md shadow-md overflow-hidden flex flex-col md:flex-row justify-around">
+    <div
+        class="p-6 bg-white rounded-md shadow-md overflow-hidden flex flex-col md:flex-row justify-around dark:bg-dark-eval-1">
         <div class="md:flex justify-center items-center md:w-1/2">
             <div class="p-8 flex items-center">
                 <div class="mr-12">
@@ -96,23 +97,38 @@
 
 
 
-    <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+    <div
+        class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex flex-col md:flex-row justify-center md:justify-between">
         <div class="p-6 mt-7 md:mt-0 mr-6 overflow-hidden bg-white rounded-md dark:bg-dark-eval-1 w-full md:w-1/2">
-            {!! __('<strong>Doctor Registered By Date</strong> :') !!}
+            {!! __('<strong>Patients Registered By Date</strong> :') !!}
             <div class="chart-container" style="position: relative; height: auto; width: 100%;">
                 {!! $Patient_Chart_Created_At->container() !!}
             </div>
             {!! $Patient_Chart_Created_At->script() !!}
         </div>
         <div class="p-6 mt-7 md:mt-0 mr-6 overflow-hidden bg-white rounded-md dark:bg-dark-eval-1 w-full md:w-1/2">
-            {!! __('<strong>Number Of Doctors by Gender</strong> :') !!}
+            {!! __('<strong>Number Of Patients by Gender</strong> :') !!}
+            <div class="chart-container" style="position: relative; height: auto; width: 100%;">
+                {!! $patient_gender_chart->container() !!}
+            </div>
+            {!! $patient_gender_chart->script() !!}
+        </div>
+    </div>
+    <div
+        class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex flex-col md:flex-row justify-center md:justify-between">
+        <div class="p-6 mt-7 md:mt-0 mr-6 overflow-hidden bg-white rounded-md dark:bg-dark-eval-1 w-full md:w-1/2">
+            {!! __('<strong>Appointments Registered By Date</strong> :') !!}
+            <div class="chart-container" style="position: relative; height: auto; width: 100%;">
+                {!! $Appointments_Chart_Created_At->container() !!}
+            </div>
+            {!! $Appointments_Chart_Created_At->script() !!}
+        </div>
+        <div class="p-6 mt-7 md:mt-0 mr-6 overflow-hidden bg-white rounded-md dark:bg-dark-eval-1 w-full md:w-1/2">
+            {!! __('<strong>######</strong> :') !!}
             <div class="chart-container" style="position: relative; height: auto; width: 100%;">
 
             </div>
-            
-        </div>
-    </div>
-    <div class="p-6 mt-7  overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
 
+        </div>
     </div>
 </x-admin-layout>

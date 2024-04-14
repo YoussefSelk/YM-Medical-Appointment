@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use App\Charts\DoctorCharts;
 use App\Charts\PatientCharts;
+use App\Charts\AppoinmentsCharts;
+use App\Models\Notification;
 
 class AdminController extends Controller
 {
@@ -34,6 +36,18 @@ class AdminController extends Controller
     }
 
     //Views  Functions
+    public function doctor_notify_view($id)
+    {
+        $doctor = Doctor::find($id);
+        return view('panels.admin.CRUD.doctor-notify')->with(compact("doctor"));
+    }
+    public function patient_notify_view($id)
+    {
+
+        $patient = Patient::find($id);
+        return view('panels.admin.CRUD.patient-notify')->with(compact("patient"));
+    }
+
     public function doctor_details($id)
     {
         $doctor = Doctor::find($id);
@@ -136,8 +150,29 @@ class AdminController extends Controller
 
         //-------------------------------------------------//
 
+        $patient_male_patient_count = User::where('gender', 'male')->where('user_type', 'patient')->count();
+        $patient_female_patient_count = User::where('gender', 'female')->where('user_type', 'patient')->count();
 
-        return view('panels.admin.index')->with(compact('Patient_Chart_Created_At'))->with(compact('gender_chart'))->with(compact('Doctor_Chart_Created_At'))->with('shedules', $shedules)->with('doctors', $doctors)->with('patients', $Patients)->with('appointments', $appointments);
+        $patient_gender_chart = new PatientCharts;
+        $patient_gender_chart->labels(['Male', 'Female']);
+        $patient_gender_chart->dataset('Number Of Patients by Gender', 'bar', [$patient_male_patient_count, $patient_female_patient_count])
+            ->backgroundColor(['#3B82F6', '#FF00CC']);
+
+        //-------------------------------------------------//
+
+        $appointments_chart_data = Appointment::orderBy('created_at')
+            ->get()
+            ->groupBy(function ($appointment) {
+                return $appointment->created_at->format('Y-m-d');
+            })
+            ->map(function ($group) {
+                return $group->count();
+            });
+        $Appointments_Chart_Created_At = new PatientCharts;
+        $Appointments_Chart_Created_At->labels($appointments_chart_data->keys());
+        $Appointments_Chart_Created_At->dataset('Number Of Patient', 'bar', $appointments_chart_data->values())
+            ->backgroundColor('#3B82F6');
+        return view('panels.admin.index')->with(compact('Appointments_Chart_Created_At'))->with(compact('patient_gender_chart'))->with(compact('Patient_Chart_Created_At'))->with(compact('gender_chart'))->with(compact('Doctor_Chart_Created_At'))->with('shedules', $shedules)->with('doctors', $doctors)->with('patients', $Patients)->with('appointments', $appointments);
     }
 
     public function doctor() //doctor function return the doctor page for admin panel
@@ -242,6 +277,78 @@ class AdminController extends Controller
     }
 
     // CRUD Functions
+    public function doctor_notify(Request $request, $id)
+
+    {
+        $OriginalTitle = $request->input('title');
+        $title = $request->input('title');
+
+        $OriginalMessage = $request->input('message');
+        $message = $request->input('message');
+
+        if (!empty($title) && !empty($message)) {
+            if ($this->isXssAttackDetected([$OriginalTitle, $OriginalMessage], [$title, $message])) {
+                return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
+            }
+        }
+        // Validate input data
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+
+        // Find the patient
+        $doctor = Doctor::find($id);
+        if (!$doctor) {
+            return redirect()->back()->with('error', 'Patient Not Found !!');
+        }
+
+        // Create the notification
+        $notification = Notification::create([
+            'user_id' => $doctor->user->id,
+            'title' => $request->input('title'),
+            'message' => $request->input('message'), // Sanitize the message content
+        ]);
+
+        // Handle success
+        return redirect()->back()->with('success', 'Notification Sent !!');
+    }
+    public function patient_notify(Request $request, $id)
+
+    {
+        $OriginalTitle = $request->input('title');
+        $title = $request->input('title');
+
+        $OriginalMessage = $request->input('message');
+        $message = $request->input('message');
+
+        if (!empty($title) && !empty($message)) {
+            if ($this->isXssAttackDetected([$OriginalTitle, $OriginalMessage], [$title, $message])) {
+                return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
+            }
+        }
+        // Validate input data
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+
+        // Find the patient
+        $patient = Patient::find($id);
+        if (!$patient) {
+            return redirect()->back()->with('error', 'Patient Not Found !!');
+        }
+
+        // Create the notification
+        $notification = Notification::create([
+            'user_id' => $patient->user->id,
+            'title' => $request->input('title'),
+            'message' => $request->input('message'), // Sanitize the message content
+        ]);
+
+        // Handle success
+        return redirect()->back()->with('success', 'Notification Sent !!');
+    }
 
     public function uploadProfilePicture(Request $request)
     {

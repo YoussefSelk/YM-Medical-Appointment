@@ -145,6 +145,10 @@
                                 <a href="{{ route('admin.table.doctor.details', $doctor->id) }}"
                                     class="font-medium text-blue-600 dark:text-blue-500 mr-2"><i
                                         class="fa-regular fa-eye"></i> </a>
+                                <span>
+                                    <a href="{{ route('admin.doctor.notify', $doctor->id) }}" class=""><i
+                                            class="fa-regular fa-bell"></i></a>
+                                </span>
                             </td>
                         </tr>
                     @endforeach
