@@ -88,5 +88,10 @@
                 <x-heroicon-o-calendar class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
             </x-slot>
         </x-sidebar.link>
+        <x-sidebar.link title="My patients" href="{{ route('doctor.mypatients') }}" :isActive="request()->routeIs('doctor.mypatients')">
+            <x-slot name="icon">
+                <x-heroicon-o-user-group class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+            </x-slot>
+        </x-sidebar.link>
     @endif
 </x-perfect-scrollbar>

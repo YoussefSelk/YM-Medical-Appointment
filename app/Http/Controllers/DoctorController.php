@@ -16,6 +16,7 @@ use Carbon\Carbon;
 class DoctorController extends Controller
 {
     //Views's Functions
+
     public function index()
     {
         $appointments = Auth::user()->doctor->Appointments;
@@ -62,6 +63,36 @@ class DoctorController extends Controller
         return view('panels.doctor.CRUD.edit_appointment')->with(compact('appointment'));
     }
 
+    public function mypatients(){
+
+        $patientIds = Auth::user()->doctor->Appointments->pluck('patient_id')->unique();
+
+        $patients = Patient::whereIn('id', $patientIds)->get();
+        $appointments = Appointment::whereIn('patient_id', $patientIds)->get();
+
+        return view('panels.doctor.mypatients', with(compact('patients', 'appointments')));
+
+    }
+
+    public function patientView($id){
+
+        $patient = Patient::find($id);
+        $appointments = Appointment::where('patient_id', $id)->get();
+        return view('panels.doctor.CRUD.patient_view')->with(compact('patient'))->with(compact('appointments'));
+    }
+
+
+    public function bookAppointmentView($id){
+        $doctors = Doctor::all();
+        $patient = Patient::find($id);
+        $specialities = Speciality::all();
+        $schedules = Schedule::all();
+        return view('panels.doctor.CRUD.patient_book')->with(compact('patient'))->with(compact('specialities'))->with(compact('schedules'))
+        ->with(compact('doctors'));
+    }
+
+
+
     //Operations's Functions
 
     public function deleteSchedule($id)
@@ -105,7 +136,7 @@ class DoctorController extends Controller
         'start_time.required' => 'Please enter a start time.',
 
         'end_time.required' => 'Please enter an end time.',
-        'end_time.date_format' => 'Invalid end time format. Please use HH:MM format.',
+        'end_time.date_format' => 'Invalid end time format. ',
         'end_time.after' => 'End time must be after start time.',
 
         ]);
@@ -226,7 +257,7 @@ class DoctorController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'status' => 'required|in:Pending,Confirmed,Cancelled,Expired',
+            'status' => 'required|in:Pending,Completed,Cancelled,Expired',
             'doctor_comment' => 'nullable|string',
         ]);
 
@@ -285,4 +316,40 @@ class DoctorController extends Controller
         // Return the events as a JSON response
         return response()->json($events);
     }
+
+    public function book(Request $request, $id){
+
+        $validator = Validator::make($request->all(), [
+            'doctor_id' => 'required|exists:doctors,id',
+            'appointment_date' => 'required|date',
+            'appointment_time' => 'required|exists:schedules,id',
+            'reason' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+
+
+        $patient = Patient::findOrFail($id);
+        $schedule = Schedule::findOrFail($request->input('schedule_id'));
+
+        $appointment = new Appointment();
+        $appointment->doctor_id = $request->input('doctor_id');
+        $appointment->patient_id = $patient->id;
+        $appointment->schedule_id = $request->input('appointment_time');
+        $appointment->appointment_date = $request->input('appointment_date');
+        $appointment->reason = $request->input('reason');
+        $appointment->save();
+
+        return redirect()->route('appointments.index')->with('success', 'Appointment booked successfully');
+    }
+
+
+
+
+
 }

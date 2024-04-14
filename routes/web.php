@@ -97,11 +97,20 @@ Route::middleware('auth')->group(function () {
         Route::get('doctor/schedule/edit/{id}', [DoctorController::class, 'editSchedule'])->name('doctor.CRUD.schedule.edit');
         Route::put('doctor/schedule/{id}', [DoctorController::class, 'updateSchedule'])->name('doctor.schedule.update');
         Route::delete('/doctor/schedule/{id}', [DoctorController::class, 'deleteSchedule'])->name('doctor.schedule.delete');
-
+      
 
         Route::get('/doctor/schedules/index', [DoctorController::class, 'getSchedules'])->name('doctor.schedules.index');
 
         //Doctor Patients Routes
+       Route::get('/doctor/mypatients', [DoctorController::class, 'mypatients'])->name('doctor.mypatients');
+       Route::get('/doctor/patient/{id}', [DoctorController::class, 'patientView'])->name('doctor.CRUD.patient.view');
+       Route::get('/doctor/patient/book/appointment/{id}', [DoctorController::class, 'bookAppointmentView'])->name('doctor.CRUD.patient.book');
+       Route::post('/doctor/patient/book/appointment/{id}/submit', [DoctorController::class, 'book'])->name('doctor.patient.book.appointment.submit');
+
+
+
+
+
     });
 
 

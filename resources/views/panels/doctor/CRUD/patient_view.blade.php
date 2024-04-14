@@ -1,19 +1,48 @@
 <head>
-    <title>My appointments</title>
+    <title>Doctor's </title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
-
 
 <x-doctor-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('My appointments') }}
+            {{ __('My Patients') }}
         </h2>
     </x-slot>
 
-
     <x-success-flash></x-success-flash>
     <x-error-flash></x-error-flash>
+
+    <div class="p-6 mb-2 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+        <nav class="flex" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                <li class="inline-flex items-center">
+                    <a href="{{ route('doctor.mypatients') }}"
+                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                        <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                        </svg>
+                         My Patients
+                    </a>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 9 4-4-4-4" />
+                        </svg>
+                        <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">View
+                            patient's appointments</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+    </div>
+
 
     <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
         <div class="overflow-x-auto">
@@ -37,9 +66,15 @@
                             class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                             Status</th>
 
-                        <th
+                            <th
                             class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                            Action</th>
+                            Doctor</th>
+
+                            <th
+                            class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                            Doctor's comment</th>
+
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -75,11 +110,18 @@
                                         class="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $item->status }}</span>
                                 @endif
                             </td>
-                            <td
-                                class="py-2 px-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                 <a href="{{route('doctor.CRUD.appointment.edit', [$item->id])}}" class="font-medium text-blue-600 dark:text-blue-500 mr-2"><i
-                                    class="fa-regular fa-pen-to-square"></i></a>
+
+                            <td class="py-2 px-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                {{ $item->doctor->user->name }}
                             </td>
+
+
+                            <td class="py-2 px-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                {{ $item->doctor_comment }}
+                            </td>
+
+
+
                         </tr>
                     @endforeach
                 </tbody>
@@ -87,13 +129,8 @@
         </div>
     </div>
 
-    <div class="overflow-x-auto p-6 bg-white text-dark-eval-1 shadow-md flex justify-center dark:bg-dark-eval-1">
-        <div id="calendar" class="w-full lg:w-3/4 xl:w-2/3"></div>
-    </div>
-
 
 
 
 </x-doctor-layout>
 @include('includes.table')
-<script src="{{ asset('js/fullcalendar/doctor_calendar.js') }}"></script>
