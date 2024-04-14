@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('/admin/doctor/delete/{id}', [AdminController::class, 'delete_doctor'])->name('admin.doctor.delete');
         Route::get('/admin/doctors/pdf', [AdminController::class, 'export_doctors_pdf'])->name('admin.table.doctors.pdf');
         Route::get('/admin/doctor/view/details/{id}', [AdminController::class, 'doctor_details'])->name('admin.table.doctor.details');
+        Route::get('/admin/doctor/notify/{id}', [AdminController::class, 'doctor_notify_view'])->name('admin.doctor.notify');
+        Route::post('/admin/doctor/notify/{id}/submit', [AdminController::class, 'doctor_notify'])->name('admin.doctor.notify.submit');
         // Admin Patient Routes
         Route::get('/admin/patient', [AdminController::class, 'patient'])->name('admin.patient');
         Route::post('/admin/patient/add', [AdminController::class, 'add_patient'])->name('admin.patient.add');
@@ -54,6 +56,10 @@ Route::middleware('auth')->group(function () {
         Route::delete('/admin/patient/delete/{id}', [AdminController::class, 'delete_patient'])->name('admin.patient.delete');
         Route::get('/admin/patient/pdf', [AdminController::class, 'export_patients_pdf'])->name('admin.table.patients.pdf');
         Route::get('/admin/patient/view/details/{id}', [AdminController::class, 'patient_details'])->name('admin.table.patient.details');
+        Route::get('/admin/patient/notify/{id}', [AdminController::class, 'patient_notify_view'])->name('admin.patient.notify');
+        Route::post('/admin/patient/notify/{id}/submit', [AdminController::class, 'patient_notify'])->name('admin.patient.notify.submit');
+
+
 
         //Admin Schedules Routes
         Route::get('/admin/doctors/schedules', [AdminController::class, 'schedules'])->name('admin.schedules');
@@ -139,6 +145,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/profile/img', [ProfileController::class, 'img'])->name('profile.img');
 
     //Notifications Routes
     Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('user.notifications');

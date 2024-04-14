@@ -53,14 +53,14 @@
     justify-content: center;
 }
 .form_group input {
-    width: 220px;
+    width: 270px;
     padding: 5px;
     margin-bottom: 7px;
     border-radius: 5px;
     border: 1px solid gray;
 }
 .form_group select {
-    width: 220px;
+    width: 270px;
     padding: 6px;
     margin-bottom: 7px;
     border-radius: 5px;

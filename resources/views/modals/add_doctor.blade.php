@@ -21,79 +21,80 @@
     }
 @endphp
 <x-modal name="example-modal" :show="$temp" id="create_doctor_modal">
-    <!-- Modal content goes here -->
-    <div class="items_to_hide flex justify-center  ">
-
-        <div class="form_container bg-white dark:bg-gray-800">
-
+    <div class="items_to_hide flex justify-center">
+        <div class="form_container bg-white dark:bg-gray-800 p-8 rounded-lg">
             <form action="{{ route('admin.doctor.add') }}" method="POST" class="form" id="form">
                 @csrf
-                <div class="form_title">
-                    <h1>Add Doctor</h1>
-                </div>
-
+                <div class="form_title text-2xl font-bold mb-4">Add Doctor</div>
 
                 <div class="form_groups">
-                    <div class="form_group nom_container">
-                        <label for="nom">Nom Complet:</label>
+                    <div class="form_group">
+                        <label for="nom" class="text-lg  font-semibold">Nom Complet:</label>
                         <input type="text" name="nom" id="nom_input" value="{{ old('nom') }}"
-                            placeholder="Enter Your Full Name">
-                        <div class="error_input" id="nom_error">
+                            placeholder="Enter Your Full Name"
+                            class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                        <div class="error_input text-red-500">
                             @error('nom')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
-                    <div class="form_group birthday_container">
-                        <label for="birthday">Birthday:</label>
+                    <div class="form_group">
+                        <label for="birthday" class="text-lg font-semibold">Birthday:</label>
                         <input type="date" name="birthdate" value="{{ old('birthdate') }}" id="birthday_input"
-                            placeholder="Enter Your Birthday">
-                        <div class="error_input" id="birthday_error">
+                            placeholder="Enter Your Birthday"
+                            class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                        <div class="error_input text-red-500">
                             @error('birthdate')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
                 </div>
+
                 <div class="form_groups">
-                    <div class="form_group city_container">
-                        <label for="city">City:</label>
-                        <input type="text" name="city" value="{{ old('city') }}" placeholder="Enter Your City"
-                            id="city_input">
-                        <div class="error_input" id="city_error">
+                    <div class="form_group">
+                        <label for="city" class="text-lg font-semibold">City:</label>
+                        <input type="text" name="city" value="{{ old('city') }}" id="city_input"
+                            placeholder="Enter Your City"
+                            class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                        <div class="error_input text-red-500">
                             @error('city')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
-                    <div class="form_group Rue_container">
-                        <label for="rue">Street:</label>
+                    <div class="form_group">
+                        <label for="rue" class="text-lg font-semibold">Street:</label>
                         <input type="text" name="rue" value="{{ old('rue') }}" id="rue_input"
-                            placeholder="Enter Your Street">
-                        <div class="error_input" id="rue_error">
+                            placeholder="Enter Your Street"
+                            class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                        <div class="error_input text-red-500">
                             @error('rue')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
                 </div>
+
                 <div class="form_groups">
-                    <div class="form_group email_container">
-                        <label for="email">Email:</label>
+                    <div class="form_group">
+                        <label for="email" class="text-lg font-semibold">Email:</label>
                         <input type="email" name="email" value="{{ old('email') }}" id="email_input"
-                            placeholder="test@exemple.com">
-                        <div class="error_input" id="email_error">
+                            placeholder="test@example.com"
+                            class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                        <div class="error_input text-red-500">
                             @error('email')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
-
-                    <div class="form_group password_container">
-                        <label for="password">Password:</label>
+                    <div class="form_group">
+                        <label for="password" class="text-lg font-semibold">Password:</label>
                         <input type="password" name="password" value="{{ old('password') }}" id="password_input"
-                            placeholder="Minimum 8 characters">
-                        <div class="error_input" id="password_error">
+                            placeholder="Minimum 8 characters"
+                            class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                        <div class="error_input text-red-500">
                             @error('password')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -102,39 +103,41 @@
                 </div>
 
                 <div class="form_groups">
-                    <div class="form_group phone_container">
-                        <label for="phone">Phone:</label>
+                    <div class="form_group">
+                        <label for="phone" class="text-lg font-semibold">Phone:</label>
                         <input type="number" name="phone" value="{{ old('phone') }}" id="phone_input"
-                            placeholder="(06 / 05) 00 00 00 00">
-                        <div class="error_input" id="phone_error">
+                            placeholder="(06 / 05) 00 00 00 00"
+                            class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                        <div class="error_input text-red-500">
                             @error('phone')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
-
                     <div class="form_group">
-                        <label for="gender">Gender:</label>
-                        <select name="gender" id="gender_input">
+                        <label for="gender" class="text-lg font-semibold">Gender:</label>
+                        <select name="gender" id="gender_input"
+                            class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
                             <option value="" {{ old('gender') == '' ? 'selected' : '' }}>Choose The Doctor Gender
                             </option>
                             <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
                             <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
                         </select>
-                        <div class="error_input" id="gender_error">
+                        <div class="error_input text-red-500">
                             @error('gender')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
-
                 </div>
 
                 <div class="form_groups">
-                    <div class="form_group degree_container">
-                        <label for="degree">Degree:</label>
-                        <select name="degree" id="degree_input">
-                            <option value="" {{ old('degree') == '' ? 'selected' : '' }}>Choose The Doctor Degree
+                    <div class="form_group">
+                        <label for="degree" class="text-lg font-semibold">Degree:</label>
+                        <select name="degree" id="degree_input"
+                            class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <option value="" {{ old('degree') == '' ? 'selected' : '' }}>Choose The Doctor
+                                Degree
                             </option>
                             <option value="MD" {{ old('degree') == 'MD' ? 'selected' : '' }}>Doctor of Medicine
                                 (MD)</option>
@@ -176,19 +179,19 @@
                                 Jurisprudence (JD)</option>
                             <option value="DrPH" {{ old('degree') == 'DrPH' ? 'selected' : '' }}>Doctor of Public
                                 Health (DrPH)</option>
+                            <!-- Add options for different degrees -->
                         </select>
-                        <div class="error_input" id="degree_error">
+                        <div class="error_input text-red-500">
                             @error('degree')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
 
-
-
                     <div class="form_group">
-                        <label for="speciality">Speciality:</label>
-                        <select name="speciality" id="speciality_input">
+                        <label for="speciality" class="text-lg font-semibold">Speciality:</label>
+                        <select name="speciality" id="speciality_input"
+                            class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
                             <option value="" {{ old('speciality') == '' ? 'selected' : '' }}>Choose The Doctor
                                 Speciality</option>
                             @foreach ($specialities as $speciality)
@@ -196,18 +199,17 @@
                                     {{ old('speciality') == $speciality->id ? 'selected' : '' }}>
                                     {{ $speciality->name }}</option>
                             @endforeach
+                            <!-- Add options for different specialities -->
                         </select>
-                        <div class="error_input" id="speciality_error">
+                        <div class="error_input text-red-500">
                             @error('speciality')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
-
-
                 </div>
 
-                <div class="form_btn">
+                <div class="form_btn mt-4">
                     <button
                         class="rounded-lg mr-3  relative w-48 h-12 cursor-pointer flex items-center border border-green-500 bg-green-500 group hover:bg-green-500 active:bg-green-500 active:border-green-500">
                         <span
@@ -223,7 +225,8 @@
                             </svg>
                         </span>
                     </button>
-                    <input type="reset" value="Reset">
+                    <input type="reset" value="Reset"
+                        class="rounded-lg px-6 py-2 ml-4 bg-gray-300 text-gray-700 font-semibold hover:bg-gray-400">
                 </div>
             </form>
         </div>

@@ -5,7 +5,7 @@
 
 <div class="relative" x-data="{ open: @json($active) }">
     <button type="button"
-        class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-600 transition-colors duration-150 bg-transparent border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+        class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-600 transition-colors duration-150 bg-transparent border border-transparent rounded-lg "
         x-on:click="open = !open">
         <span>{!! $icon !!}</span>
         <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"

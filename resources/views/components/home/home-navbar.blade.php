@@ -52,4 +52,5 @@
             </ul>
         </div>
     </div>
+    <hr class="my-15 dark:bg-gray-700 ">
 </nav>

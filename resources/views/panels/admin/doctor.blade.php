@@ -36,6 +36,10 @@
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">
+                            Profile Image
+
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             #
                         </th>
                         <th scope="col" class="px-6 py-3">
@@ -66,6 +70,9 @@
                             Speciality
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Registred At
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             Actions
                         </th>
                     </tr>
@@ -74,6 +81,15 @@
                     @foreach ($doctors as $doctor)
                         <tr
                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <th scope="row" class=" ">
+                                @if ($doctor->user->img)
+                                    <img src="{{ asset('storage/profile_pictures/' . $doctor->user->img) }}"
+                                        alt="Profile Picture" class="w-12 h-12 rounded-full">
+                                @else
+                                    <img src="https://ui-avatars.com/api/?name={{ $doctor->user->name }}" alt="test"
+                                        class="w-9 h-9 rounded-full">
+                                @endif
+                            </th>
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $doctor->id }}
@@ -107,6 +123,9 @@
                             <td class="px-6 py-4">
                                 {{ $doctor->speciality->name }}
                             </td>
+                            <td class="px-6 py-4">
+                                {{ $doctor->user->created_at }}
+                            </td>
                             <td class="px-6 py-4 text-right flex justify-around items-center flex-row">
                                 <a href="{{ route('admin.doctor.edit.view', $doctor->id) }}"
                                     class="font-medium text-blue-600 dark:text-blue-500 mr-2"><i
@@ -124,8 +143,12 @@
                                 </form>
 
                                 <a href="{{ route('admin.table.doctor.details', $doctor->id) }}"
-                                    class="font-medium text-blue-600 dark:text-blue-500 mr-2"> <i
+                                    class="font-medium text-blue-600 dark:text-blue-500 mr-2"><i
                                         class="fa-regular fa-eye"></i> </a>
+                                <span>
+                                    <a href="{{ route('admin.doctor.notify', $doctor->id) }}" class=""><i
+                                            class="fa-regular fa-bell"></i></a>
+                                </span>
                             </td>
                         </tr>
                     @endforeach

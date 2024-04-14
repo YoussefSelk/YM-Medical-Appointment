@@ -61,7 +61,10 @@
                             CIN
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            <span class="sr-only">Edit</span>
+                            Registred At
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Actions
                         </th>
                     </tr>
                 </thead>
@@ -92,8 +95,12 @@
                             <td class="px-6 py-4">
                                 {{ $patient->user->address->rue }} , {{ $patient->user->address->ville }}
                             </td>
+
                             <td class="px-6 py-4">
                                 {{ $patient->cin }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $patient->user->created_at }}
                             </td>
                             <td class="px-6 py-4 text-right flex flex-row justify-around items-center">
                                 <span class="mr-2">
@@ -116,7 +123,10 @@
                                     <a href="{{ route('admin.table.patient.details', $patient->id) }}"><i
                                             class="fa-regular fa-eye"></i></a>
                                 </span>
-
+                                <span>
+                                    <a href="{{ route('admin.patient.notify', $patient->id) }}" class=""><i
+                                            class="fa-regular fa-bell"></i></a>
+                                </span>
                             </td>
                         </tr>
                     @endforeach
