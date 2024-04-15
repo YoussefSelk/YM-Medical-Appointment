@@ -47,85 +47,84 @@
 
     </div>
     <div class="p-6 mb-2 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400" id="DataTable">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr class="bg-gray-50">
-                    <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Day</th>
-                    <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start
-                        Time</th>
-                    <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Time
-                    </th>
-                    <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @foreach ($schedule as $item)
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($item->day) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->start }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->end }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <form id="deleteForm_{{ $item->id }}"
-                                action="{{ route('admin.doctor.schedule.delete', $item->id) }}" method="POST"
-                                style="display: none;">
-                                @csrf
-                                @method('DELETE')
-                            </form>
-                            <button type="button" class="text-red-600 hover:text-red-900"
-                                onclick="confirmDelete({{ $item->id }})">Delete</button>
-                        </td>
-                    </tr>
-                @endforeach
+        <h2 class="mb-2 font-semibold text-xl text-gray-800 dark:text-white leading-tight">
+            {{ __('Doctor Schedules') }}
+        </h2>
+        @php
+            $groupedSchedule = [];
+            foreach ($schedule as $item) {
+                $groupedSchedule[$item->day][] = $item;
+            }
+        @endphp
 
-            </tbody>
-        </table>
+        <div class="p-6 mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach ($groupedSchedule as $day => $items)
+                <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+                    <p class="text-lg font-semibold text-gray-900 dark:text-gray-300">{{ ucfirst($day) }}</p>
+                    <div class="grid grid-cols-1 gap-4 mt-2">
+                        @foreach ($items as $item)
+                            <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-md shadow-md">
+                                <div class="text-xs text-gray-700 uppercase dark:text-gray-400">{{ $item->start }} -
+                                    {{ $item->end }}</div>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <form id="deleteForm_{{ $item->id }}"
+                                        action="{{ route('admin.doctor.schedule.delete', $item->id) }}" method="POST"
+                                        style="display: none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                    <button type="button" class="text-red-600 hover:text-red-900"
+                                        onclick="confirmDelete({{ $item->id }})">Delete</button>
+                                </td>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+        </div>
     </div>
     <div
-        class="p-6 mb-2 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex justify-center items-center flex-col">
-        <div
-            class=" p-6 mt-7 bg-white shadow-lg overflow-hidden sm:rounded-lg dark:bg-dark-eval-1 dark:text-gray-400 mr-4">
-            <div class="px-4 py-5 sm:px-6">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                    Doctor Information
-                </h3>
-                <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-white">
-                    Details and informations about Doctor.
-                </p>
-            </div>
-            <div class="border-t border-gray-200 dark:bg-dark-eval-1 dark:text-gray-400">
-                <dl>
-                    @php
-                        $info = [
-                            'Full name' => $doctor->user->name,
-                            'Speciality' => $doctor->speciality->name,
-                            'Email address' => $doctor->user->email,
-                        ];
-                    @endphp
-                    @foreach ($info as $key => $value)
-                        <div
-                            class="{{ $loop->even ? 'bg-white' : 'bg-gray-50' }} px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 dark:bg-dark-eval-1 dark:text-white">
-                            <dt class="text-sm font-medium text-gray-500 dark:text-white">
-                                {{ $key }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 dark:text-gray-400">
-                                {{ $value }}
-                            </dd>
-                        </div>
-                    @endforeach
-                </dl>
+        class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex justify-center flex-col">
+        <h2 class="mb-2 font-semibold text-xl text-gray-800 dark:text-white leading-tight">
+            {{ __('Doctor Informations') }}
+        </h2>
+        <div class=" p-6 mt-7 bg-white overflow-hidden sm:rounded-lg dark:bg-dark-eval-1 dark:text-gray-400 mr-4">
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Name</p>
+                    <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
+                        {{ $doctor->user->name }}</p>
+                </div>
+                <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Email</p>
+                    <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
+                        {{ $doctor->user->email }}</p>
+                </div>
+                <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Phone</p>
+                    <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
+                        +212 {{ $doctor->user->phone }}</p>
+                </div>
+                <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Gender</p>
+                    <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
+                        {{ $doctor->user->gender }}</p>
+                </div>
+                <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Speciality</p>
+                    <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
+                        {{ $doctor->speciality->name }}</p>
+                </div>
             </div>
         </div>
-
+        <h2 class="mb-2 mt-4 font-semibold text-xl text-gray-800 dark:text-white leading-tight">
+            {{ __('Doctor Schedule  Management') }}
+        </h2>
         <div
             class="p-3 mt-7 bg-white overflow-hidden sm:rounded-lg dark:bg-dark-eval-1 dark:text-gray-400 flex flex-row justify-center ">
 
             <form action="{{ route('admin.doctor.schedule.submit', $doctor->id) }}" method="POST"
-                class="flex flex-col space-y-4  bg-white shadow-md rounded-lg p-6">
+                class="flex flex-col space-y-4  bg-white rounded-lg p-6">
                 @csrf
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">

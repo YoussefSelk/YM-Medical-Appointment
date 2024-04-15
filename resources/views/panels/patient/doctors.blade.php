@@ -29,6 +29,13 @@
             <input id="input-city" type="text"
                 class="block w-full bg-white dark:bg-dark-eval-2 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 dark:text-gray-300 dark:border-gray-600">
         </div>
+        <div class="mb-4">
+            <label for="input-name" class="block text-gray-700 text-sm font-bold mb-2 dark:text-white">Enter Doctor's
+                Name:</label>
+            <input id="input-name" type="text"
+                class="block w-full bg-white dark:bg-dark-eval-2 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 dark:text-gray-300 dark:border-gray-600">
+        </div>
+
         <div class="mb-4" id="cancel-filter-container" style="display: none;">
             <button id="cancel-filter-btn"
                 class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center dark:bg-dark-eval-3 dark:text-gray-200 dark:hover:bg-dark-eval-4 dark:hover:text-gray-300">
@@ -50,7 +57,16 @@
                     class="bg-white dark:bg-dark-eval-2 shadow-md rounded-lg overflow-hidden flex flex-col transform transition duration-300 hover:scale-105">
                     <div class="p-4">
                         <div class="flex flex-row items-center mb-3">
-                            <x-icons.doctor />
+                            <div class="mr-3">
+                                @if ($doctor->user->img)
+                                    <img src="{{ asset('storage/profile_pictures/' . $doctor->user->img) }}"
+                                        alt="Profile Picture" class="w-16 h-16 rounded-full">
+                                @else
+                                    <img src="https://ui-avatars.com/api/?name={{ $doctor->user->name }}" alt="test"
+                                        class="w-12 h-12 rounded-2xl">
+                                @endif
+                            </div>
+
                             <h5 class="text-xl font-medium leading-tight mb-2 dark:text-white">Dr,
                                 {{ $doctor->user->name }}</h5>
                         </div>
@@ -74,21 +90,23 @@
         </div>
     </div>
 </x-patient-layout>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const selectSpeciality = document.getElementById('select-speciality');
         const inputCity = document.getElementById('input-city');
+        const inputName = document.getElementById('input-name');
         const cancelFilterBtn = document.getElementById('cancel-filter-btn');
         const cancelFilterContainer = document.getElementById('cancel-filter-container');
 
         selectSpeciality.addEventListener('change', filterDoctors);
         inputCity.addEventListener('input', filterDoctors);
+        inputName.addEventListener('input', filterDoctors);
         cancelFilterBtn.addEventListener('click', cancelFilter);
 
         function filterDoctors() {
             const specialityId = selectSpeciality.value;
             const city = inputCity.value.trim();
+            const name = inputName.value.trim(); // Get the entered doctor's name
             const url = "{{ route('filter.doctors') }}";
             const params = new URLSearchParams({
                 speciality_id: specialityId
@@ -96,6 +114,9 @@
 
             if (city) {
                 params.append('city', city);
+            }
+            if (name) { // Add name parameter if it's not empty
+                params.append('name', name);
             }
 
             fetch(`${url}?${params}`, {
@@ -108,7 +129,7 @@
                 .then(response => response.json())
                 .then(data => {
                     updateDoctorsList(data);
-                    cancelFilterContainer.style.display = specialityId || city ? 'block' : 'none';
+                    cancelFilterContainer.style.display = specialityId || city || name ? 'block' : 'none';
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -137,10 +158,11 @@
                             <div class="p-4">
                                 <div class="flex flex-row items-center mb-3">
                                     <x-icons.doctor />
+
                                     <h5 class="text-xl font-medium leading-tight mb-2 dark:text-white">Dr, ${userName}</h5>
                                 </div>
                                 <hr class="my-2">
-                                <p class="text-gray-700 mb-4 dark:text-gray-300">Médecin ${specialityName}</p>
+                                <p class="text-gray-700 mb-4 dark:text-gray-300">${specialityName}</p>
                                 <p class="text-gray-700 text-sm dark:text-gray-400"><strong>Address : </strong>${address}</p>
                                 <hr class="my-2">
                                 <ul class="list-disc space-y-2 pl-4 dark:text-gray-400">
@@ -160,6 +182,7 @@
         function cancelFilter() {
             selectSpeciality.value = ''; // Reset the select element
             inputCity.value = ''; // Reset the city input
+            inputName.value = ''; // Reset the name input
             filterDoctors(); // Fetch all doctors again
         }
     });

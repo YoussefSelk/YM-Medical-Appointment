@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Rating;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Appointment;
 use App\Models\Doctor;
+use App\Models\Patient;
 use App\Models\Schedule;
 use App\Models\Speciality;
 use Illuminate\Http\Request;
@@ -37,7 +39,7 @@ class PatientController extends Controller
     public function doctors()
     {
         $specialities = Speciality::all();
-        $doctors = Doctor::all();
+        $doctors = Doctor::orderByDesc('avg_rating')->get();
         return view('panels.patient.doctors')->with(compact('doctors'))->with(compact('specialities'));
     }
     public function appointment(Request $request, $id)
@@ -72,15 +74,19 @@ class PatientController extends Controller
     }
     public function allDoctors()
     {
-        $doctors = Doctor::with(['user.address', 'speciality'])->get();
+        $doctors = Doctor::with(['user.address', 'speciality'])
+            ->orderByDesc('avg_rating')
+            ->get();
         return response()->json($doctors);
     }
+
 
     public function filterDoctors(Request $request)
     {
         // Validate and sanitize inputs
         $specialityId = $request->input('speciality_id', null);
         $city = $request->input('city', null);
+        $name = $request->input('name', null); // Get the name parameter
 
         // Prepare the query
         $doctorsQuery = Doctor::with('user.address', 'speciality');
@@ -102,12 +108,19 @@ class PatientController extends Controller
             });
         }
 
+        if ($name) { // Apply name filter if it's not empty
+            $doctorsQuery->whereHas('user', function ($query) use ($name) {
+                $query->where('name', 'like', "%{$name}%");
+            });
+        }
+
         // Execute the query
         $doctors = $doctorsQuery->get();
 
         // Return the result
         return response()->json($doctors);
     }
+
     public function getAvailableHours(Request $request, $id)
     {
         // Retrieve the date from the request
@@ -144,7 +157,35 @@ class PatientController extends Controller
 
 
     // CRUD Functions
+    public function rateDoctor(Request $request, $doctorId, $patientId)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'rating' => 'required|integer|between:1,5',
+            'comment' => 'nullable|string|max:255',
+        ]);
 
+
+        // Find the doctor and patient
+        $doctor = Doctor::findOrFail($doctorId);
+        $patient = Patient::findOrFail($patientId);
+
+        // Create a new rating
+        $rating = new Rating();
+        $rating->doctor_id = $doctor->id;
+        $rating->patient_id = $patient->id;
+        $rating->rating = $validatedData['rating'];
+        $rating->comment = $validatedData['comment'] ?? null; // If message is not provided, set it to null
+        $rating->save();
+
+        // Update the average rating for the doctor
+        $ratings = Rating::where('doctor_id', $doctor->id)->pluck('rating');
+        $avgRating = $ratings->isEmpty() ? 0 : $ratings->avg();
+        $doctor->avg_rating = $avgRating;
+        $doctor->save();
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Rating submitted successfully');
+    }
     public function bookAppointment(Request $request, $D_ID, $P_ID)
     {
         $reason_for_appointment = $request->input('reason_for_appointment');

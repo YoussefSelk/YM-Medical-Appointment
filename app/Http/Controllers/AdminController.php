@@ -6,6 +6,7 @@ use App\Models\Address;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Patient;
+use App\Models\Rating;
 use App\Models\Schedule;
 use App\Models\Speciality;
 use App\Models\User;
@@ -277,6 +278,7 @@ class AdminController extends Controller
     }
 
     // CRUD Functions
+    
     public function doctor_notify(Request $request, $id)
 
     {

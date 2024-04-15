@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/doctor/view/details/{id}', [AdminController::class, 'doctor_details'])->name('admin.table.doctor.details');
         Route::get('/admin/doctor/notify/{id}', [AdminController::class, 'doctor_notify_view'])->name('admin.doctor.notify');
         Route::post('/admin/doctor/notify/{id}/submit', [AdminController::class, 'doctor_notify'])->name('admin.doctor.notify.submit');
+
         // Admin Patient Routes
         Route::get('/admin/patient', [AdminController::class, 'patient'])->name('admin.patient');
         Route::post('/admin/patient/add', [AdminController::class, 'add_patient'])->name('admin.patient.add');
@@ -119,6 +120,7 @@ Route::middleware('auth')->group(function () {
 
         //Doctor Routes
         Route::get('/patient/doctors', [PatientController::class, 'doctors'])->name('patiens.doctors');
+        Route::post('/patient/doctor/rate/{D_id}/{P_id}', [PatientController::class, 'rateDoctor'])->name('patient.doctor.rate');
 
         //Book Appointment Routes
         Route::get('/patient/doctor/{id}/book/appointment', [PatientController::class, 'appointment'])->name('patiens.doctor.book.appointment');
