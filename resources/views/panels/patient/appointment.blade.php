@@ -66,39 +66,69 @@
     <div
         class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex justify-center flex-col">
         <h2 class="mb-2 font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Doctor Information') }}
+            <span class="mr-2"><i class="fa-solid fa-circle-info"
+                    style="color: #74C0FC;"></i></span>{{ __('Doctor Information') }}
         </h2>
-        @php
 
-        @endphp
-        <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Name</p>
-                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                    {{ $doctor->user->name }}</p>
+        <div class="p-4 flex flex-col md:flex-row justify-between">
+            <div
+                class="md:mr-3 md:mb-0 mb-4 md:w-auto w-full md:flex-none flex items-center justify-center md:flex-row">
+                <span class="mr-4">
+                    @if ($doctor->user->img)
+                        <img src="{{ asset('storage/profile_pictures/' . $doctor->user->img) }}" alt="Profile Picture"
+                            class="w-32 h-32 md:rounded-2xl sm:rounded-2xl ">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ $doctor->user->name }}" alt="test"
+                            class="w-32 h-32 rounded-2xl  md:rounded-2xl sm:rounded-2xl">
+                    @endif
+                </span>
+
+                <div class="md:mt-0 mt-4 md:ml-4 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
+                            {{ $doctor->user->name }}
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-400">{{ $doctor->speciality->name }}</p>
+                        <div class="flex items-center mt-2 md:mt-4">
+                            <span class="mr-2"><i class="fa-solid fa-star" style="color: #29a2ff;"></i></span>
+                            <span>{{ $doctor->avg_rating }}</span>
+                            <span class="ml-2">Review ({{ $doctor->ratings->count() }})</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Email</p>
-                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                    {{ $doctor->user->email }}</p>
-            </div>
-            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Phone</p>
-                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                    +212 {{ $doctor->user->phone }}</p>
-            </div>
-            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Gender</p>
-                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                    {{ $doctor->user->gender }}</p>
-            </div>
-            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Speciality</p>
-                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                    {{ $doctor->speciality->name }}</p>
+            <div class="ml-1 mt-2 md:mt-4 md:text-center md:flex md:flex-col md:items-center">
+                <div class="flex flex-col md:items-start items-center ">
+                    <div class="flex flex-col items-start ">
+                        <span
+                            class="text-sm font-medium tracking-wide text-gray-600 dark:text-gray-400 uppercase space-x-2 inline-block md:mr-9 mr-9">
+                            @if ($doctor->user->gender == 'male')
+                                <span><i class="fa-solid fa-mars" style="color: #74C0FC;"></i> Gender :
+                                    {{ $doctor->user->gender }} </span>
+                            @else
+                                <span><i class="fa-solid fa-venus" style="color: #74C0FC;"></i> Gender :
+                                    {{ $doctor->user->gender }} </span>
+                            @endif
+                        </span>
+                        <span
+                            class="text-sm font-medium tracking-wide text-gray-600 dark:text-gray-400 uppercase space-x-2 inline-block">
+                            <span><i class="fa-solid fa-phone" style="color: #74C0FC;"></i> Phone :
+                                {{ $doctor->user->phone }}</span>
+                        </span>
+                        <span class="text-sm font-medium tracking-wide text-gray-600 dark:text-gray-400 uppercase">
+                            <i class="fa-solid fa-at" style="color: #74C0FC;"></i> Mail : <a
+                                href="mailto:{{ $doctor->user->email }}">{{ $doctor->user->email }}</a></span>
+                    </div>
+                </div>
             </div>
         </div>
+
+
+
+
+
         <h2 class="mb-2 mt-4 font-semibold text-xl text-gray-800 leading-tight">
+            <span class="mr-2"><i class="fa-solid fa-calendar-days" style="color: #74C0FC;"></i></span>
             {{ __('Doctor Schedule') }}
         </h2>
         @php
@@ -114,8 +144,10 @@
                     <p class="text-lg font-semibold text-gray-900 dark:text-gray-300">{{ ucfirst($day) }}</p>
                     <div class="grid grid-cols-1 gap-4 mt-2">
                         @foreach ($items as $item)
-                            <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-md shadow-md">
-                                <div class="text-xs text-gray-700 uppercase dark:text-gray-400">{{ $item->start }} -
+                            <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-md shadow-md flex justify-center">
+                                <div class="text-xs text-gray-700 uppercase dark:text-gray-400"> <span class="mr-2"><i
+                                            class="fa-regular fa-clock"
+                                            style="color: #74C0FC;"></i></span>{{ $item->start }} --
                                     {{ $item->end }}</div>
                             </div>
                         @endforeach
@@ -131,6 +163,7 @@
     <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex justify-center flex-col"
         id="appointment_form_container">
         <h2 class="mb-2 font-semibold text-xl text-gray-800 leading-tight">
+            <span class="mr-2"><i class="fa-regular fa-calendar-check" style="color: #74C0FC;"></i></span>
             {{ __('Appointment Form') }}
         </h2>
         @if ($schedule->isNotEmpty())
@@ -140,21 +173,24 @@
                 @csrf
                 <div class="mb-4">
                     <label for="reason_for_appointment" class="block text-gray-700 text-sm font-bold mb-2">Cause pour le
-                        rendez-vous:</label>
+                        rendez-vous: <span class="ml-2"><i class="fa-solid fa-virus"
+                                style="color: #74C0FC;"></i></span></label>
                     <textarea name="reason_for_appointment" id="reason_for_appointment" cols="30" rows="5"
                         placeholder="Donner la cause pour le rendez-vous"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
                 </div>
                 <div class="mb-4">
                     <label for="appointment_date" class="block text-gray-700 text-sm font-bold mb-2">Choose a
-                        date:</label>
+                        date: <span class="ml-2"><i class="fa-solid fa-calendar-week"
+                                style="color: #74C0FC;"></i></span></label>
                     <input type="date" id="appointment_date" name="appointment_date"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         min="{{ date('Y-m-d') }}">
                 </div>
                 <div class="mb-4">
                     <label for="appointment_time" class="block text-gray-700 text-sm font-bold mb-2">Choose a
-                        time:</label>
+                        time: <span class="ml-2"><i class="fa-regular fa-hourglass-half"
+                                style="color: #74C0FC;"></i></span></label>
                     <select id="appointment_time" name="appointment_time"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         disabled>
@@ -167,20 +203,23 @@
                 </div>
             </form>
         @else
-            <p class="text-red-500">Sorry,No schedules available !!!</p>
+            <p class="text-red-500"> <span class="mr-2"><i class="fa-solid fa-bug"
+                        style="color: #ff0000;"></i></span>Sorry, No schedules available for This Doctor !!!</p>
         @endif
 
     </div>
     <div
         class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex justify-center flex-col">
         <h2 class="mb-2 font-semibold text-xl text-gray-800 leading-tight">
+            <span class="mr-2"><i class="fa-solid fa-star" style="color: #74C0FC;"></i></span>
             {{ __('Doctor Rating') }}
         </h2>
         @php
             $patient_id = Auth::user()->patient->id;
         @endphp
         <form id="ratingForm"
-            action="{{ route('patient.doctor.rate', ['D_id' => $doctor->id, 'P_id' => $patient_id]) }}" method="POST">
+            action="{{ route('patient.doctor.rate', ['D_id' => $doctor->id, 'P_id' => $patient_id]) }}"
+            method="POST">
             @csrf
             <div class="flex items-center space-x-2">
                 <div class="rating">
