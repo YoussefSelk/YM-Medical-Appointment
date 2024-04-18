@@ -1,31 +1,3 @@
-<style>
-    .rating {
-        display: inline-block;
-    }
-
-    .rating input {
-        display: none;
-    }
-
-    .rating label {
-        float: right;
-        cursor: pointer;
-        color: #ccc;
-        transition: color 0.3s;
-    }
-
-    .rating label:before {
-        content: '\2605';
-        font-size: 30px;
-    }
-
-    .rating input:checked~label,
-    .rating label:hover,
-    .rating label:hover~label {
-        color: #0077ff;
-        transition: color 0.3s;
-    }
-</style>
 <x-patient-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -206,44 +178,6 @@
             <p class="text-red-500"> <span class="mr-2"><i class="fa-solid fa-bug"
                         style="color: #ff0000;"></i></span>Sorry, No schedules available for This Doctor !!!</p>
         @endif
-
-    </div>
-    <div
-        class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 flex justify-center flex-col">
-        <h2 class="mb-2 font-semibold text-xl text-gray-800 leading-tight">
-            <span class="mr-2"><i class="fa-solid fa-star" style="color: #74C0FC;"></i></span>
-            {{ __('Doctor Rating') }}
-        </h2>
-        @php
-            $patient_id = Auth::user()->patient->id;
-        @endphp
-        <form id="ratingForm"
-            action="{{ route('patient.doctor.rate', ['D_id' => $doctor->id, 'P_id' => $patient_id]) }}"
-            method="POST">
-            @csrf
-            <div class="flex items-center space-x-2">
-                <div class="rating">
-                    <input value="5" name="rating" id="star5" type="radio">
-                    <label for="star5"></label>
-                    <input value="4" name="rating" id="star4" type="radio">
-                    <label for="star4"></label>
-                    <input value="3" name="rating" id="star3" type="radio">
-                    <label for="star3"></label>
-                    <input value="2" name="rating" id="star2" type="radio">
-                    <label for="star2"></label>
-                    <input value="1" name="rating" id="star1" type="radio">
-                    <label for="star1"></label>
-                </div>
-            </div>
-
-            <textarea name="comment" id="message" class="mt-4 w-full px-3 py-2 border rounded-md focus:outline-none"
-                placeholder="Enter your message" cols="30" rows="5"></textarea>
-
-
-            <button type="submit" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Submit
-                Rating</button>
-            <p id="messageResponse" class="mt-2 text-sm"></p>
-        </form>
     </div>
 </x-patient-layout>
 @include('includes.table')

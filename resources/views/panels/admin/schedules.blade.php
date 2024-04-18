@@ -6,7 +6,8 @@
             </h2>
         </div>
     </x-slot>
-
+    <x-success-flash></x-success-flash>
+    <x-error-flash></x-error-flash>
     <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
         <h2 class="text-xl font-semibold leading-tight">
             {{ __('Doctors List') }}

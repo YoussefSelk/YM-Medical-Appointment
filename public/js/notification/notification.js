@@ -51,7 +51,7 @@ $(document).ready(function () {
                 }
 
                 // After displaying notifications, initiate the next AJAX call after a short delay
-                setTimeout(fetchNotifications, 5000); // Fetch notifications every 5 seconds
+                setTimeout(fetchNotifications, 1000); // Fetch notifications every 5 seconds
             },
             error: function (xhr, status, error) {
                 // Handle error

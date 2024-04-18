@@ -4,13 +4,15 @@
 <x-patient-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight dark:text-white">
-          <span class="mr-2"><i class="fa-solid fa-list" style="color: #74C0FC;"></i></span>  {{ __('Doctors List') }}
+            <span class="mr-2"><i class="fa-solid fa-list" style="color: #74C0FC;"></i></span> {{ __('Doctors List') }}
         </h2>
     </x-slot>
-
+    <x-success-flash></x-success-flash>
+    <x-error-flash></x-error-flash>
     <div class="p-6 mt-7 overflow-hidden bg-white dark:bg-dark-eval-1 rounded-md shadow-md flex justify-center flex-col">
         <h2 class="mb-9 font-semibold text-xl text-gray-800 leading-tight dark:text-white">
-            <span class="mr-2"><i class="fa-solid fa-user-doctor" style="color: #74C0FC;"></i> </span> {{ __('Doctors') }}
+            <span class="mr-2"><i class="fa-solid fa-user-doctor" style="color: #74C0FC;"></i> </span>
+            {{ __('Doctors') }}
         </h2>
         <div class="mb-4">
             <label for="select-speciality" class="block text-gray-700 text-sm font-bold mb-2 dark:text-white">Choose a
@@ -60,7 +62,7 @@
                         <div class="mr-3">
                             @if ($doctor->user->img)
                                 <img src="{{ asset('storage/profile_pictures/' . $doctor->user->img) }}"
-                                    alt="Profile Picture" class="w-32 h-32 rounded-full">
+                                    alt="Profile Picture" class="w-32 h-32 rounded-2xl">
                             @else
                                 <img src="https://ui-avatars.com/api/?name={{ $doctor->user->name }}" alt="test"
                                     class="w-32 h-32 rounded-2xl">
@@ -152,32 +154,38 @@
                     let address = doctor.user && doctor.user.address && doctor.user.address.ville &&
                         doctor.user.address.rue ?
                         `${doctor.user.address.ville}, ${doctor.user.address.rue}` : 'Unknown';
-
                     const doctorElement = `
-                        <div id="doctor-${doctor.id}" class="bg-white dark:bg-dark-eval-2 shadow-md rounded-lg overflow-hidden flex flex-col transform transition duration-300 hover:scale-105">
-                            <div class="p-4">
-                                <div class="flex flex-row items-center mb-3">
-                                    <x-icons.doctor />
-
-                                    <h5 class="text-xl font-medium leading-tight mb-2 dark:text-white">Dr, ${userName}</h5>
-                                </div>
-                                <hr class="my-2">
-                                <p class="text-gray-700 mb-4 dark:text-gray-300">${specialityName}</p>
-                                <p class="text-gray-700 text-sm dark:text-gray-400"><strong>Address : </strong>${address}</p>
-                                <hr class="my-2">
-                                <ul class="list-disc space-y-2 pl-4 dark:text-gray-400">
-                                    <li>${doctor.degree}</li>
-                                </ul>
-                            </div>
-                            <div class="p-4 flex items-center justify-end">
-                                <a href="/patient/doctor/${doctor.id}/book/appointment" class="text-blue-500 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200">Prendre Rendez-vous</a>
+                <div id="doctor-${doctor.id}" class="bg-white dark:bg-dark-eval-2 shadow-md rounded-lg overflow-hidden flex flex-col transform transition duration-300 hover:scale-105">
+                    <div class="p-4 flex flex-row">
+                        <div class="mr-3">
+                            ${doctor.user.img ?
+                                `<img src="{{ asset('storage/profile_pictures/${doctor.user.img}') }}" alt="Profile Picture" class="w-32 h-32 rounded-2xl">` :
+                                `<img src="https://ui-avatars.com/api/?name=${doctor.user.name}" alt="test" class="w-32 h-32 rounded-2xl">`}
+                        </div>
+                        <div class="mt-4 ml-4">
+                            <h3 class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
+                                ${userName}
+                            </h3>
+                            <p class="text-gray-700 dark:text-gray-400">${specialityName}</p>
+                            <div class="flex items-center mt-4">
+                                <span class="mr-2"><i class="fa-solid fa-star" style="color: #29a2ff;"></i></span>
+                                <span>${doctor.avg_rating}</span>
+                                <span class="ml-2">Review (${doctor.ratings ? doctor.ratings.length : 0})</span>
                             </div>
                         </div>
-                    `;
+                    </div>
+                    <div class="p-4 flex items-center justify-end">
+                        <a href="{{ route('patiens.doctor.book.appointment', ['id' => $doctor->id]) }}" class="text-blue-500 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200">
+                            <i class="fa-regular fa-calendar-check"></i> Prendre Rendez-vous
+                        </a>
+                    </div>
+                </div>
+            `;
                     doctorsList.insertAdjacentHTML('beforeend', doctorElement);
                 });
             }
         }
+
 
         function cancelFilter() {
             selectSpeciality.value = ''; // Reset the select element
