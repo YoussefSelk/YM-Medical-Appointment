@@ -34,9 +34,9 @@ class DoctorController extends Controller
 
     public function schedule()
     {
-
+        $doctor = Auth::user()->doctor;
         $schedule = Auth::user()->doctor->schedules;
-        return view('panels.doctor.schedule')->with(compact('schedule'));
+        return view('panels.doctor.schedule')->with(compact('schedule'))->with('doctor', $doctor);
     }
 
     public function editSchedule($id)
@@ -156,52 +156,6 @@ class DoctorController extends Controller
     }
 
 
-    //     public function updateSchedule(Request $request, $id)
-    // {
-    //     try {
-    //         // Validate the request data
-    //         $validatedData = $request->validate([
-    //             'start_times' => 'nullable|array', // Validate 'start_times' as array
-    //             'start_times.*' => 'nullable|array', // Each item inside 'start_times' should be an array
-    //             'start_times.*.*' => 'nullable|date_format:H:i', // Validate as time format (HH:MM)
-    //         ]);
-
-    //         // Check if 'start_times' is empty
-    //         if (empty($validatedData['start_times'])) {
-    //             return redirect()->back()->with('error', 'Please select at least one time slot.');
-    //         }
-
-    //         // Iterate through the submitted data and update the database
-    //         foreach ($validatedData['start_times'] as $day => $startTimes) {
-    //             if ($startTimes) { // Check if there are start times for this day
-    //                 foreach ($startTimes as $startTime) {
-    //                     // Find the existing schedule record to update
-    //                     $existingSchedule = Schedule::where('doctor_id', $id)
-    //                         ->where('day', ucfirst($day))
-    //                         ->where('start', $startTime)
-    //                         ->first();
-
-    //                     // If the existing record exists, update the schedule
-    //                     if ($existingSchedule) {
-    //                         // Update the start and end times of the existing schedule
-    //                         $existingSchedule->start = $startTime;
-    //                         $existingSchedule->end = date('H:i', strtotime('+30 minutes', strtotime($startTime)));
-    //                         $existingSchedule->save();
-    //                     } else {
-    //                         return redirect()->back()->with('error', 'Schedule not found');
-    //                     }
-    //                 }
-    //             }
-    //         }
-
-    //         // Redirect back or do whatever you want after updating
-    //         return redirect()->back()->with('success', 'Schedule updated successfully');
-    //     } catch (\Exception $e) {
-    //         // Log or display the error message
-    //         dd($e->getMessage());
-    //     }
-    // }
-
     public function getAppointments()
     {
         $doctor = Auth::user()->doctor;
@@ -247,6 +201,21 @@ class DoctorController extends Controller
         return response()->json($data);
     }
 
+
+    public function getAppointments2(Request $request, $id)
+    {
+        // Retrieve the date from the request
+        $date = $request->input('date');
+
+        // Retrieve appointments for the specified doctor and date
+        $appointments = Appointment::where('doctor_id', $id)
+            ->whereDate('appointment_date', $date)
+            ->get();
+
+        // Return appointments as JSON response
+        return response()->json($appointments);
+
+    }
 
     public function updateAppointment(Request $request, $id)
     {
@@ -317,37 +286,114 @@ class DoctorController extends Controller
         return response()->json($events);
     }
 
-    public function book(Request $request, $id){
+    public function add_schedule(Request $request, $id)
+    {
+        try {
+            // Validate the request data
+            $validatedData = $request->validate([
+                'start_times' => 'nullable|array', // Validate 'start_times' as array
+                'start_times.*' => 'nullable|array', // Each item inside 'start_times' should be an array
+                'start_times.*.*' => 'nullable|date_format:H:i', // Validate as time format (HH:MM)
+            ]);
 
+            // Check if 'start_times' is empty
+            if (empty($validatedData['start_times'])) {
+                return redirect()->back()->with('error', 'Please select at least one time slot.');
+            }
+
+            // Iterate through the submitted data and store in the database
+            foreach ($validatedData['start_times'] as $day => $startTimes) {
+                if ($startTimes) { // Check if there are start times for this day
+                    foreach ($startTimes as $startTime) {
+                        // Check if there's an existing record with the same doctor_id, day, and start time
+                        $existingSchedule = Schedule::where('doctor_id', $id)
+                            ->where('day', ucfirst($day))
+                            ->where('start', $startTime)
+                            ->exists();
+
+                        // If there's no existing record, then insert the new schedule
+                        if (!$existingSchedule) {
+                            // Create a new Schedule instance
+                            $schedule = new Schedule();
+                            $schedule->start = $startTime;
+
+                            // Set the end time to 30 minutes later than the start time
+                            $schedule->end = date('H:i', strtotime('+30 minutes', strtotime($startTime)));
+
+                            $schedule->day = ucfirst($day); // Capitalize the day name
+                            $schedule->doctor_id = $id;
+                            $schedule->status = 'false';
+                            $schedule->save();
+                        } else {
+                            return redirect()->back()->with('error', 'Schedule already Exist');
+                        }
+                    }
+                }
+            }
+
+            // Redirect back or do whatever you want after saving
+            return redirect()->back()->with('success', 'Schedule saved successfully');
+        } catch (\Exception $e) {
+            // Log or display the error message
+            dd($e->getMessage());
+        }
+    }
+
+    public function book(Request $request,  $P_ID)
+    {
+        $reason_for_appointment = $request->input('reason');
+        $appointment_date = $request->input('appointment_date');
+        $schedule_id = $request->input('appointment_time');
+        $doctor_id = $request->input('doctor_id');
+        // Validating form inputs
         $validator = Validator::make($request->all(), [
-            'doctor_id' => 'required|exists:doctors,id',
+            'reason' => 'required|string|max:255',
             'appointment_date' => 'required|date',
-            'appointment_time' => 'required|exists:schedules,id',
-            'reason' => 'required|string',
+            'appointment_time' => 'required|exists:schedules,id', // Ensure the selected schedule ID exists in the database
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        // Creating the appointment
+        $appointment = Appointment::create([
+            'reason' => $reason_for_appointment,
+            'appointment_date' => $appointment_date,
+            'schedule_id' => $schedule_id, // Storing the selected schedule ID
+            'doctor_id' => $doctor_id,
+            'doctor_comment' => 'none',
+            'patient_id' => $P_ID,
+            'status' => 'Pending',
+        ]);
 
-
-        $patient = Patient::findOrFail($id);
-        $schedule = Schedule::findOrFail($request->input('schedule_id'));
-
-        $appointment = new Appointment();
-        $appointment->doctor_id = $request->input('doctor_id');
-        $appointment->patient_id = $patient->id;
-        $appointment->schedule_id = $request->input('appointment_time');
-        $appointment->appointment_date = $request->input('appointment_date');
-        $appointment->reason = $request->input('reason');
-        $appointment->save();
-
-        return redirect()->route('appointments.index')->with('success', 'Appointment booked successfully');
+        if ($appointment) {
+            return redirect()->back()->with('success', 'Appointment booked successfully');
+        } else {
+            return redirect()->back()->with('error', 'Appointment booking failed');
+        }
     }
 
+    public function getDoctorSchedules(Request $request)
+    {
+        // Validate the request...
+        $request->validate([
+            'doctor_id' => 'required|exists:doctors,id',
+            'date' => 'required|date_format:Y-m-d',
+        ]);
+
+        // Get the doctor's schedules for the selected date...
+        $doctorId = $request->input('doctor_id');
+        $date = $request->input('date');
+        $schedules = Schedule::where('doctor_id', $doctorId)
+                            ->where('day', Carbon::parse($date)->format('l')) // Assuming 'day' column holds day names (e.g., 'Monday')
+                            ->get(['id', 'start']); // Fetching only necessary columns
+
+        // Return the schedules as a JSON response...
+        return response()->json([
+            'schedules' => $schedules,
+        ]);
+    }
 
 
 

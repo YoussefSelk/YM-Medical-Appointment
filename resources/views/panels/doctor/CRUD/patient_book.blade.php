@@ -18,17 +18,14 @@
     <form action="{{ route('doctor.patient.book.appointment.submit',  [$patient->id]) }}" method="POST">
          @csrf
         <div class="mb-4">
-            <label for="doctor" class="block text-gray-700 text-sm font-bold mb-2">Choose a doctor:</label>
-            <select id="doctor" name="doctor"
+            <label for="doctor_id" class="block text-gray-700 text-sm font-bold mb-2">Choose a doctor:</label>
+            <select id="doctor_id" name="doctor_id"
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 @foreach ($doctors as $doctor)
                     <option value="{{ $doctor->id }}">{{ $doctor->user->name }}</option>
                 @endforeach
             </select>
         </div>
-
-
-
 
          <div class="mb-4">
             <label for="reason" class="block text-gray-700 text-sm font-bold mb-2">Cause pour le
@@ -65,76 +62,132 @@
 
 
 </x-doctor-layout>
+{{--
 <script>
-$(document).ready(function() {
-    $('#appointment_date').change(function() {
-        var selectedDate = $(this).val();
-        var selectedDoctorId = $('#doctor').val(); // Get the selected doctor's ID
-        if (selectedDate && selectedDoctorId) {
-            $.ajax({
-                url: "{{ route('doctor.schedules.index') }}",
-                type: "GET",
-                data: {
-                    doctor_id: selectedDoctorId, // Pass the selected doctor's ID as data
-                    date: selectedDate
-                },
-                success: function(response) {
-                    // Fetch appointments for the selected date
-                    $.ajax({
-                        url: "{{ route('fetch.appointments', $doctor->id) }}",
-                        type: "GET",
-                        data: {
-                            date: selectedDate
-                        },
-                        success: function(appointments) {
-                            $('#appointment_time').empty();
-                            if (response.length === 0) {
-                                $('#appointment_time').append(
-                                    '<option value="">No schedules available for this date</option>'
-                                );
-                            } else {
-                                var availableSchedules = response.filter(
-                                    function(schedule) {
-                                        return !appointments.some(
-                                            function(appointment) {
-                                                return schedule
-                                                    .id ==
-                                                    appointment
-                                                    .schedule_id &&
-                                                    appointment
-                                                    .status ==
-                                                    'Pending';
-                                            });
-                                    });
-
-                                if (availableSchedules.length === 0) {
+    $(document).ready(function() {
+        $('#appointment_date').change(function() {
+            var selectedDate = $(this).val();
+            if (selectedDate) {
+                $.ajax({
+                    url: "{{ route('doctor.schedules.index') }}",
+                    type: "GET",
+                    data: {
+                        date: selectedDate
+                    },
+                    success: function(response) {
+                        // Fetch appointments for the selected date
+                        $.ajax({
+                            url: "{{ route('doctor.appointment.index', $doctor->id) }}",
+                            type: "GET",
+                            data: {
+                                date: selectedDate
+                            },
+                            success: function(appointments) {
+                                $('#appointment_time').empty();
+                                if (response.length === 0) {
                                     $('#appointment_time').append(
-                                        '<option value="">No available schedules for this date</option>'
+                                        '<option value="">No schedules available for this date</option>'
                                     );
                                 } else {
-                                    availableSchedules.forEach(function(
-                                        schedule) {
-                                        $('#appointment_time')
-                                            .append(
-                                                '<option value="' +
-                                                schedule.id + '">' +
-                                                schedule.start +
-                                                '</option>');
-                                    });
+                                    var availableSchedules = response.filter(
+                                        function(schedule) {
+                                            return !appointments.some(
+                                                function(appointment) {
+                                                    return schedule
+                                                        .id ==
+                                                        appointment
+                                                        .schedule_id &&
+                                                        appointment
+                                                        .status ==
+                                                        'Pending';
+                                                });
+                                        });
+
+                                    if (availableSchedules.length === 0) {
+                                        $('#appointment_time').append(
+                                            '<option value="">No available schedules for this date</option>'
+                                        );
+                                    } else {
+                                        availableSchedules.forEach(function(
+                                            schedule) {
+                                            $('#appointment_time')
+                                                .append(
+                                                    '<option value="' +
+                                                    schedule.id + '">' +
+                                                    schedule.start +
+                                                    '</option>');
+                                        });
+                                    }
                                 }
+                                $('#appointment_time').prop('disabled', false);
+                            },
+                            error: function(xhr) {
+                                console.log(xhr.responseText);
                             }
-                            $('#appointment_time').prop('disabled', false);
-                        },
-                        error: function(xhr) {
-                            console.log(xhr.responseText);
-                        }
-                    });
-                },
-                error: function(xhr) {
-                    console.log(xhr.responseText);
-                }
-            });
-        }
+                        });
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
+        });
     });
-});
+</script> --}}
+
+
+<script>
+    function fetchAppointments(doctorId, date) {
+        $.ajax({
+            url: "{{ route('doctor.appointment.index') }}",
+            type: "GET",
+            data: {
+                doctor_id: doctorId,
+                date: date
+            },
+            success: function(appointments) {
+                // Process appointments here
+                console.log("Appointments:", appointments);
+            },
+            error: function(xhr) {
+                console.log(xhr.responseText);
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        $('#appointment_date').change(function() {
+            var selectedDate = $(this).val();
+            var selectedDoctorId = $('#doctor_id').val();
+            if (selectedDate && selectedDoctorId) {
+                $.ajax({
+                    url: "{{ route('doctor.schedules.index') }}",
+                    type: "GET",
+                    data: {
+                        doctor_id: selectedDoctorId,
+                        date: selectedDate
+                    },
+                    success: function(response) {
+                        fetchAppointments(selectedDoctorId, selectedDate); // Fetch appointments for the selected doctor and date
+                        $('#appointment_time').empty();
+                        if (response.schedules.length === 0) {
+                            $('#appointment_time').append(
+                                '<option value="">No schedules available for this date</option>'
+                            );
+                        } else {
+                            response.schedules.forEach(function(schedule) {
+                                $('#appointment_time').append(
+                                    '<option value="' + schedule.id + '">' + schedule.start + '</option>'
+                                );
+                            });
+                        }
+                        $('#appointment_time').prop('disabled', false);
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
 </script>

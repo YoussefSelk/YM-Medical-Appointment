@@ -97,16 +97,19 @@ Route::middleware('auth')->group(function () {
         Route::put('doctor/appointment/edit/{id}', [DoctorController::class, 'updateAppointment'])->name('doctor.appointment.update');
         Route::get('/doctor/appointments/calendar', [DoctorController::class, 'getAppointments'])->name('doctor.appointments.calendar');
         Route::get('/doctor/appointments/{id}', [DoctorController::class, 'getAppointmentDetails'])->name('doctor.appointments.details');
+        Route::get('/doctor/appointments/index', [DoctorController::class, 'getAppointments2'])->name('doctor.appointment.index');
+
 
         //Doctor Schedule Routes
         Route::get('doctor/schedule', [DoctorController::class, 'schedule'])->name('doctor.schedule');
         Route::get('doctor/schedule/edit/{id}', [DoctorController::class, 'editSchedule'])->name('doctor.CRUD.schedule.edit');
         Route::put('doctor/schedule/{id}', [DoctorController::class, 'updateSchedule'])->name('doctor.schedule.update');
         Route::delete('/doctor/schedule/{id}', [DoctorController::class, 'deleteSchedule'])->name('doctor.schedule.delete');
-      
+        Route::post('/doctor/{id}/schedule/add', [DoctorController::class, 'add_schedule'])->name('doctor.schedule.add');
 
-        Route::get('/doctor/schedules/index', [DoctorController::class, 'getSchedules'])->name('doctor.schedules.index');
-
+        // Route::get('/doctor/schedules/index', [DoctorController::class, 'getSchedules'])->name('doctor.schedules.index');
+        Route::get('/doctor/schedules',[DoctorController::class, 'getDoctorSchedules'])->name('doctor.schedules.index');
+        
         //Doctor Patients Routes
        Route::get('/doctor/mypatients', [DoctorController::class, 'mypatients'])->name('doctor.mypatients');
        Route::get('/doctor/patient/{id}', [DoctorController::class, 'patientView'])->name('doctor.CRUD.patient.view');
