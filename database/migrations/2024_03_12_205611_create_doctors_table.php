@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('degree');
             $table->string('status');
             $table->unsignedBigInteger('specialty_id');
+            $table->decimal('avg_rating', 3, 2)->nullable()->default(0.00);
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 

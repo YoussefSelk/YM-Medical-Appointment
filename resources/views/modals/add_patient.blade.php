@@ -55,11 +55,54 @@
                     </div>
                 </div>
                 <div class="form_groups">
-                    <div class="form_group city_container">
+                    @php
+                        // Hardcoded list of Moroccan cities
+                        $moroccanCities = [
+                            'Agadir',
+                            'Al Hoceima',
+                            'Asilah',
+                            'Azrou',
+                            'Beni Mellal',
+                            'Bouznika',
+                            'Casablanca',
+                            'Chefchaouen',
+                            'Dakhla',
+                            'El Jadida',
+                            'Errachidia',
+                            'Essaouira',
+                            'Fès',
+                            'Guelmim',
+                            'Ifrane',
+                            'Kénitra',
+                            'Khouribga',
+                            'Laâyoune',
+                            'Larache',
+                            'Marrakech',
+                            'Meknès',
+                            'Mohammedia',
+                            'Nador',
+                            'Ouarzazate',
+                            'Oujda',
+                            'Rabat',
+                            'Safi',
+                            'Salé',
+                            'Tangier',
+                            'Taroudant',
+                            'Taza',
+                            'Tétouan',
+                            'Tiznit',
+                        ];
+                    @endphp
+
+                    <div class="form_group">
                         <label for="city">City:</label>
-                        <input type="text" name="city" placeholder="Enter Your City" id="city_input"
-                            value="{{ old('city') }}">
-                        <div class="error_input" id="city_error">
+                        <select name="city" id="city_input" >
+                            <option value="" disabled selected>Select your city</option>
+                            @foreach ($moroccanCities as $city)
+                                <option value="{{ $city }}">{{ $city }}</option>
+                            @endforeach
+                        </select>
+                        <div class="error_input text-red-500">
                             @error('city')
                                 <p>{{ $message }}</p>
                             @enderror

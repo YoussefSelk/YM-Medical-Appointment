@@ -40,41 +40,69 @@
         <h2 class="text-xl mb-4 font-semibold leading-tight ">
             {{ __('Doctor Details ') }}
         </h2>
-        <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Name</p>
-                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                    {{ $doctor->user->name }}</p>
+        <div class="p-4 flex flex-col md:flex-row justify-between">
+            <div
+                class="md:mr-3 md:mb-0 mb-4 md:w-auto w-full md:flex-none flex items-center justify-center md:flex-row">
+                <span class="mr-4">
+                    @if ($doctor->user->img)
+                        <img src="{{ asset('storage/profile_pictures/' . $doctor->user->img) }}" alt="Profile Picture"
+                            class="w-32 h-32 md:rounded-2xl sm:rounded-2xl ">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ $doctor->user->name }}" alt="test"
+                            class="w-32 h-32 rounded-2xl  md:rounded-2xl sm:rounded-2xl">
+                    @endif
+                </span>
+
+                <div class="md:mt-0 mt-4 md:ml-4 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
+                            {{ $doctor->user->name }}
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-400">{{ $doctor->speciality->name }}</p>
+                        <div class="flex items-center mt-2 md:mt-4">
+                            <span class="mr-2"><i class="fa-solid fa-star" style="color: #29a2ff;"></i></span>
+                            <span>{{ $doctor->avg_rating }}</span>
+                            <span class="ml-2">Review ({{ $doctor->ratings->count() }})</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Email</p>
-                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                    {{ $doctor->user->email }}</p>
-            </div>
-            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Phone</p>
-                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                    +212 {{ $doctor->user->phone }}</p>
-            </div>
-            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Gender</p>
-                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                    {{ $doctor->user->gender }}</p>
-            </div>
-            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Birthdate</p>
-                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                    {{ $doctor->birth_date }}</p>
-            </div>
-            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Speciality</p>
-                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                    {{ $doctor->speciality->name }}</p>
+            <div class="ml-1 mt-2 md:mt-4 md:text-center md:flex md:flex-col md:items-center">
+                <div class="flex flex-col md:items-start items-center ">
+                    <div class="flex flex-col items-start ">
+                        <span
+                            class="text-sm font-medium tracking-wide text-gray-600 dark:text-gray-400 uppercase space-x-2 inline-block md:mr-9 mr-9">
+                            @if ($doctor->user->gender == 'male')
+                                <span><i class="fa-solid fa-mars" style="color: #74C0FC;"></i> Gender :
+                                    {{ $doctor->user->gender }} </span>
+                            @else
+                                <span><i class="fa-solid fa-venus" style="color: #74C0FC;"></i> Gender :
+                                    {{ $doctor->user->gender }} </span>
+                            @endif
+                        </span>
+                        <span
+                            class="text-sm font-medium tracking-wide text-gray-600 dark:text-gray-400 uppercase space-x-2 inline-block">
+                            <span><i class="fa-solid fa-phone" style="color: #74C0FC;"></i> Phone :
+                                {{ $doctor->user->phone }}</span>
+                        </span>
+                        <span class="text-sm font-medium tracking-wide text-gray-600 dark:text-gray-400 uppercase">
+                            <i class="fa-solid fa-at" style="color: #74C0FC;"></i> Mail : <a
+                                href="mailto:{{ $doctor->user->email }}">{{ $doctor->user->email }}</a></span>
+                        <span class="text-sm font-medium tracking-wide text-gray-600 dark:text-gray-400 uppercase"><i
+                                class="fa-solid fa-location-dot" style="color: #74C0FC;"></i> Address :
+                            <span class=" break-words max-w-64">{{ $doctor->user->address->ville }} ,
+                                {{ $doctor->user->address->rue }}</span>
+                        </span>
+                        <span class="text-sm font-medium tracking-wide text-gray-600 dark:text-gray-400 uppercase">
+                            <i class="fa-solid fa-cake-candles" style="color: #74C0FC;"></i> Birthdate :
+                            {{ $doctor->birth_date }}</span>
+                    </div>
+                </div>
             </div>
         </div>
         <hr class="my-5">
         <h2 class="text-xl mb-4 font-semibold leading-tight ">
-            {{ __('Patient Appointments Details ') }}
+            {{ __('Appointments List ') }}
         </h2>
         <div class="">
             <table id="DataTable" class="">

@@ -6,6 +6,7 @@ use App\Models\Address;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Patient;
+use App\Models\Rating;
 use App\Models\Schedule;
 use App\Models\Speciality;
 use App\Models\User;
@@ -277,6 +278,7 @@ class AdminController extends Controller
     }
 
     // CRUD Functions
+
     public function doctor_notify(Request $request, $id)
 
     {
@@ -512,6 +514,7 @@ class AdminController extends Controller
         $gender = $request->input('gender');
         $degree = htmlspecialchars($request->input('degree'));
         $speciality = htmlspecialchars($request->input('speciality'));
+        $password = $request->input('password');
 
         if (!empty($name) && !empty($birthdate) && !empty($ville) && !empty($rue) && !empty($email) && !empty($phone) && !empty($gender) && !empty($degree) && !empty($speciality)) {
             if ($this->isXssAttackDetected([$originalName, $originalVille, $originalRue, $originalEmail, $originalDegree, $originalSpeciality], [$name, $ville, $rue, $email, $degree, $speciality])) {
@@ -535,7 +538,10 @@ class AdminController extends Controller
             'degree' => 'required|string|max:255',
             'speciality' => 'required|string|max:255',
         ];
-
+        if (!empty($password)) {
+            // Validate password if it's not empty
+            $rules['password'] = 'required|string|min:8';
+        }
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
@@ -559,7 +565,11 @@ class AdminController extends Controller
                         'gender' => $gender,
                         'phone' => $phone,
                     ]);
-
+                    if (!empty($password)) {
+                        $user->update([
+                            'password' => Hash::make($password),
+                        ]);
+                    }
                     if ($doctor) {
                         $doctor->update([
                             'birth_date' => $birthdate,
@@ -599,6 +609,7 @@ class AdminController extends Controller
         $phone = htmlspecialchars($originalPhone);
         $gender = htmlspecialchars($originalGender);
         $cin = htmlspecialchars($originalCin);
+        $password = $request->input('password');
 
         if ($this->isXssAttackDetected([$originalName, $originalVille, $originalRue, $originalEmail, $originalCin], [$name, $ville, $rue, $email, $cin])) {
             return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
@@ -617,7 +628,10 @@ class AdminController extends Controller
             'gender' => 'required',
             'cin' => 'required|string|max:255',
         ];
-
+        if (!empty($password)) {
+            // Validate password if it's not empty
+            $rules['password'] = 'required|string|min:8';
+        }
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
@@ -641,7 +655,11 @@ class AdminController extends Controller
                         'gender' => $gender,
                         'phone' => $phone,
                     ]);
-
+                    if (!empty($password)) {
+                        $user->update([
+                            'password' => Hash::make($password),
+                        ]);
+                    }
                     if ($patient) {
                         $patient->update([
                             'birth_date' => $birthdate,

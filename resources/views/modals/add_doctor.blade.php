@@ -53,17 +53,61 @@
                 </div>
 
                 <div class="form_groups">
+                    @php
+                        // Hardcoded list of Moroccan cities
+                        $moroccanCities = [
+                            'Agadir',
+                            'Al Hoceima',
+                            'Asilah',
+                            'Azrou',
+                            'Beni Mellal',
+                            'Bouznika',
+                            'Casablanca',
+                            'Chefchaouen',
+                            'Dakhla',
+                            'El Jadida',
+                            'Errachidia',
+                            'Essaouira',
+                            'Fès',
+                            'Guelmim',
+                            'Ifrane',
+                            'Kénitra',
+                            'Khouribga',
+                            'Laâyoune',
+                            'Larache',
+                            'Marrakech',
+                            'Meknès',
+                            'Mohammedia',
+                            'Nador',
+                            'Ouarzazate',
+                            'Oujda',
+                            'Rabat',
+                            'Safi',
+                            'Salé',
+                            'Tangier',
+                            'Taroudant',
+                            'Taza',
+                            'Tétouan',
+                            'Tiznit',
+                        ];
+                    @endphp
+
                     <div class="form_group">
                         <label for="city" class="text-lg font-semibold">City:</label>
-                        <input type="text" name="city" value="{{ old('city') }}" id="city_input"
-                            placeholder="Enter Your City"
+                        <select name="city" id="city_input"
                             class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <option value="" disabled selected>Select your city</option>
+                            @foreach ($moroccanCities as $city)
+                                <option value="{{ $city }}">{{ $city }}</option>
+                            @endforeach
+                        </select>
                         <div class="error_input text-red-500">
                             @error('city')
                                 <p>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
+
                     <div class="form_group">
                         <label for="rue" class="text-lg font-semibold">Street:</label>
                         <input type="text" name="rue" value="{{ old('rue') }}" id="rue_input"
