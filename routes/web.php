@@ -66,7 +66,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/doctors/schedules', [AdminController::class, 'schedules'])->name('admin.schedules');
         Route::get('/admin/doctor/schedule/{id}', [AdminController::class, 'schedule'])->name('admin.doctor.schedule');
         Route::post('/admin/doctor/schedule/{id}/submit', [AdminController::class, 'add_schedule'])->name('admin.doctor.schedule.submit');
-        Route::get('/admin/doctor-schedules',  [AdminController::class, 'getDoctorSchedules'])->name('admin.doctor.schedules');
+        Route::get('/admin/doctor-schedules', [AdminController::class, 'getDoctorSchedules'])->name('admin.doctor.schedules');
         Route::get('/admin/doctor-schedules/{id}/edit', [AdminController::class, 'editSchedule'])->name('admin.doctor.schedule.edit');
         Route::put('/admin/doctor-schedules/{id}', [AdminController::class, 'updateSchedule'])->name('admin.doctor.schedule.update');
         Route::delete('/admin/doctor-schedules/{id}/delete', [AdminController::class, 'deleteSchedule'])->name('admin.doctor.schedule.delete');
@@ -132,6 +132,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/patient/my/appointments/{id}', [PatientController::class, 'patient_appointments'])->name('patiens.my.appointments');
         Route::get('/patient/appointment/detail/{id}', [PatientController::class, 'appointment_detail'])->name('patiens.appointment.detail');
         Route::put('/patient/appointment/detail/{id}/cancel', [PatientController::class, 'cancel_appointment'])->name('patiens.appointment.detail.cancel');
+
+        //Health tips Routes
+        Route::get('/patient/health-tips', [PatientController::class, 'getTips'])->name('patiens.health.tips.view');
+
+        //Health tips Route
+        Route::get('/patient/emergency-contacts', [PatientController::class, 'showEmergencyContactsForm'])->name('patients.emergency.contacts.view');
+        Route::get('/patient/emergency-contacts/search', [PatientController::class, 'showEmergencyContacts'])->name('patients.emergency.contacts.process');
     });
 
     //Profile's routes
@@ -139,6 +146,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/profile/img', [ProfileController::class, 'img'])->name('profile.img');
+    Route::delete('/profile/img/delete', [ProfileController::class, 'deleteProfilePicture'])->name('profile.img.delete');
 
     //Notifications Routes
     Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('user.notifications');

@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -94,6 +95,23 @@ class ProfileController extends Controller
     {
         // Vérifier si la valeur contient des balises de script
         return preg_match('/<\s*script.*script\s*>/i', $value);
+    }
+
+    public function deleteProfilePicture(Request $request)
+    {
+        // Check if the user has a profile picture
+        if ($request->user()->img) {
+            // Delete profile picture from storage
+            Storage::disk('public')->delete($request->user()->img);
+
+            // Update user's img column to null
+            $request->user()->img = null;
+            $request->user()->save();
+
+            return redirect()->back()->with('status', 'profile-picture-deleted');
+        }
+
+        return redirect()->back()->with('error', 'No profile picture found.');
     }
 
     function isSqlInjection($value)

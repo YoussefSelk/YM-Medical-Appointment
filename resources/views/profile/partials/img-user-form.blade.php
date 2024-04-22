@@ -31,9 +31,8 @@
 
         <div class="flex items-center gap-4">
             <x-button>
-                {{ __('Save') }}
+                <span class="mr-2"><i class="fa-regular fa-floppy-disk" style="color: #ffffff;"></i></span>{{ __('Save') }}
             </x-button>
-
             @if (session('status') === 'profile-updated')
                 <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
                     class="text-sm text-gray-600 dark:text-gray-400">
@@ -41,6 +40,14 @@
                 </p>
             @endif
         </div>
+    </form>
+
+    <form action="{{route('profile.img.delete')}}" method="POST">
+        @csrf
+        @method('delete')
+        <x-button variant="danger">
+            <span class="mr-2"><i class="fa-solid fa-trash" style="color: #ffffff;"></i></span>  {{ __('Delete Picture') }}
+          </x-button>
     </form>
 </section>
 

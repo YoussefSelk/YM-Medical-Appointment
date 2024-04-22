@@ -4,7 +4,7 @@
 
 <x-patient-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight dark:text-white">
             {{ __('Patient Dashboard') }}
         </h2>
     </x-slot>
@@ -43,14 +43,14 @@
         <div
             class="w-full md:w-1/2 p-6 mt-7 mr-4 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 animate__animated animate__fadeInRight">
             <div class="flex flex-col justify-center ">
-                <h2 class="mb-7 font-semibold text-xl text-gray-800 leading-tight">
+                <h2 class="mb-7 font-semibold text-xl text-gray-800 leading-tight dark:text-white">
                     <span class="mr-2"><i class="fa-regular fa-calendar-check" style="color: #74C0FC;"></i></span> My
                     Appointments
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="appoinments-cards">
                     @foreach ($patient->appointments as $index => $appointment)
                         <div
-                            class="bg-white rounded-lg shadow-md p-4 appoinments-cards @if ($index >= 6) hidden @endif animate__animated animate__fadeInUp">
+                            class="bg-white dark:bg-dark-eval-1 rounded-lg shadow-md p-4 appoinments-cards @if ($index >= 6) hidden @endif animate__animated animate__fadeInUp">
                             <h3 class="text-lg font-semibold mb-2">
                                 <span class="mr-2">
                                     <i class="fa-solid fa-@php echo "$index" @endphp" style="color: #74C0FC;"></i>
@@ -58,10 +58,10 @@
                                 {{ $appointment->reason }}
                             </h3>
 
-                            <p class="text-gray-600 mb-2">Date: {{ $appointment->appointment_date }}</p>
-                            <p class="text-gray-600 mb-2">Doctor: {{ $appointment->doctor->user->name }}</p>
-                            <p class="text-gray-600 mb-2">Status: {{ $appointment->status }}</p>
-                            <p class="text-gray-600">Comment: {{ $appointment->doctor_comment }}</p>
+                            <p class="text-gray-600 mb-2  dark:text-white">Date: {{ $appointment->appointment_date }}</p>
+                            <p class="text-gray-600 mb-2  dark:text-white">Doctor: {{ $appointment->doctor->user->name }}</p>
+                            <p class="text-gray-600 mb-2  dark:text-white">Status: {{ $appointment->status }}</p>
+                            <p class="text-gray-600  dark:text-white">Comment: {{ $appointment->doctor_comment }}</p>
                         </div>
                     @endforeach
                 </div>
@@ -75,19 +75,19 @@
         <div
             class="w-full md:w-1/2 p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1 animate__animated animate__fadeInRight">
             <div class="flex flex-col justify-center">
-                <h2 class="mb-7 font-semibold text-xl text-gray-800 leading-tight">
+                <h2 class="mb-7 font-semibold text-xl text-gray-800 leading-tight dark:text-white   ">
                     <span class="mr-2"><i class="fa-solid fa-suitcase-medical" style="color: #74C0FC;"></i></span> My
                     Medical History
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="medical-history-cards">
                     @foreach ($patient->appointments as $index => $appointment)
                         <div
-                            class="bg-white rounded-lg shadow-md p-4 medical-history-card @if ($index >= 9) hidden @endif animate__animated animate__fadeInUp">
+                            class="bg-white rounded-lg shadow-md dark:bg-dark-eval-1 dark:text-white p-4 medical-history-card  @if ($index >= 9) hidden @endif animate__animated animate__fadeInUp">
                             <span class="mb-4">
                                 <i class="fa-solid fa-@php echo "$index" @endphp" style="color: #74C0FC;"></i>
                             </span>
-                            <p class="text-gray-600 mb-2">Doctor: {{ $appointment->doctor->user->name }}</p>
-                            <p class="text-gray-600 mb-2">Status: {{ $appointment->status }}</p>
+                            <p class="text-gray-600 mb-2 dark:text-white">Doctor: {{ $appointment->doctor->user->name }}</p>
+                            <p class="text-gray-600 mb-2 dark:text-white">Status: {{ $appointment->status }}</p>
                         </div>
                     @endforeach
                 </div>
@@ -109,80 +109,80 @@
         <div class="flex flex-col md:flex-row justify-between">
             <!-- Feature 1: Appointment Reminder -->
             <div
-                class="w-full md:w-1/3 p-4 bg-gray-100 rounded-md shadow-md mb-4 md:mb-0 animate__animated animate__fadeInLeft">
+                class="w-full md:w-1/3 dark:bg-dark-eval-1 p-4 bg-gray-100 rounded-md shadow-md mb-4 md:mb-0 animate__animated animate__fadeInLeft">
                 <div class="text-center">
                     <i class="fas fa-clock text-3xl text-blue-500 mb-2"></i>
-                    <p class="text-gray-700 font-semibold mb-2">Appointment Reminder</p>
-                    <p class="text-gray-600">Never miss an Appointment with our Appointment Reminder feature. Take Your
+                    <p class="text-gray-700 font-semibold mb-2 dark:text-white">Appointment Reminder</p>
+                    <p class="text-gray-600 dark:text-white">Never miss an Appointment with our Appointment Reminder feature. Take Your
                         Appointment and receive notifications when it's time .</p>
                 </div>
             </div>
             <!-- Feature 3: Emergency Contact -->
             <div
-                class="w-full md:w-1/3 p-4 bg-gray-100 rounded-md shadow-md mb-4 md:mb-0 animate__animated animate__fadeInRight">
+                class="w-full dark:bg-dark-eval-1 md:w-1/3 p-4 bg-gray-100 rounded-md shadow-md mb-4 md:mb-0 animate__animated animate__fadeInRight">
                 <div class="text-center">
                     <i class="fas fa-phone-alt text-3xl text-blue-500 mb-2"></i>
-                    <p class="text-gray-700 font-semibold mb-2">Emergency Contact</p>
-                    <p class="text-gray-600">Have peace of mind knowing that emergency assistance is just a call away.
+                    <p class="text-gray-700 font-semibold mb-2 dark:text-white">Emergency Contact</p>
+                    <p class="text-gray-600 dark:text-white">Have peace of mind knowing that emergency assistance is just a call away.
                         Save important emergency contacts for quick access during critical situations.</p>
                 </div>
             </div>
             <!-- Feature 4: Discover Doctors -->
-            <div class="w-full md:w-1/3 p-4 bg-gray-100 rounded-md shadow-md animate__animated animate__fadeInLeft">
+            <div class="w-full dark:bg-dark-eval-1 md:w-1/3 p-4 bg-gray-100 rounded-md shadow-md animate__animated animate__fadeInLeft">
                 <div class="text-center">
                     <i class="fas fa-user-md text-3xl text-blue-500 mb-2"></i>
-                    <p class="text-gray-700 font-semibold mb-2">Discover Doctors</p>
-                    <p class="text-gray-600">Explore our list of doctors, select your preferred physician, and book
+                    <p class="text-gray-700 font-semibold mb-2 dark:text-white">Discover Doctors</p>
+                    <p class="text-gray-600 dark:text-white">Explore our list of doctors, select your preferred physician, and book
                         appointments based on their specialization and rating.</p>
                 </div>
             </div>
         </div>
     </div>
     <!-- Guidance Section -->
-    <div class="p-6 mt-7 bg-white rounded-md shadow-md dark:bg-dark-eval-1 animate__animated animate__fadeIn">
-        <h2 class="mb-4 font-semibold text-xl text-gray-800 leading-tight"> <span class="mr-2"> <i
+    <div class="p-6 mt-7 dark:bg-dark-eval-1 bg-white rounded-md shadow-md dark:bg-dark-eval-1 animate__animated animate__fadeIn">
+        <h2 class="mb-4 font-semibold text-xl text-gray-800 leading-tight dark:text-white"> <span class="mr-2"> <i
                     class="fa-solid fa-question" style="color: #74C0FC;"></i></span>How to Take an Appointment?</h2>
         <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <!-- Step 1: Schedule Appointment -->
-            <div class="bg-gray-100 rounded-lg p-4 flex items-center animate__animated animate__fadeInLeft">
+            <div class="bg-gray-100 dark:bg-dark-eval-1 rounded-lg p-4 flex items-center animate__animated animate__fadeInLeft">
                 <i class="fas fa-calendar-alt text-blue-500 mr-4"></i>
                 <div>
-                    <p class="text-gray-700 font-semibold mb-2">Click on "Schedule Appointment"</p>
-                    <p class="text-gray-600">Under the "My Appointments" section and choose your preferred doctor from
+                    <p class="text-gray-700 font-semibold mb-2 dark:text-white">Click on "Schedule Appointment"</p>
+                    <p class="text-gray-600 dark:text-white">Under the "My Appointments" section and choose your preferred doctor from
                         the list.</p>
                 </div>
             </div>
             <!-- Step 2: Select Doctor -->
-            <div class="bg-gray-100 rounded-lg p-4 flex items-center animate__animated animate__fadeInUp">
+            <div class="bg-gray-100 dark:bg-dark-eval-1 rounded-lg p-4 flex items-center animate__animated animate__fadeInUp">
                 <i class="fas fa-users-medical text-blue-500 mr-4"></i>
                 <div>
-                    <p class="text-gray-700 font-semibold mb-2">Alternatively, select a doctor</p>
-                    <p class="text-gray-600">From the sidebar "Doctor List" and proceed to fill in the required
+                    <p class="text-gray-700 font-semibold mb-2 dark:text-white">Alternatively, select a doctor</p>
+                    <p class="text-gray-600 dark:text-white">From the sidebar "Doctor List" and proceed to fill in the required
                         information.</p>
                 </div>
             </div>
             <!-- Step 3: Fill Information -->
-            <div class="bg-gray-100 rounded-lg p-4 flex items-center animate__animated animate__fadeInRight">
+            <div class="bg-gray-100 dark:bg-dark-eval-1 rounded-lg p-4 flex items-center animate__animated animate__fadeInRight">
                 <i class="fas fa-pencil-alt text-blue-500 mr-4"></i>
                 <div>
-                    <p class="text-gray-700 font-semibold mb-2">Fill in the required information</p>
-                    <p class="text-gray-600">Including reason, doctor, and appointment date/time.</p>
+                    <p class="text-gray-700 font-semibold mb-2 dark:text-white">Fill in the required information</p>
+                    <p class="text-gray-600 dark:text-white">Including reason, doctor, and appointment date/time.</p>
                 </div>
             </div>
             <!-- Step 4: Submit Form -->
-            <div class="bg-gray-100 rounded-lg p-4 flex items-center animate__animated animate__fadeInLeft">
+            <div class="bg-gray-100 dark:bg-dark-eval-1 rounded-lg p-4 flex items-center animate__animated animate__fadeInLeft">
                 <i class="fas fa-check-circle text-blue-500 mr-4"></i>
                 <div>
-                    <p class="text-gray-700 font-semibold mb-2">Submit the form</p>
-                    <p class="text-gray-600">Once all information is filled in.</p>
+                    <p class="text-gray-700 font-semibold mb-2 dark:text-white">Submit the form</p>
+                    <p class="text-gray-600 dark:text-white">Once all information is filled in.</p>
                 </div>
             </div>
             <!-- Step 5: View Appointment -->
-            <div class="bg-gray-100 rounded-lg p-4 flex items-center animate__animated animate__fadeInUp">
+            <div class="bg-gray-100 dark:bg-dark-eval-1 rounded-lg p-4 flex items-center animate__animated animate__fadeInUp">
                 <i class="fas fa-list-alt text-blue-500 mr-4"></i>
                 <div>
-                    <p class="text-gray-700 font-semibold mb-2">View your appointment</p>
-                    <p class="text-gray-600">Once submitted, it will appear under "My Appointments".</p>
+                    <p class="text-gray-700 font-semibold mb-2 dark:text-white">View your appointment</p>
+                    <p class="text-gray-600 dark:text-white">Once submitted, it will appear under "My Appointments".</p>
                 </div>
             </div>
         </div>

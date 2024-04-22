@@ -12,8 +12,7 @@
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
-    <x-success-flash></x-success-flash>
-    <x-error-flash></x-error-flash>
+    
     <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('patch')
@@ -56,7 +55,7 @@
         </div>
         <div class="flex items-center gap-4">
             <x-button>
-                {{ __('Save') }}
+                <span class="mr-2"><i class="fa-regular fa-floppy-disk" style="color: #ffffff;"></i></span>{{ __('Save') }}
             </x-button>
 
             @if (session('status') === 'profile-updated')
@@ -67,5 +66,5 @@
             @endif
         </div>
     </form>
-    
+
 </section>

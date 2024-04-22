@@ -7,7 +7,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Appointment;
 use App\Models\Notification;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Mail\Message;
+use App\Mail\Support;
 
 class CreateTomorrowAppointmentsNotification extends Command
 {
@@ -36,33 +38,29 @@ class CreateTomorrowAppointmentsNotification extends Command
             $notification->title = 'Appointment Reminder id ' . $appointment->id;
             $notification->message = 'You have an appointment scheduled for tomorrow. Please check your Appointments.';
             $notification->save();
+
+            // Send SMS reminder
             // $this->sendSMSReminder($appointment->patient->user->phone, $notification->message);
+
+            // Send Email reminder
+            $this->sendEmailReminder($appointment->patient->user->email, $notification->message, $appointment);
         }
 
         $this->info('Notifications created successfully for appointments scheduled for tomorrow.');
     }
-    // Method to send SMS reminder using Twilio
-    // private function sendSMSReminder($phoneNumber, $message)
-    // {
-    //     $accountSid = 'AC402467f45b5d33645deceffaa242bdea';
-    //     $authToken = '3bcdff66e55eb3573788f70a2e2539d2';
-    //     $twilioNumber = '+12513062666';
 
-    //     $response = Http::withBasicAuth($accountSid, $authToken)
-    //         ->post("https://api.twilio.com/2010-04-01/Accounts/{$accountSid}/Messages.json", [
-    //             'From' => $twilioNumber,
-    //             'To' => $phoneNumber,
-    //             'Body' => $message,
-    //         ]);
+    // Send email reminder method
+    // Send email reminder method
+    protected function sendEmailReminder($email, $message, $appointment)
+    {
+        $data = [
+            'content' => $message,
+            'contactLink' => '#', // Your contact link
+            'contactText' => 'Contact Us',
+            'phoneNumber' => '123-456-7890', // Your phone number
+        ];
 
-    //     if ($response->successful()) {
-    //         // SMS sent successfully
-    //         return true;
-    //     } else {
-    //         // Handle error
-    //         $errorMessage = $response->json()['message'] ?? 'Unknown error occurred';
+        Mail::to($email)->send(new Support($data));
+    }
 
-    //         return false;
-    //     }
-    // }
 }
