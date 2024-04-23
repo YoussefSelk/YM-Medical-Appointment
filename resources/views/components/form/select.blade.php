@@ -1,10 +1,17 @@
-<!-- Gender -->
-<div class="space-y-2">
-    <x-form.label for="gender" :value="__('Gender')" />
+@props([
+    'disabled' => false,
+    'withicon' => false,
+])
 
-    <select id="gender" name="gender"
-        class="block w-full border-gray-300 rounded-md shadow-sm ">
-        <option value="male">{{ __('Male') }}</option>
-        <option value="female">{{ __('Female') }}</option>
-    </select>
-</div>
+@php
+    $withiconClasses = $withicon ? 'pl-11 pr-4' : 'px-4';
+@endphp
+
+<select {{ $disabled ? 'disabled' : '' }} {!! $attributes->merge([
+    'class' =>
+        $withiconClasses .
+        ' py-2 border-gray-400 rounded-md dark:border-gray-600 dark:bg-dark-eval-1
+            dark:text-gray-300',
+]) !!}>
+    {{ $slot }}
+</select>

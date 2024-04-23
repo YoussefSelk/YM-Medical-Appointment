@@ -125,10 +125,12 @@
             {!! $Appointments_Chart_Created_At->script() !!}
         </div>
         <div class="p-6 mt-7 md:mt-0 mr-6 overflow-hidden bg-white rounded-md dark:bg-dark-eval-1 w-full md:w-1/2">
-            {!! __('<strong>######</strong> :') !!}
+            {!! __('<strong>Number Of Appointments by Status</strong> :') !!}
             <div class="chart-container" style="position: relative; height: auto; width: 100%;">
+                {!! $Appointments_Chart_Status->container() !!}
 
             </div>
+            {!! $Appointments_Chart_Status->script() !!}
 
         </div>
     </div>

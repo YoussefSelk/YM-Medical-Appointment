@@ -6,6 +6,44 @@
     </x-slot>
     <x-success-flash />
     <x-error-flash />
+    @php
+        // Hardcoded list of Moroccan cities
+        $moroccanCities = [
+            'Agadir',
+            'Al Hoceima',
+            'Asilah',
+            'Azrou',
+            'Beni Mellal',
+            'Bouznika',
+            'Casablanca',
+            'Chefchaouen',
+            'Dakhla',
+            'El Jadida',
+            'Errachidia',
+            'Essaouira',
+            'Fès',
+            'Guelmim',
+            'Ifrane',
+            'Kénitra',
+            'Khouribga',
+            'Laâyoune',
+            'Larache',
+            'Marrakech',
+            'Meknès',
+            'Mohammedia',
+            'Nador',
+            'Ouarzazate',
+            'Oujda',
+            'Rabat',
+            'Safi',
+            'Salé',
+            'Tangier',
+            'Taroudant',
+            'Taza',
+            'Tétouan',
+            'Tiznit',
+        ];
+    @endphp
     <div class="p-6 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -78,18 +116,22 @@
                 <!-- City -->
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="city">City: <span
-                            class="text-red-500">*</span>
-                    </label>
-                    <input
-                        class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="city_input" type="text" name="city"
-                        value="{{ old('city', $doctor->user->address->ville) }}" placeholder="Enter Your City">
-                    <div class="text-red-500 mt-2">
+                            class="text-red-500">*</span></label>
+                    <x-form.select id="city" name="city" required class="block w-full">
+                        <option value="" disabled selected>Select your city</option>
+                        @foreach ($moroccanCities as $city)
+                            <option value="{{ $city }}" @if (old('ville', $doctor->user->address->ville) == $city) selected @endif>
+                                {{ $city }}</option>
+                        @endforeach
+                    </x-form.select>
+
+                    <div class="error_input text-red-500">
                         @error('city')
                             <p>{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
+
 
                 <!-- Street -->
                 <div class="mb-4">

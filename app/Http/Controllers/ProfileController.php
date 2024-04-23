@@ -71,24 +71,38 @@ class ProfileController extends Controller
     {
         $validatedData = $request->validated();
 
-        // Échapper les données avant de les enregistrer dans la base de données
+        // Escape data before saving it to the database
         $safeData = array_map('htmlspecialchars', $validatedData);
 
-        $request->user()->fill($safeData);
+        $user = $request->user();
+        $user->fill($safeData);
 
         // Check for XSS attacks
         if ($this->isXssAttackDetected($validatedData, $safeData)) {
             return redirect()->back()->with('error', 'XSS Or Sql Injection attack detected. Please provide valid input.');
         }
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+            $user->sendEmailVerificationNotification();
+        }
+        $user->gender = $request->gender;
+        $user->address->ville = $request->ville;
+
+        $user->save();
+
+        // Update patient's information if the user type is 'patient'
+        if ($user->user_type == 'patient') {
+            $patient = $user->patient;
+            $patient->cin = $request->cin;
+            $patient->birth_date = $request->birth_date;
+            $patient->save();
         }
 
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return redirect()->route('profile.edit')->with('status', 'profile-updated');
     }
+
+
 
 
     private function containsScript($value)
