@@ -11,14 +11,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
         ->name('admin.appointments');
 
     Route::get('/admin/appointment/view/{id}', [AdminController::class, 'appointment_detail'])
-        ->middleware('CheckAppointment')
+
         ->name('admin.appointment.view');
 
     Route::put('/admin/appointment/detail/{id}/cancel', [AdminController::class, 'cancel_appointment'])
-        ->middleware('CheckAppointment')
+
         ->name('admin.appointment.detail.cancel');
 
     Route::put('/admin/appointment/detail/{id}/approve', [AdminController::class, 'approve_appointment'])
-        ->middleware('CheckAppointment')
+
         ->name('admin.appointment.detail.approve');
 });
