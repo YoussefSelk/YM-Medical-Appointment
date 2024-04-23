@@ -112,6 +112,7 @@
                                 class="py-2 px-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
                                 <a href="{{ route('patiens.appointment.detail', $item->id) }}"
                                     class="text-blue-600 hover:text-blue-900">View</a>
+
                             </td>
                         </tr>
                     @endforeach

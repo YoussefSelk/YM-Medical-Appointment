@@ -69,5 +69,11 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\Admin::class,
         'doctor' => \App\Http\Middleware\Doctor::class,
         'patient' => \App\Http\Middleware\Patient::class,
+        'CheckPatientId' => \App\Http\Middleware\Checkers\CheckPatientId::class,
+        'CheckAppointment' => \App\Http\Middleware\Checkers\CheckAppointment::class,
+        'CheckDoctor' => \App\Http\Middleware\Checkers\CheckDoctor::class,
+        'CheckPatientExistence' => \App\Http\Middleware\Checkers\CheckPatientExistence::class,
+        'CheckSpecialityExistence' => \App\Http\Middleware\Checkers\CheckSpecialityExistence::class,
+
     ];
 }

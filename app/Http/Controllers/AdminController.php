@@ -247,6 +247,14 @@ class AdminController extends Controller
         if ($appointment) {
             $appointment->update(['status' => 'Cancelled']);
             $appointment->save();
+            sendSupportEmail([
+                'to' => $appointment->patient->user->email,
+                'subject' => 'Appointment Canceled',
+                'content' => 'Your appointment [#' . $appointment->id . '] has been Canceled. Please find the details below:',
+                'contactLink' => 'http://127.0.0.1:8000/patient/my/appointments/' . $appointment->patient->id,
+                'contactText' => 'My Appointments',
+                'phoneNumber' => '+1234567890',
+            ]);
             return redirect()->back()->with('success', 'Appointment Canceled !!');
         } else {
             return redirect()->back()->with('error', 'Appointment Not Found !!');
@@ -258,6 +266,14 @@ class AdminController extends Controller
         if ($appointment) {
             $appointment->update(['status' => 'Approved']);
             $appointment->save();
+            sendSupportEmail([
+                'to' => $appointment->patient->user->email,
+                'subject' => 'Appointment Approved',
+                'content' => 'Your appointment [#' . $appointment->id . '] has been Approved. Please find the details below:',
+                'contactLink' => 'http://127.0.0.1:8000/patient/my/appointments/' . $appointment->patient->id,
+                'contactText' => 'My Appointments',
+                'phoneNumber' => '+1234567890',
+            ]);
             return redirect()->back()->with('success', 'Appointment Approved !!');
         } else {
             return redirect()->back()->with('error', 'Appointment Not Found !!');
