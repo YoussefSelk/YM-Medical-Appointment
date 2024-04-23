@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -70,30 +71,61 @@ class ProfileController extends Controller
     {
         $validatedData = $request->validated();
 
-        // Échapper les données avant de les enregistrer dans la base de données
+        // Escape data before saving it to the database
         $safeData = array_map('htmlspecialchars', $validatedData);
 
-        $request->user()->fill($safeData);
+        $user = $request->user();
+        $user->fill($safeData);
 
         // Check for XSS attacks
         if ($this->isXssAttackDetected($validatedData, $safeData)) {
             return redirect()->back()->with('error', 'XSS Or Sql Injection attack detected. Please provide valid input.');
         }
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+            $user->sendEmailVerificationNotification();
+        }
+        $user->gender = $request->gender;
+        $user->address->ville = $request->ville;
+
+        $user->save();
+
+        // Update patient's information if the user type is 'patient'
+        if ($user->user_type == 'patient') {
+            $patient = $user->patient;
+            $patient->cin = $request->cin;
+            $patient->birth_date = $request->birth_date;
+            $patient->save();
         }
 
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return redirect()->route('profile.edit')->with('status', 'profile-updated');
     }
+
+
 
 
     private function containsScript($value)
     {
         // Vérifier si la valeur contient des balises de script
         return preg_match('/<\s*script.*script\s*>/i', $value);
+    }
+
+    public function deleteProfilePicture(Request $request)
+    {
+        // Check if the user has a profile picture
+        if ($request->user()->img) {
+            // Delete profile picture from storage
+            Storage::disk('public')->delete($request->user()->img);
+
+            // Update user's img column to null
+            $request->user()->img = null;
+            $request->user()->save();
+
+            return redirect()->back()->with('status', 'profile-picture-deleted');
+        }
+
+        return redirect()->back()->with('error', 'No profile picture found.');
     }
 
     function isSqlInjection($value)

@@ -4,7 +4,7 @@ Author Name: Naimur Rahman
 Website: http://wpthemesgrid.com/
 Description: Mediplus - Doctor HTML Template.
 Version:	1.1
-========================================*/   
+========================================*/
 /*======================================
 [ CSS Table of contents ]
 * Global CSS
@@ -44,10 +44,31 @@ Version:	1.1
 * Doctor Calendar CSS
 * About Us CSS
 * Footer CSS
-========================================*/ 
+========================================*/
 /*=============================
-	Global CSS 
+	Global CSS
 ===============================*/
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 12px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 body{
     font-family: 'Poppins', sans-serif;
 	font-weight: 400;
@@ -74,6 +95,7 @@ body{
 	-moz-transition:all 0.4s ease;
 	transition:all 0.4s ease;
 }
+
 .pro-features.active{
 	right:0;
 }
@@ -121,7 +143,7 @@ body{
 	box-shadow: -4px 0px 5px #00000036;
 }
 .get-pro:hover{
-	
+
 }
 #scrollUp {
 	bottom: 15px;
@@ -236,11 +258,11 @@ body{
 	background:#44ce6f;
 }
 /*=============================
-	End Global CSS 
+	End Global CSS
 ===============================*/
 
 /*===================
-	Start Header CSS 
+	Start Header CSS
 =====================*/
 .header{
 	background-color:#fff;
@@ -801,7 +823,7 @@ body{
 	margin-left:10px;
 }
 .schedule .single-schedule .time-sidual{
-	
+
 }
 .schedule .single-schedule .time-sidual{
 	overflow:hidden;
@@ -902,14 +924,22 @@ body{
 }
 .fun-facts.section{
 	padding:120px 0;
+    margin: 0 auto; /* This will horizontally center the section */
+    width: 100%;
+
 }
 .fun-facts{
-	background:url('img/fun-bg.jpg');
 	background-size:cover;
 	background-repeat:no-repeat;
 }
 .fun-facts .single-fun {
-	
+
+}
+.fun-facts .container .row{
+    display: flex;
+    justify-content: center;
+    
+
 }
 .fun-facts .single-fun i {
 	position: absolute;
@@ -1722,7 +1752,7 @@ body{
 	position:relative;
 }
 .clients .single-clients{
-	
+
 }
 .clients .single-clients img {
 	width: 100%;
@@ -1737,7 +1767,7 @@ body{
 
 /*====================
 	Start Team CSS
-======================*/ 
+======================*/
 .team{
 	background-image:url('img/testi-bg.jpg');
 	background-size:cover;
@@ -1926,7 +1956,7 @@ body{
 	margin-top: 30px;
 }
 .doctor-details-item .doctor-details-work .time-sidual{
-	
+
 }
 .doctor-details-item .doctor-details-work .time-sidual{
 	overflow:hidden;
@@ -1951,7 +1981,7 @@ body{
 	padding-top: 70px;
 }
 .doctor-details-item .doctor-details-biography {
- 
+
 }
 .doctor-details-item .doctor-details-biography h3 {
   font-weight: 600;
@@ -1988,7 +2018,7 @@ body{
 }
 /*====================
 	End Team CSS
-======================*/ 
+======================*/
 
 /*=======================
 	Start Blog CSS
@@ -2675,7 +2705,7 @@ body{
 	-moz-transition: all 0.4s ease;
 	transition: all 0.4s ease;
 	padding: 15px 30px;
-	
+
 }
 .news-single .form-group .button:hover {
 	background: #353535;
@@ -2940,7 +2970,7 @@ body{
 	margin: 0;
 	margin-top: 20px;
 	display:inline-block;
-	
+
 }
 .login .login-form .checkbox label {
 	font-size: 14px;
@@ -3095,7 +3125,7 @@ body{
 	margin: 0;
 	margin-top: 20px;
 	display:inline-block;
-	
+
 }
 .register .register-form .checkbox label {
 	font-size: 14px;
@@ -3325,7 +3355,7 @@ body{
 	margin: 0;
 	margin-top: 20px;
 	display:inline-block;
-	
+
 }
 .contact-us .contact-us-form .checkbox label {
 	font-size: 14px;
@@ -3426,7 +3456,7 @@ body{
 	color:#fff;
 	font-size:18px;
 	font-weight:600;
-	
+
 }
 .contact-us .single-info .content p{
 	color:#fff;
@@ -3443,7 +3473,7 @@ body{
 
 /*========================
 	Start Error 404 CSS
-==========================*/ 
+==========================*/
 .error-page {
 	text-align: center;
 	background: #fff;
@@ -3502,11 +3532,11 @@ body{
 }
 /*========================
 	End Error 404 CSS
-==========================*/ 
+==========================*/
 
 /*===========================
 	Start Mail Success CSS
-=============================*/ 
+=============================*/
 .mail-seccess {
 	text-align: center;
 	background: #fff;
@@ -3537,11 +3567,11 @@ body{
 }
 /*===========================
 	End Mail Success CSS
-=============================*/ 
+=============================*/
 
 /*=========================
 	Start Newsletter CSS
-===========================*/  
+===========================*/
 .newsletter{
 	background:#EDF2FF;
 }
@@ -3594,7 +3624,7 @@ body{
 }
 /*=========================
 	End Newsletter CSS
-===========================*/  
+===========================*/
 
 /*===============================
 	Start Doctor Calendar CSS
@@ -3982,7 +4012,7 @@ body{
 	opacity:0.1;
 }
 .footer .single-footer{
-	
+
 }
 .footer .single-footer .social{
 	margin-top:25px;
@@ -4013,7 +4043,7 @@ body{
 	border-color:transparent;
 }
 .footer .single-footer .social li a i{
-	
+
 }
 .footer .single-footer.f-link li a i{
 	margin-right:10px;

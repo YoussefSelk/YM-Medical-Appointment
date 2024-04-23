@@ -14,6 +14,12 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Http;
+use Stevebauman\Location\Facades\Location;
+use Geocoder\Provider\OpenStreetMap\OpenStreetMap;
+use Geocoder\Query\GeocodeQuery;
+use Geocoder\Query\ReverseQuery;
+use Geocoder\Provider\Nominatim\Nominatim;
 
 class PatientController extends Controller
 {
@@ -61,6 +67,38 @@ class PatientController extends Controller
     }
 
     //Operation Functions
+
+    public function getTips()
+    {
+        $response = Http::get('https://newsapi.org/v2/top-headlines', [
+            'apiKey' => '9d4f0f76580e49e7b654623b3837ddd3',
+            'country' => 'us', // Fetch global health tips
+            'category' => 'health',
+            'pageSize' => 50,
+        ]);
+
+        if ($response->successful()) {
+            $healthTips = $response->json();
+            $healthTips = collect($healthTips['articles'])->map(function ($article) {
+                if (!isset ($article['urlToImage']) || empty ($article['urlToImage'])) {
+                    $article['urlToImage'] = 'https://via.placeholder.com/150'; // Default image
+                }
+                return $article;
+            });
+
+            return view('panels.patient.health_tips', compact('healthTips'));
+        } else {
+            return back()->withError('Failed to fetch health tips. Please try again later.');
+        }
+    }
+
+
+
+
+
+
+
+
     public function cancel_appointment($id)
     {
         $appointment = Appointment::find($id);

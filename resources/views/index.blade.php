@@ -728,6 +728,13 @@ font_size: 1rem;
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @endif
 
+    <style>
+        .fun-facts{
+    background:url({{asset('img/fun-bg.jpg')}});
+
+    }
+    </style>
+
     </head>
     <body>
 

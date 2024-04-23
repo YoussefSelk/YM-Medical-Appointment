@@ -88,7 +88,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'cin' => ['required', 'numeric'],
+            'cin' => ['required', 'string', 'max:8'],
             'birth_date' => ['required', 'date'],
             'rue' => ['required', 'string'],
             'ville' => ['required', 'string'],
@@ -138,48 +138,5 @@ class RegisteredUserController extends Controller
             $address->delete();
             return redirect()->back()->with('error', 'Something went wrong');
         }
-
-
-        // $user = User::create([
-        //     'name' => $request->name,
-        //     'email' => $request->email,
-        //     'password' => Hash::make($request->password),
-        //     'gender' => $request->gender,
-        //     'phone' => $request->phone,
-        //     'user_type' => 'patient', // Assuming you're distinguishing users by types
-        // ]);
-
-        // if ($user) {
-        //     $patient = Patient::create([
-        //         'cin' => $request->cin,
-        //         'birth_date' => $request->birth_date,
-        //         'user_id' => $user->id,
-        //     ]);
-        //     if ($patient) {
-        //         $address = $user->address()->create([
-        //             'rue' => $request->rue,
-        //             'ville' => $request->ville,
-        //         ]);
-        //         if ($address) {
-        //             event(new Registered($user));
-
-        //             Auth::login($user);
-
-        //             return redirect(RouteServiceProvider::PATIENT_HOME);
-        //         } else {
-        //             $user->delete();
-        //             $patient->delete();
-        //             $address->delete();
-        //             return redirect()->back()->with('error', 'Something went wrong');
-        //         }
-        //     } else {
-        //         $user->delete();
-        //         $patient->delete();
-        //         return redirect()->back()->with('error', 'Something went wrong');
-        //     }
-        // } else {
-        //     $user->delete();
-        //     return redirect()->back()->with('error', 'Something went wrong');
-        // }
     }
 }

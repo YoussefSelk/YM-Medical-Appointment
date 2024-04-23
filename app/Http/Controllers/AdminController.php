@@ -130,7 +130,7 @@ class AdminController extends Controller
 
         $gender_chart = new DoctorCharts;
         $gender_chart->labels(['Male', 'Female']);
-        $gender_chart->dataset('Number Of Doctors by Gender', 'bar', [$male_doctor_count, $female_doctor_count])
+        $gender_chart->dataset('Number Of Doctors by Gender', 'doughnut', [$male_doctor_count, $female_doctor_count])
             ->backgroundColor(['#3B82F6', '#FF00CC']);
 
         //-------------------------------------------------//
@@ -156,7 +156,7 @@ class AdminController extends Controller
 
         $patient_gender_chart = new PatientCharts;
         $patient_gender_chart->labels(['Male', 'Female']);
-        $patient_gender_chart->dataset('Number Of Patients by Gender', 'bar', [$patient_male_patient_count, $patient_female_patient_count])
+        $patient_gender_chart->dataset('Number Of Patients by Gender', 'doughnut', [$patient_male_patient_count, $patient_female_patient_count])
             ->backgroundColor(['#3B82F6', '#FF00CC']);
 
         //-------------------------------------------------//
@@ -169,11 +169,27 @@ class AdminController extends Controller
             ->map(function ($group) {
                 return $group->count();
             });
-        $Appointments_Chart_Created_At = new PatientCharts;
+        $Appointments_Chart_Created_At = new AppoinmentsCharts;
         $Appointments_Chart_Created_At->labels($appointments_chart_data->keys());
         $Appointments_Chart_Created_At->dataset('Number Of Patient', 'bar', $appointments_chart_data->values())
             ->backgroundColor('#3B82F6');
-        return view('panels.admin.index')->with(compact('Appointments_Chart_Created_At'))->with(compact('patient_gender_chart'))->with(compact('Patient_Chart_Created_At'))->with(compact('gender_chart'))->with(compact('Doctor_Chart_Created_At'))->with('shedules', $shedules)->with('doctors', $doctors)->with('patients', $Patients)->with('appointments', $appointments);
+
+        //-------------------------------------------------//
+
+        $appointments_status_chart_data = Appointment::orderBy('created_at')
+            ->get()
+            ->groupBy('status')
+            ->map(function ($group) {
+                return $group->count();
+            });
+
+        $Appointments_Chart_Status = new AppoinmentsCharts;
+        $Appointments_Chart_Status->labels($appointments_status_chart_data->keys());
+        $Appointments_Chart_Status->dataset('Number Of Appointments by Status', 'doughnut', $appointments_status_chart_data->values())
+            ->backgroundColor(['#3B82F6', '#34D399', '#F87171', '#A78BFA', '#FBBF24']); // You can add more colors if needed
+
+
+        return view('panels.admin.index')->with(compact('Appointments_Chart_Status'))->with(compact('Appointments_Chart_Created_At'))->with(compact('patient_gender_chart'))->with(compact('Patient_Chart_Created_At'))->with(compact('gender_chart'))->with(compact('Doctor_Chart_Created_At'))->with('shedules', $shedules)->with('doctors', $doctors)->with('patients', $Patients)->with('appointments', $appointments);
     }
 
     public function doctor() //doctor function return the doctor page for admin panel

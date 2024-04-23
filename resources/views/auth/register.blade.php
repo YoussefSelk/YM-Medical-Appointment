@@ -4,6 +4,44 @@
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
         <x-success-flash></x-success-flash>
         <x-error-flash></x-error-flash>
+        @php
+            // Hardcoded list of Moroccan cities
+            $moroccanCities = [
+                'Agadir',
+                'Al Hoceima',
+                'Asilah',
+                'Azrou',
+                'Beni Mellal',
+                'Bouznika',
+                'Casablanca',
+                'Chefchaouen',
+                'Dakhla',
+                'El Jadida',
+                'Errachidia',
+                'Essaouira',
+                'Fès',
+                'Guelmim',
+                'Ifrane',
+                'Kénitra',
+                'Khouribga',
+                'Laâyoune',
+                'Larache',
+                'Marrakech',
+                'Meknès',
+                'Mohammedia',
+                'Nador',
+                'Ouarzazate',
+                'Oujda',
+                'Rabat',
+                'Safi',
+                'Salé',
+                'Tangier',
+                'Taroudant',
+                'Taza',
+                'Tétouan',
+                'Tiznit',
+            ];
+        @endphp
         <form method="POST" action="{{ route('register') }}">
             @csrf
 
@@ -66,11 +104,10 @@
 
                 <!-- Gender -->
                 <div class="space-y-2">
-
+                    <x-form.label for="gender" :value="__('Gender')" />
                     <x-form.select id="gender" class="block w-full" name="gender" required>
                         <option value="male">{{ __('Male') }}</option>
                         <option value="female">{{ __('Female') }}</option>
-                        <option value="other">{{ __('Other') }}</option>
                     </x-form.select>
                 </div>
 
@@ -97,7 +134,7 @@
                             <x-heroicon-o-identification aria-hidden="true" class="w-5 h-5" />
                         </x-slot>
 
-                        <x-form.input withicon id="cin" class="block w-full" type="number" name="cin"
+                        <x-form.input withicon id="cin" class="block w-full" type="text" name="cin"
                             :value="old('cin')" required placeholder="{{ __('CIN') }}" />
                     </x-form.input-with-icon-wrapper>
                 </div>
@@ -133,16 +170,25 @@
                 <!-- Ville -->
                 <div class="space-y-2">
                     <x-form.label for="ville" :value="__('Ville')" />
-
                     <x-form.input-with-icon-wrapper>
                         <x-slot name="icon">
                             <x-heroicon-o-location-marker aria-hidden="true" class="w-5 h-5" />
                         </x-slot>
+                        <x-form.select :withicon="true" id="ville" name="ville" required class="block w-full">
+                            <option value="" disabled selected>Select your city</option>
+                            @foreach ($moroccanCities as $city)
+                                <option value="{{ $city }}">{{ $city }}</option>
+                            @endforeach
+                        </x-form.select>
 
-                        <x-form.input withicon id="ville" class="block w-full" type="text" name="ville"
-                            :value="old('ville')" required placeholder="{{ __('Ville') }}" />
+                        <div class="error_input text-red-500">
+                            @error('city')
+                                <p>{{ $message }}</p>
+                            @enderror
+                        </div>
                     </x-form.input-with-icon-wrapper>
                 </div>
+
 
                 <div>
                     <x-button class="justify-center w-full gap-2">
@@ -158,6 +204,12 @@
                         {{ __('Login') }}
                     </a>
                 </p>
+                <div>
+                    <a href="{{ route('home') }}"
+                        class="inline-block text-sm px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg">
+                        {{ __('Back to Landing Page') }}
+                    </a>
+                </div>
             </div>
         </form>
     </x-auth-card>

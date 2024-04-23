@@ -46,41 +46,53 @@
     </div>
 
 
+
     <div
      class="p-6 mb-2 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
     <form action="{{ route('doctor.patient.book.appointment.submit',  [$patient->id]) }}" method="POST">
          @csrf
-        <div class="mb-4">
-            <label for="doctor_id" class="block text-gray-700 text-sm font-bold mb-2">Choose a doctor:</label>
-            <select id="doctor_id" name="doctor_id"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        <div class="space-y-2 mb-4">
+            <label for="doctor_id" class="block text-sm font-medium text-gray-700">Doctor : <span class="ml-2"><i class="fa-solid fa-user-doctor"
+                style="color: #74C0FC;"></i></label>
+            <x-form.select id="doctor_id" name="doctor_id" class="block w-full" required autofocus>
                 @foreach ($doctors as $doctor)
                     <option value="{{ $doctor->id }}">{{ $doctor->user->name }}</option>
                 @endforeach
-            </select>
+            </x-form.select>
+            <x-form.error :messages="$errors->get('doctor_id')" />
         </div>
 
-         <div class="mb-4">
-            <label for="reason" class="block text-gray-700 text-sm font-bold mb-2">Cause pour le
-                rendez-vous:</label>
+         <div class="space-y-2 mb-4">
+            <label for="reason" class="block text-sm font-medium text-gray-700">Reason : <span class="ml-2"><i class="fa-solid fa-virus"
+                style="color: #74C0FC;"></i></label>
             <textarea name="reason" id="reason" cols="30" rows="5"
-                placeholder="Donner la cause pour le rendez-vous"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            placeholder="Donner la cause pour le rendez-vous"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            <x-form.error :messages="$errors->get('reason')" />
+
         </div>
-        <div class="mb-4">
-            <label for="appointment_datee" class="block text-gray-700 text-sm font-bold mb-2">Choose a date:</label>
-            <input type="date" id="appointment_datee" name="appointment_datee"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                min="{{ date('Y-m-d') }}">
+
+        <div class="space-y-2 mb-4" >
+            <label for="appointment_datee" class="block text-sm font-medium text-gray-700">Choose a
+                date: <span class="ml-2"><i class="fa-solid fa-calendar-week"
+                        style="color: #74C0FC;"></i></span></label>
+
+            <x-form.input name="appointment_datee" id="appointment_datee" type="date" class="block w-full" required autofocus />
+            <x-form.error :messages="$errors->get('appointment_datee')" />
         </div>
-        <div class="mb-4">
-            <label for="appointment_time" class="block text-gray-700 text-sm font-bold mb-2">Choose a time:</label>
-            <select id="appointment_time" name="appointment_time"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                disabled>
-                <option value="">Select a date first</option>
-            </select>
+
+        <div class="space-y-2 mb-4">
+            <label for="appointment_time" class="block text-sm font-medium text-gray-700">Choose a
+                time: <span class="ml-2"><i class="fa-regular fa-hourglass-half"
+                        style="color: #74C0FC;"></i>
+                    </span>
+                    </label>
+            <x-form.select id="appointment_time" name="appointment_time" class="block w-full"  disabled>
+                <option value="">Choose a time </option>
+            </x-form.select>
+
         </div>
+
         <div class="flex items-center justify-between">
             <button type="submit"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Book</button>

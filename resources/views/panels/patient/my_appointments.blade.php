@@ -11,29 +11,35 @@
     <x-error-flash></x-error-flash>
     <div
         class="p-6 mt-7 overflow-hidden bg-white dark:bg-dark-eval-1 rounded-md shadow-md flex justify-center items-center">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 ">
-            <div class="p-6 bg-white dark:bg-dark-eval-2 rounded-md ">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200"> <span class="mr-2"><i
-                            class="fa-regular fa-calendar-check" style="color: #74C0FC;"></i></span>Total Appointments
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-6 bg-white dark:bg-dark-eval-2 rounded-md flex flex-col items-center justify-center">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    <span class="mr-2"><i class="fa-regular fa-calendar-check" style="color: #74C0FC;"></i></span>
+                    Total Appointments
                 </h3>
                 <p class="text-blue-500 text-3xl dark:text-blue-400">{{ count(Auth::user()->patient->Appointments) }}</p>
             </div>
-            <div class="p-6 bg-white dark:bg-dark-eval-2 rounded-md ">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200"><span class="mr-2"><i
-                            class="fa-solid fa-spinner" style="color: #74C0FC;"></i></span>Pending Appointments</h3>
-                <p class="text-blue-500 text-3xl dark:text-blue-400">
-                    {{ count(Auth::user()->patient->appointments()->where('status', 'Pending')->get()) }}</p>
-            </div>
-            <div class="p-6 bg-white dark:bg-dark-eval-2 rounded-md ">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200"><span class="mr-2"><i
-                            class="fa-solid fa-check" style="color: #74C0FC;"></i></span>Completed or Expired
-                    Appointments
+            <div class="p-6 bg-white dark:bg-dark-eval-2 rounded-md flex flex-col items-center justify-center">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    <span class="mr-2"><i class="fa-solid fa-spinner" style="color: #74C0FC;"></i></span>
+                    Pending Appointments
                 </h3>
                 <p class="text-blue-500 text-3xl dark:text-blue-400">
-                    {{ count(Auth::user()->patient->appointments()->where('status', 'expired')->get()) }}</p>
+                    {{ count(Auth::user()->patient->appointments()->where('status', 'Pending')->get()) }}
+                </p>
+            </div>
+            <div class="p-6 bg-white dark:bg-dark-eval-2 rounded-md flex flex-col items-center justify-center">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    <span class="mr-2"><i class="fa-solid fa-check" style="color: #74C0FC;"></i></span>
+                    Completed or Expired Appointments
+                </h3>
+                <p class="text-blue-500 text-3xl dark:text-blue-400">
+                    {{ count(Auth::user()->patient->appointments()->where('status', 'expired')->get()) }}
+                </p>
             </div>
         </div>
     </div>
+
 
 
     <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
