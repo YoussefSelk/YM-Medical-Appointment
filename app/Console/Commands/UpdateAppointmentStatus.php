@@ -22,6 +22,14 @@ class UpdateAppointmentStatus extends Command
         // Update status to 'expired'
         foreach ($appointments as $appointment) {
             $appointment->update(['status' => 'expired']);
+            sendSupportEmail([
+                'to' => $appointment->patient->user->email,
+                'subject' => 'Appointment Expired',
+                'content' => 'Your appointment has been Expired. Please find the details below:',
+                'contactLink' => 'https://example.com/contact',
+                'contactText' => 'Contact us',
+                'phoneNumber' => '+1234567890',
+            ]);
         }
 
         $this->info('Appointment statuses updated successfully.');

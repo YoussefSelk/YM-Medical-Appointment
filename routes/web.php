@@ -44,6 +44,7 @@ include 'web/FrontOffice/doctor/appointment.php';
 
 include 'web/FrontOffice/doctor/schedule.php';
 
+
 //Profile Routes
 include 'web/FrontOffice/others/profile.php';
 

@@ -80,7 +80,7 @@ class PatientController extends Controller
         if ($response->successful()) {
             $healthTips = $response->json();
             $healthTips = collect($healthTips['articles'])->map(function ($article) {
-                if (!isset ($article['urlToImage']) || empty ($article['urlToImage'])) {
+                if (!isset($article['urlToImage']) || empty($article['urlToImage'])) {
                     $article['urlToImage'] = 'https://via.placeholder.com/150'; // Default image
                 }
                 return $article;
@@ -186,7 +186,14 @@ class PatientController extends Controller
         // Return appointments as JSON response
         return response()->json($appointments);
     }
+    public function downloadPDF_Appointment($id)
+    {
+        $appointment = Appointment::findOrFail($id);
 
+        $pdf = PDF::loadView('pdf.appointment-details', compact('appointment'));
+
+        return $pdf->download('appointment_details.pdf');
+    }
 
 
     // CRUD Functions
@@ -248,6 +255,16 @@ class PatientController extends Controller
         ]);
 
         if ($appointment) {
+
+            sendSupportEmail([
+                'to' => $appointment->patient->user->email,
+                'subject' => 'Appointment Confirmation',
+                'content' => 'Your appointment has been successfully booked. Please find the details below:',
+                'contactLink' => 'http://127.0.0.1:8000/patient/my/appointments/' . $appointment->patient->id,
+                'contactText' => 'My Appointments',
+                'phoneNumber' => '+1234567890',
+            ]);
+
             return redirect()->back()->with('success', 'Appointment booked successfully');
         } else {
             return redirect()->back()->with('error', 'Appointment booking failed');
