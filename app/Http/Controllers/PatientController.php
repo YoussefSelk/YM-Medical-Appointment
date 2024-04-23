@@ -94,11 +94,6 @@ class PatientController extends Controller
 
 
 
-
-
-
-
-
     public function cancel_appointment($id)
     {
         $appointment = Appointment::find($id);
