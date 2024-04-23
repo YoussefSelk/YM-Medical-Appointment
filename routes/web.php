@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PatientController;
@@ -20,9 +21,8 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-})->name('home');
+Route::get('/', [HomeController::class , 'index'])->name('home');
+
 
 Route::get('/dashboard', function () {
     return redirect()->route('login');
@@ -98,7 +98,7 @@ Route::middleware('auth')->group(function () {
         Route::put('doctor/appointment/edit/{id}', [DoctorController::class, 'updateAppointment'])->name('doctor.appointment.update');
         Route::get('/doctor/appointments/calendar', [DoctorController::class, 'getAppointments'])->name('doctor.appointments.calendar');
         Route::get('/doctor/appointments/{id}', [DoctorController::class, 'getAppointmentDetails'])->name('doctor.appointments.details');
-        Route::get('/doctor/appointments/index', [DoctorController::class, 'getAppointments2'])->name('doctor.appointment.index');
+        Route::get('/doctor/appointment/index', [DoctorController::class, 'getAppointments'])->name('doctor.appointment.index');
 
 
         //Doctor Schedule Routes
@@ -108,9 +108,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/doctor/schedule/{id}', [DoctorController::class, 'deleteSchedule'])->name('doctor.schedule.delete');
         Route::post('/doctor/{id}/schedule/add', [DoctorController::class, 'add_schedule'])->name('doctor.schedule.add');
 
-        // Route::get('/doctor/schedules/index', [DoctorController::class, 'getSchedules'])->name('doctor.schedules.index');
-        Route::get('/doctor/schedules',[DoctorController::class, 'getDoctorSchedules'])->name('doctor.schedules.index');
-        
+        Route::get('/doctor/schedules/index', [DoctorController::class, 'getSchedules'])->name('doctor.schedules.index');
+        Route::get('/doctor/schedules/availableHours',[DoctorController::class, 'getAvailableHours'])->name('doctor.schedules.getAvailableHours');
+
         //Doctor Patients Routes
        Route::get('/doctor/mypatients', [DoctorController::class, 'mypatients'])->name('doctor.mypatients');
        Route::get('/doctor/patient/{id}', [DoctorController::class, 'patientView'])->name('doctor.CRUD.patient.view');

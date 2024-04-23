@@ -7,6 +7,8 @@
     <!-- Alpine.js (optional, if you're using Alpine.js for JavaScript interactivity) -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+
 </head>
 
 <nav

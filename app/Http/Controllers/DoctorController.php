@@ -156,30 +156,6 @@ class DoctorController extends Controller
     }
 
 
-    public function getAppointments()
-    {
-        $doctor = Auth::user()->doctor;
-        $appointments = $doctor->appointments;
-
-        $events = [];
-        foreach ($appointments as $appointment) {
-            $events[] = [
-                'id' => $appointment->id, // Event ID
-                'title' => $appointment->patient->user->name,
-                'start' => $appointment->appointment_date,
-                'extendedProps' => [
-                    'patientName' => $appointment->patient->user->name,
-                    'appointmentDate' => $appointment->appointment_date,
-                    'reason' => $appointment->reason,
-                    'doctorName' => $doctor->user->name,
-                    'startinghour' => $appointment->schedule->start,
-                    'endingHour' => $appointment->schedule->end,
-                ]
-            ];
-        }
-
-        return response()->json($events);
-    }
 
 
     public function getAppointmentDetails($id)
@@ -202,20 +178,7 @@ class DoctorController extends Controller
     }
 
 
-    public function getAppointments2(Request $request, $id)
-    {
-        // Retrieve the date from the request
-        $date = $request->input('date');
 
-        // Retrieve appointments for the specified doctor and date
-        $appointments = Appointment::where('doctor_id', $id)
-            ->whereDate('appointment_date', $date)
-            ->get();
-
-        // Return appointments as JSON response
-        return response()->json($appointments);
-
-    }
 
     public function updateAppointment(Request $request, $id)
     {
@@ -339,21 +302,24 @@ class DoctorController extends Controller
         }
     }
 
-    public function book(Request $request,  $P_ID)
+
+
+    public function book(Request $request, $P_ID)
     {
         $reason_for_appointment = $request->input('reason');
-        $appointment_date = $request->input('appointment_date');
+        $appointment_date = $request->input('appointment_datee');
         $schedule_id = $request->input('appointment_time');
         $doctor_id = $request->input('doctor_id');
+
         // Validating form inputs
         $validator = Validator::make($request->all(), [
             'reason' => 'required|string|max:255',
-            'appointment_date' => 'required|date',
+            'appointment_datee' => 'required|date',
             'appointment_time' => 'required|exists:schedules,id', // Ensure the selected schedule ID exists in the database
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->route('doctor.CRUD.patient.book',['id' => $P_ID])->with('error', 'Appointment booking failed');
         }
 
         // Creating the appointment
@@ -367,32 +333,54 @@ class DoctorController extends Controller
             'status' => 'Pending',
         ]);
 
+        // If appointment is successfully created
         if ($appointment) {
-            return redirect()->back()->with('success', 'Appointment booked successfully');
+            // Update the schedule to mark the booked time slot as unavailable
+            $schedule = Schedule::find($schedule_id);
+            if ($schedule) {
+                $schedule->update(['status' => 'true']);
+            }
+            return redirect()->route('doctor.mypatients')->with('success', 'Appointment booked successfully');
         } else {
-            return redirect()->back()->with('error', 'Appointment booking failed');
+            return redirect()->route('doctor.CRUD.patient.book')->with('error', 'Appointment booking failed');
         }
     }
 
-    public function getDoctorSchedules(Request $request)
+
+
+    public function getAvailableHours(Request $request )
     {
-        // Validate the request...
-        $request->validate([
-            'doctor_id' => 'required|exists:doctors,id',
-            'date' => 'required|date_format:Y-m-d',
-        ]);
-
-        // Get the doctor's schedules for the selected date...
-        $doctorId = $request->input('doctor_id');
+        // Retrieve the date from the request
         $date = $request->input('date');
-        $schedules = Schedule::where('doctor_id', $doctorId)
-                            ->where('day', Carbon::parse($date)->format('l')) // Assuming 'day' column holds day names (e.g., 'Monday')
-                            ->get(['id', 'start']); // Fetching only necessary columns
+        $doctor_id = $request->input('doctor_id');
+        // Convert the date to day of the week (e.g., Monday, Tuesday)
+        $dayOfWeek = Carbon::parse($date)->format('l');
 
-        // Return the schedules as a JSON response...
-        return response()->json([
-            'schedules' => $schedules,
-        ]);
+        // Retrieve available hours for the selected date and day of the week
+        $availableHours = Schedule::where('day', $dayOfWeek)
+            ->where('doctor_id', $doctor_id)
+            ->where('status', 'false')
+            ->select('id', 'start') // Selecting both ID and start time
+            ->get();
+
+        // Return the available hours as JSON response
+        return response()->json($availableHours);
+
+    }
+
+    public function getAppointments(Request $request)
+    {
+        // Retrieve the date from the request
+        $date = $request->input('date');
+        $doctor_id = $request->input('doctor_id');
+        // Retrieve appointments for the specified doctor and date
+        $appointments = Appointment::where('doctor_id', $doctor_id)
+            ->whereDate('appointment_date', $date)
+            ->get();
+
+        // Return appointments as JSON response
+        return response()->json($appointments);
+
     }
 
 

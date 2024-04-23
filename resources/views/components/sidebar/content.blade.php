@@ -17,7 +17,7 @@
         <x-sidebar.link title="Dashboard" href="{{ route(auth()->user()->getDashboardRouteAttribute()) }}"
             :isActive="request()->routeIs(auth()->user()->getDashboardRouteAttribute())">
             <x-slot name="icon">
-                <x-heroicon-o-view-grid class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+                <i class="fa-solid fa-house"></i>
             </x-slot>
         </x-sidebar.link>
     @endif
@@ -78,19 +78,22 @@
     @endif
 
     @if (auth()->user()->user_type === 'doctor')
+
+
+
         <x-sidebar.link title="Appointments" href="{{ route('doctor.appointments') }}" :isActive="request()->routeIs('doctor.appointments')">
             <x-slot name="icon">
-                <x-heroicon-o-bookmark class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+                <i class="fa-regular fa-calendar-check"></i>
             </x-slot>
         </x-sidebar.link>
         <x-sidebar.link title="Schedules" href="{{ route('doctor.schedule') }}" :isActive="request()->routeIs('doctor.schedule')">
             <x-slot name="icon">
-                <x-heroicon-o-calendar class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+                <i class="fa-solid fa-calendar-days"></i>
             </x-slot>
         </x-sidebar.link>
         <x-sidebar.link title="My patients" href="{{ route('doctor.mypatients') }}" :isActive="request()->routeIs('doctor.mypatients')">
             <x-slot name="icon">
-                <x-heroicon-o-user-group class="flex-shrink-0 w-6 h-6" aria-hidden="true" />
+                <i class="fa-solid fa-bed-pulse"></i>
             </x-slot>
         </x-sidebar.link>
     @endif
