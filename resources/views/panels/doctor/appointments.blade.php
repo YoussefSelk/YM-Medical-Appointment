@@ -75,11 +75,19 @@
                                         class="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $item->status }}</span>
                                 @endif
                             </td>
+
                             <td
                                 class="py-2 px-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
                                  <a href="{{route('doctor.CRUD.appointment.edit', [$item->id])}}" class="font-medium text-blue-600 dark:text-blue-500 mr-2"><i
-                                    class="fa-regular fa-pen-to-square"></i></a>
+                                    class="fa-regular fa-pen-to-square"></i>
+                                 </a>
+
+                                    <a href="{{ route('doctor.CRUD.appointment.details', [$item->id]) }}"  class="font-medium text-blue-600 dark:text-blue-500 "><i
+                                        class="fa-regular fa-eye"></i>
+                                    </a>
                             </td>
+
+                            
                         </tr>
                     @endforeach
                 </tbody>

@@ -771,8 +771,10 @@ font_size: 1rem;
 		</ul>
 	 -->
 
-		<x-home.home-navbar></x-home.home-navbar>
 
+     <x-home.home-navbar></x-home.home-navbar>
+
+     
 		<!-- Slider Area -->
 		<section class="slider">
 			<div class="hero-slider">
@@ -1092,8 +1094,10 @@ font_size: 1rem;
 					<div class="col-lg-12">
 						<div class="section-title">
 							<h2>We Are Always Ready to Help You. Book An Appointment</h2>
+                            {{-- <a href="{{ route('login') }}" class="btn">Get Appointment</a> --}}
+							{{-- <button class="btn" href="{{ route('login') }}">Get Appointment</button> --}}
+                            <a href="{{ route('login') }}" class="btn"><button>Get Appointment</button></a>
 
-							<button class="btn" href="{{ route('login') }}">Get Appointment</button>
 						</div>
 					</div>
 				</div>
@@ -1140,7 +1144,7 @@ font_size: 1rem;
 							<div class="single-footer">
 								<h2>Newsletter</h2>
 								<p>Subscribe to our newsletter and receive all our latest news, updates, and exclusive offers directly in your inbox!</p>
-								<form action="mail/mail.php" method="get" target="_blank" class="newsletter-inner">
+								<form action="" method="get" target="_blank" class="newsletter-inner">
 									<input name="email" placeholder="Email Address" class="common-input" onfocus="this.placeholder = ''"
 										onblur="this.placeholder = 'Your email address'" required="" type="email">
 									<button class="button"><i class="fa-regular fa-paper-plane"></i></button>

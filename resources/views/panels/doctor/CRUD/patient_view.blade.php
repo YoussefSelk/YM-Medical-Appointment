@@ -44,7 +44,7 @@
     </div>
 
 
-    <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+    {{-- <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
         <div class="overflow-x-auto">
             <table id="appointmentsTable" class="w-full">
                 <thead>
@@ -74,7 +74,7 @@
                             class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                             Doctor's comment</th>
 
-                        
+
                     </tr>
                 </thead>
                 <tbody>
@@ -127,8 +127,96 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </div>--}}
 
+
+    <div class="p-6 mt-2 mb-2 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+        <h2 class="text-xl mb-4 font-semibold leading-tight ">
+            {{ __('Patient Details ') }}
+        </h2>
+        <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Name</p>
+                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
+                    {{ $patient->user->name }}</p>
+            </div>
+            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Email</p>
+                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
+                    {{ $patient->user->email }}</p>
+            </div>
+            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Phone</p>
+                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
+                    +212 {{ $patient->user->phone }}</p>
+            </div>
+            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Gender</p>
+                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
+                    {{ $patient->user->gender }}</p>
+            </div>
+            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Birthdate</p>
+                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
+                    {{ $patient->birth_date }}</p>
+            </div>
+            <div class="border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">CIN</p>
+                <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
+                    {{ $patient->cin }}</p>
+            </div>
+        </div>
+        <hr class="my-5">
+        <h2 class="text-xl mb-4 font-semibold leading-tight ">
+            {{ __('Patient Appointments Details ') }}
+        </h2>
+        <div class="">
+            <table id="DataTable" class="">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Reason</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Appointment Date
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Doctor Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Starting Hour</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Doctor's comment</th>
+                      
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach ($patient->appointments as $item)
+                        <tr class="hover:bg-gray-100">
+                            <td class="px-6 py-4">{{ $item->id }}</td>
+                            <td class="px-6 py-4">{{ $item->reason }}</td>
+                            <td class="px-6 py-4">{{ $item->appointment_date }}</td>
+                            <td class="px-6 py-4">{{ $item->doctor->user->name }}</td>
+                            <td class="px-6 py-4">{{ $item->schedule->start }}</td>
+                            <td class="px-6 py-4">
+                                @if ($item->status == 'Pending')
+                                    <span
+                                        class="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $item->status }}</span>
+                                @elseif ($item->status == 'Expired')
+                                    <span
+                                        class="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $item->status }}</span>
+                                @elseif ($item->status == 'Cancelled')
+                                    <span
+                                        class="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $item->status }}</span>
+                                @elseif ($item->status == 'Approved')
+                                    <span
+                                        class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">{{ $item->status }}</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 ">{{ $item->doctor_comment }}</td>
+
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+        </div>
+    </div>
 
 
 
