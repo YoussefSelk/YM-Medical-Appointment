@@ -62,6 +62,11 @@
                 <i class="fa-solid fa-briefcase"></i>
             </x-slot>
         </x-sidebar.link>
+        <x-sidebar.link title="Doctors Applies" href="{{ route('admin.apply') }}" :isActive="request()->routeIs('admin.apply')">
+            <x-slot name="icon">
+                <i class="fa-solid fa-file-contract"></i>
+            </x-slot>
+        </x-sidebar.link>
     @endif
     @if (auth()->user()->user_type === 'patient')
         <x-sidebar.link title="Doctor List" href="{{ route('patiens.doctors') }}" :isActive="request()->routeIs('patiens.doctors')">
@@ -84,9 +89,6 @@
     @endif
 
     @if (auth()->user()->user_type === 'doctor')
-
-
-
         <x-sidebar.link title="Appointments" href="{{ route('doctor.appointments') }}" :isActive="request()->routeIs('doctor.appointments')">
             <x-slot name="icon">
                 <i class="fa-regular fa-calendar-check"></i>

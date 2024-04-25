@@ -73,6 +73,12 @@
                         </a>
                     </p>
                 @endif
+                <div>
+                    <a href="{{ route('home') }}"
+                        class="inline-block text-sm px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg">
+                        {{ __('Back to Landing Page') }}
+                    </a>
+                </div>
             </div>
         </form>
     </x-auth-card>
