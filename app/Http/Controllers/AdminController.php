@@ -111,6 +111,7 @@ class AdminController extends Controller
     }
     public function index() //index function return the home page for admin panel
     {
+        
         $shedules = Schedule::all();
         $doctors = Doctor::all();
         $Patients = Patient::all();
