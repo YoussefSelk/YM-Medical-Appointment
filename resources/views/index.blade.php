@@ -468,7 +468,7 @@
                     <div class="section-title">
                         <h2>We Are Always Ready to Help You. Book An Appointment</h2>
 
-                        <button class="btn" href="{{ route('login') }}">Get Appointment</button>
+                        <a href="{{ route('login') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Get Appointment</a>
                     </div>
                 </div>
             </div>
@@ -524,7 +524,7 @@
                                 <input name="email" placeholder="Email Address" class="common-input"
                                     onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your email address'"
                                     required="" type="email">
-                                <button class="button"><i class="fa-regular fa-paper-plane"></i></button>
+                                <button class="button" type="submit"><i class="fa-regular fa-paper-plane"></i></button>
                             </form>
                         </div>
                     </div>

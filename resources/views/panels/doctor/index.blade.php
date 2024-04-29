@@ -1,6 +1,7 @@
 <head>
     <title>Doctor's Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css?v=1628755089081">
 </head>
 
 <x-doctor-layout>
@@ -13,8 +14,7 @@
         </div>
     </x-slot>
 
-    <div
-        class="p-6 bg-white rounded-md shadow-md overflow-hidden flex flex-col md:flex-row justify-around dark:bg-dark-eval-1">
+    <div class="p-6 bg-white rounded-md shadow-md overflow-hidden flex flex-col md:flex-row justify-around dark:bg-dark-eval-1">
         <div class="md:flex justify-center items-center md:w-1/2">
             <div class="p-8 flex items-center">
                 <div class="mr-12">
@@ -33,39 +33,77 @@
                     <div class="uppercase tracking-wide text-sm text-blue-500 font-semibold">Welcome to the Doctor Panel
                     </div>
                     <div>
-                        <p class="mt-2 text-gray-500">{!! __('Welcome <strong>:name</strong>', ['name' => auth()->user()->name]) !!}</p>
+                        <p class="mt-2 text-gray-500">{!! __('Dr. <strong>:name</strong>', ['name' => auth()->user()->name]) !!}</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="p-6 bg-white rounded-md dark:bg-dark-eval-1 md:w-1/2">
-            {!! __('<strong>Counts</strong> :') !!}
+        <div class="p-6 bg-white dark:bg-dark-eval-1 rounded-md md:w-1/2">
+            <strong class="text-lg text-gray-800 dark:text-gray-200">Counts:</strong>
 
-            <div class="card mini_dashboard flex flex-wrap justify-center md:justify-around flex-col md:flex-row">
-
-                <div class="sub-card mini_dash mb-4 md:mb-0 md:mr-4">
-                    <div class="card_content">
-                        <div class="card_title">
-                            <p class="card_title_number">{{ count($schedule) }}</p>
-                            <p class="card_title_name">Schedules</p>
-                        </div>
-                        <div class="card_icon"></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow-md p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200">{{ count($schedule) }}</p>
+                        <p class="text-gray-500 dark:text-gray-400">Schedules</p>
                     </div>
+                    <i class="fas fa-calendar text-3xl text-blue-500 dark:text-blue-300"></i>
                 </div>
 
-                <div class="sub-card mini_dash">
-                    <div class="card_content">
-                        <div class="card_title">
-                            <p class="card_title_number">{{ count($appointments) }}</p>
-                            <p class="card_title_name">Bookings</p>
-                        </div>
-                        <div class="card_icon"></div>
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow-md p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200">{{ count($patients) }}</p>
+                        <p class="text-gray-500 dark:text-gray-400">My patients</p>
                     </div>
+                    <i class="fas fa-solid fa-bed-pulse text-3xl text-blue-500 dark:text-blue-300"></i>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow-md p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200">{{ count($appointments) }}</p>
+                        <p class="text-gray-500 dark:text-gray-400">Bookings</p>
+                    </div>
+                    <i class="fas fa-calendar-check text-3xl text-purple-500 dark:text-purple-300"></i>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class=" m-4  rounded-md  overflow-hidden flex flex-col md:flex-row  dark:bg-dark-eval-1 ">
+        <div class=" p-6 bg-white m-3 dark:bg-dark-eval-1 rounded-md md:w-1/2 w-full  ">
+            <strong class="text-lg text-gray-800 dark:text-gray-200"> Upcoming Appointments: </strong> <i class="fa-solid fa-calendar-check"></i>
+            <div class="m-4">
+                @foreach($upcommingAppointments  as $appointment)
+                    <div class="border-b border-gray-200 dark:border-gray-600 py-2">
+                        <p class="text-gray-800 dark:text-gray-200"><strong>Patient  name : </strong> </p>
+                        <p class="text-gray-800 dark:text-gray-200">{{ $appointment->patient->user->name }}</p>
+                        <p class="text-gray-800 dark:text-gray-200"> <strong> Appointment date : </strong> </p>
+                        <p class="text-gray-500 dark:text-gray-400">{{ $appointment->appointment_date }}</p>
+                        <p class="text-gray-800 dark:text-gray-200"> <strong> Reason : </strong> </p>
+                        <p class="text-gray-500 dark:text-gray-400">{{ $appointment->reason }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="p-6 bg-white dark:bg-dark-eval-1 rounded-md md:w-1/2 m-3 w-full ">
+            <strong class="text-lg text-gray-800 dark:text-gray-200">Recent Patient Visits:</strong> <i class="fa-solid fa-bed-pulse"></i>
+            <div class="m-4">
+                @foreach($recentVisits as $visit)
+                    <div class="border-b border-gray-200 dark:border-gray-600 py-2">
+                        <p class="text-gray-800 dark:text-gray-200"><strong>Patient  name : </strong> </p>
+                        <p class="text-gray-800 dark:text-gray-200">{{ $visit->patient->user->name }}</p>
+                        <p class="text-gray-800 dark:text-gray-200"> <strong> Visit date : </strong> </p>
+                        <p class="text-gray-500 dark:text-gray-400">{{ $visit->appointment_date }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+    </div>
+
+
 
 
 
