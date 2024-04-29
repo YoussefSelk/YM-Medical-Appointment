@@ -19,6 +19,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
         ->name('admin.appointment.detail.cancel');
 
     Route::put('/admin/appointment/detail/{id}/approve', [AdminController::class, 'approve_appointment'])
-        
+
         ->name('admin.appointment.detail.approve');
 });

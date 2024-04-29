@@ -13,6 +13,9 @@
 
 //BackOffice's routes
 
+use App\Http\Controllers\Auth\DoctorRegisteredUserController;
+use Illuminate\Support\Facades\Route;
+
 include 'web/BackOffice/admin.php';
 
 include 'web/BackOffice/doctor.php';
@@ -25,6 +28,7 @@ include 'web/BackOffice/schedules.php';
 
 include 'web/BackOffice/speciality.php';
 
+include 'web/BackOffice/doctors-apply.php';
 
 //FrontOffice's routes (Patient)
 
@@ -54,5 +58,6 @@ include 'web/FrontOffice/others/notification.php';
 
 include 'web/FrontOffice/others/others.php';
 
+include 'web/FrontOffice/others/mail.php';
 
 require __DIR__ . '/auth.php';

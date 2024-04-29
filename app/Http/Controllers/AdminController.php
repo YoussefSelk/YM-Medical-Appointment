@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Charts\DoctorCharts;
 use App\Charts\PatientCharts;
 use App\Charts\AppoinmentsCharts;
+use App\Models\Application;
 use App\Models\Notification;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -37,6 +39,13 @@ class AdminController extends Controller
     }
 
     //Views  Functions
+
+    public function apply_view()
+    {
+        $applications = Application::all();
+        return view('panels.admin.doctors-apply')->with(compact('applications'));
+    }
+
     public function doctor_notify_view($id)
     {
         $doctor = Doctor::find($id);
@@ -241,6 +250,10 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Schedule deleted successfully.');
     }
     // Operations Functions
+
+
+
+
     public function cancel_appointment($id)
     {
         $appointment = Appointment::find($id);
@@ -307,6 +320,59 @@ class AdminController extends Controller
     {
         $doctors = Doctor::with('user', 'speciality')->get();
         return response()->json($doctors);
+    }
+    public function approveApplication(Request $request, $id)
+    {
+        $application = Application::findOrFail($id);
+        $application->status = 'approved';
+
+        // Generate a unique registration token
+        $application->registration_token = Str::random(60);
+
+        // Set token expiry time (e.g., 24 hours)
+        $application->token_expiry = now()->addHours(24);
+
+        $application->save();
+
+        $link = url('/doctor/register/' . $application->registration_token);
+        // Send support email with the registration link containing the token
+        sendSupportEmail([
+            'to' => $application->email,
+            'content' => 'Your application for the doctor position has been approved. [#' . $application->id . ']. Click the link below to register as a doctor. Thank you for showing interest.',
+            'contactLink' => $link,
+            'contactText' => 'Register as a doctor',
+            'phoneNumber' => '+1234567890',
+        ]);
+
+
+        return response()->json(['message' => 'Application approved successfully']);
+    }
+
+
+    public function rejectApplication(Request $request, $id)
+    {
+        $application = Application::find($id);
+        $application->status = 'rejected';
+        $application->save();
+
+        // Send support email
+        sendSupportEmail([
+            'to' => $application->email,
+            'content' => 'We regret to inform you that your application for the doctor position has been rejected. [#' . $application->id . ']. Thank you for showing interest.',
+            'contactLink' => 'https://example.com/contact',
+            'contactText' => 'Contact us',
+            'phoneNumber' => '+1234567890',
+        ]);
+
+        return response()->json(['message' => 'Application rejected successfully']);
+    }
+
+    public function delete_application($id)
+    {
+        $application = Application::findOrFail($id);
+        $application->delete();
+
+        return response()->json(['message' => 'Application deleted successfully']);
     }
 
     // CRUD Functions

@@ -6,7 +6,7 @@
         </h2>
     </x-slot>
 
-     <x-success-flash></x-success-flash>
+    <x-success-flash></x-success-flash>
     <x-error-flash></x-error-flash>
 
     <div class="p-6 mb-2 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
@@ -20,7 +20,7 @@
                             <path
                                 d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
                         </svg>
-                         My Appointments
+                        My Appointments
                     </a>
                 </li>
                 <li aria-current="page">
@@ -47,23 +47,29 @@
                 <div>
                     <x-form.label for="status" :value="__('Status')" />
 
-                        <x-form.select name="status" id="status" class="block w-full">
-                        <option value="Expired" {{ old('status', $appointment->status) == 'Expired' ? 'selected' : '' }}>Expired</option>
-                        <option value="Cancelled" {{ old('status', $appointment->status) == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
-                        <option value="Pending" {{ old('status', $appointment->status) == 'Pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="Completed" {{ old('status', $appointment->status) == 'Completed' ? 'selected' : '' }}>Completed</option>
-                        </x-form.select>
+                    <x-form.select name="status" id="status" class="block w-full">
+                        <option value="Expired"
+                            {{ old('status', $appointment->status) == 'Expired' ? 'selected' : '' }}>Expired</option>
+                        <option value="Cancelled"
+                            {{ old('status', $appointment->status) == 'Cancelled' ? 'selected' : '' }}>Cancelled
+                        </option>
+                        <option value="Pending"
+                            {{ old('status', $appointment->status) == 'Pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="Completed"
+                            {{ old('status', $appointment->status) == 'Completed' ? 'selected' : '' }}>Completed
+                        </option>
+                    </x-form.select>
                     @error('status')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
-                    <x-form.label for="doctor_comment" :value="__('Doctor Comment')"/>
+                    <x-form.label for="doctor_comment" :value="__('Doctor Comment')" />
                     <textarea name="doctor_comment" id="doctor_comment" cols="15" rows="5" placeholder="Enter doctor comment"
-                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
 
                     @error('doctor_comment')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 

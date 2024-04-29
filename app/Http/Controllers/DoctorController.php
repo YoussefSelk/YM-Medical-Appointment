@@ -20,13 +20,24 @@ class DoctorController extends Controller
     public function index()
     {
         $appointments = Auth::user()->doctor->Appointments;
+
         $schedule = Auth::user()->doctor->schedules;
 
         $patientIds = Auth::user()->doctor->Appointments->pluck('patient_id')->unique();
+
         $patients = Patient::whereIn('id', $patientIds)->get();
-        
+
+        $upcommingAppointments = Appointment::where('doctor_id', Auth::user()->doctor->id)
+        ->where('appointment_date', '>', Carbon::now())->get(); 
+
+        $recentVisits = Appointment::where('doctor_id', Auth::user()->doctor->id)
+        ->where('appointment_date', '<', Carbon::now())
+        ->where('status', 'Approved')
+        ->get();
+
         return view('panels.doctor.index')->with('appointments', $appointments)->with('schedule', $schedule)
-        ->with('patients', $patients);
+        ->with('patients', $patients)->with('upcommingAppointments', $upcommingAppointments)
+        ->with('recentVisits', $recentVisits);
     }
 
     public function appointments()

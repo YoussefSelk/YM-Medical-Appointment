@@ -15,7 +15,7 @@
 
     <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
         <div class="overflow-x-auto">
-            <table id="myPatientsTable" class="w-full">
+            <table id="DataTable" class="w-full">
                 <thead>
                     <tr>
                         <th
@@ -111,6 +111,6 @@
 
 
 
-
+    @include('includes.table')
 </x-doctor-layout>
-@include('includes.table')
+
