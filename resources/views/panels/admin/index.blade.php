@@ -38,42 +38,38 @@
                 </div>
             </div>
         </div>
+        <div class="p-6 bg-white dark:bg-dark-eval-1 rounded-md md:w-1/2">
+            <strong class="text-lg text-gray-800 dark:text-gray-200">Counts:</strong>
 
-        <div class="p-6 bg-white rounded-md dark:bg-dark-eval-1 md:w-1/2">
-            {!! __('<strong>Counts</strong> :') !!}
-
-            <div class="card mini_dashboard flex flex-wrap justify-center md:justify-around flex-col md:flex-row">
-                <div class="sub-card mini_dash mb-4 md:mb-0 md:mr-4">
-                    <div class="card_content">
-                        <div class="card_title">
-                            <p class="card_title_number">{{ count($doctors) }}</p>
-                            <p class="card_title_name">Doctors</p>
-                        </div>
-                        <div class="card_icon"></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow-md p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200">{{ count($doctors) }}</p>
+                        <p class="text-gray-500 dark:text-gray-400">Doctors</p>
                     </div>
+                    <i class="fa-solid fa-user-doctor text-3xl text-blue-500 dark:text-blue-300"></i>
                 </div>
 
-                <div class="sub-card mini_dash mb-4 md:mb-0 md:mr-4">
-                    <div class="card_content">
-                        <div class="card_title">
-                            <p class="card_title_number">{{ count($patients) }}</p>
-                            <p class="card_title_name">Patients</p>
-                        </div>
-                        <div class="card_icon"></div>
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow-md p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200">{{ count($patients) }}</p>
+                        <p class="text-gray-500 dark:text-gray-400">My patients</p>
                     </div>
+                    <i class="fas fa-solid fa-bed-pulse text-3xl text-blue-500 dark:text-blue-300"></i>
+
                 </div>
 
-                <div class="sub-card mini_dash">
-                    <div class="card_content">
-                        <div class="card_title">
-                            <p class="card_title_number">{{ count($appointments) }}</p>
-                            <p class="card_title_name">Bookings</p>
-                        </div>
-                        <div class="card_icon"></div>
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow-md p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200">{{ count($appointments) }}
+                        </p>
+                        <p class="text-gray-500 dark:text-gray-400">Bookings</p>
                     </div>
+                    <i class="fas fa-calendar-check text-3xl text-purple-500 dark:text-purple-300"></i>
                 </div>
             </div>
         </div>
+
     </div>
 
     <div
