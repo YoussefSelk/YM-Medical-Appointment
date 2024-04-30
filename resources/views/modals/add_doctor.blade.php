@@ -1,6 +1,9 @@
 <head>
-    <link rel="stylesheet" href="{{ asset('css/add_doctor_modal.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('css/add_doctor_modal.css') }}"> --}}
     <script src="{{ asset('js/add_doctor_modal.js') }}"></script>
+    <style>
+
+    </style>
 </head>
 @if ($errors->any())
     <script>
@@ -9,6 +12,7 @@
             var modal = document.getElementById('create_doctor_modal');
             if (modal) {
                 modal.style.display = "flex";
+                modal.classList.add('error_modal');
             }
         });
     </script>
@@ -20,8 +24,8 @@
         $temp = true;
     }
 @endphp
-<x-modal name="example-modal" :show="$temp" id="create_doctor_modal">
-    <div class="items_to_hide flex justify-center">
+<x-modal name="example-modal" :show="$temp" id="create_doctor_modal ">
+    <div class="items_to_hide flex justify-center error_modal">
         <div class="form_container bg-white dark:bg-gray-800 p-8 rounded-lg">
             <form action="{{ route('admin.doctor.add') }}" method="POST" class="form" id="form">
                 @csrf
@@ -34,6 +38,7 @@
                             placeholder="Enter Your Full Name"
                             class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         <div class="error_input text-red-500">
+                            <span id="nom_error" class="error_input_span"></span>
                             @error('nom')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -45,6 +50,8 @@
                             placeholder="Enter Your Birthday"
                             class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         <div class="error_input text-red-500">
+                            <span id="birthday_error" class="error_input_span"></span>
+
                             @error('birthdate')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -102,6 +109,8 @@
                             @endforeach
                         </select>
                         <div class="error_input text-red-500">
+                            <span id="city_error" class="error_input_span"></span>
+
                             @error('city')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -114,6 +123,8 @@
                             placeholder="Enter Your Street"
                             class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         <div class="error_input text-red-500">
+                            <span id="rue_error" class="error_input_span"></span>
+
                             @error('rue')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -128,6 +139,8 @@
                             placeholder="test@example.com"
                             class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         <div class="error_input text-red-500">
+                            <span id="email_error" class="error_input_span"></span>
+
                             @error('email')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -139,6 +152,8 @@
                             placeholder="Minimum 8 characters"
                             class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         <div class="error_input text-red-500">
+                            <span id="password_error" class="error_input_span"></span>
+
                             @error('password')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -149,10 +164,12 @@
                 <div class="form_groups">
                     <div class="form_group">
                         <label for="phone" class="text-lg font-semibold">Phone:</label>
-                        <input type="number" name="phone" value="{{ old('phone') }}" id="phone_input"
+                        <input type="text" name="phone" value="{{ old('phone') }}" id="phone_input"
                             placeholder="(06 / 05) 00 00 00 00"
                             class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         <div class="error_input text-red-500">
+                            <span id="phone_error" class="error_input_span"></span>
+
                             @error('phone')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -162,12 +179,15 @@
                         <label for="gender" class="text-lg font-semibold">Gender:</label>
                         <select name="gender" id="gender_input"
                             class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:border-blue-500">
-                            <option value="" {{ old('gender') == '' ? 'selected' : '' }}>Choose The Doctor Gender
+                            <option value="" {{ old('gender') == '' ? 'selected' : '' }}>Choose The Doctor
+                                Gender
                             </option>
                             <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
                             <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
                         </select>
                         <div class="error_input text-red-500">
+                            <span id="gender_error" class="error_input_span"></span>
+
                             @error('gender')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -226,6 +246,8 @@
                             <!-- Add options for different degrees -->
                         </select>
                         <div class="error_input text-red-500">
+                            <span id="degree_error" class="error_input_span"></span>
+
                             @error('degree')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -246,6 +268,8 @@
                             <!-- Add options for different specialities -->
                         </select>
                         <div class="error_input text-red-500">
+                            <span id="speciality_error" class="error_input_span"></span>
+
                             @error('speciality')
                                 <p>{{ $message }}</p>
                             @enderror

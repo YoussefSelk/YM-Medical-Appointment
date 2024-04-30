@@ -6,87 +6,91 @@ document.addEventListener("DOMContentLoaded", function () {
             this.submit();
         }
     });
-});
 
-function validateForm() {
-    let isValid = true;
-    const nom = document.getElementById("nom_input").value.trim();
-    const birthday = document.getElementById("birthday_input").value;
-    const city = document.getElementById("city_input").value.trim();
-    const rue = document.getElementById("rue_input").value.trim();
-    const email = document.getElementById("email_input").value.trim();
-    const password = document.getElementById("password_input").value.trim();
-    const phone = document.getElementById("phone_input").value.trim();
-    const gender = document.getElementById("gender_input").value;
-    const degree = document.getElementById("degree_input").value;
-    const speciality = document.getElementById("speciality_input").value;
+    function validateForm() {
+        let isValid = true;
+        const modal = document.getElementById("create_doctor_modal");
+        const nom = document.getElementById("nom_input").value.trim();
+        const birthday = document.getElementById("birthday_input").value;
+        const city = document.getElementById("city_input").value.trim();
+        const rue = document.getElementById("rue_input").value.trim();
+        const email = document.getElementById("email_input").value.trim();
+        const password = document.getElementById("password_input").value.trim();
+        const phone = document.getElementById("phone_input").value.trim();
+        const gender = document.getElementById("gender_input").value;
+        const degree = document.getElementById("degree_input").value;
+        const speciality = document.getElementById("speciality_input").value;
 
-    // Reset error messages
-    document.querySelectorAll(".error_input").forEach(function (errorInput) {
-        errorInput.innerText = ""; // Clear previous error messages
-    });
+        // Reset error messages
+        document
+            .querySelectorAll(".error_input_span")
+            .forEach(function (errorInput) {
+                errorInput.innerText = ""; // Clear previous error messages
+            });
 
-    // Validation rules
-    if (nom === "") {
-        isValid = false;
-        document.getElementById("nom_error").innerText = "Name is required";
+        // Validation rules
+        if (nom === "") {
+            isValid = false;
+            document.getElementById("nom_error").innerText = "Name is required";
+        }
+
+        if (birthday === "") {
+            isValid = false;
+            document.getElementById("birthday_error").innerText =
+                "Birthday is required";
+        }
+
+        if (city === "") {
+            isValid = false;
+            document.getElementById("city_error").innerText =
+                "City is required";
+        }
+
+        if (rue === "") {
+            isValid = false;
+            document.getElementById("rue_error").innerText =
+                "Street is required";
+        }
+
+        if (email === "") {
+            isValid = false;
+            document.getElementById("email_error").innerText =
+                "Email is required";
+        }
+
+        if (password === "") {
+            isValid = false;
+            document.getElementById("password_error").innerText =
+                "Password is required";
+        }
+
+        if (phone === "") {
+            isValid = false;
+            document.getElementById("phone_error").innerText =
+                "Phone number is required";
+        }
+
+        if (gender === "") {
+            isValid = false;
+            document.getElementById("gender_error").innerText =
+                "Gender is required";
+        }
+
+        if (degree === "") {
+            isValid = false;
+            document.getElementById("degree_error").innerText =
+                "Degree is required";
+        }
+
+        if (speciality === "") {
+            isValid = false;
+            document.getElementById("speciality_error").innerText =
+                "Speciality is required";
+        }
+
+        return isValid;
     }
 
-    if (birthday === "") {
-        isValid = false;
-        document.getElementById("birthday_error").innerText =
-            "Birthday is required";
-    }
-
-    if (city === "") {
-        isValid = false;
-        document.getElementById("city_error").innerText = "City is required";
-    }
-
-    if (rue === "") {
-        isValid = false;
-        document.getElementById("rue_error").innerText = "Street is required";
-    }
-
-    if (email === "") {
-        isValid = false;
-        document.getElementById("email_error").innerText = "Email is required";
-    }
-
-    if (password === "") {
-        isValid = false;
-        document.getElementById("password_error").innerText =
-            "Password is required";
-    }
-
-    if (phone === "") {
-        isValid = false;
-        document.getElementById("phone_error").innerText =
-            "Phone number is required";
-    }
-
-    if (gender === "") {
-        isValid = false;
-        document.getElementById("gender_error").innerText =
-            "Gender is required";
-    }
-
-    if (degree === "") {
-        isValid = false;
-        document.getElementById("degree_error").innerText =
-            "Degree is required";
-    }
-
-    if (speciality === "") {
-        isValid = false;
-        document.getElementById("speciality_error").innerText =
-            "Speciality is required";
-    }
-
-    return isValid;
-}
-document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("form");
     const resetButton = form.querySelector('input[type="reset"]');
 
     resetButton.addEventListener("click", function (event) {

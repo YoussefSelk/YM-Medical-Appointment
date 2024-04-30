@@ -9,7 +9,6 @@
             <h2 class="text-xl font-semibold leading-tight">
                 {{ __('Doctors Page') }}
             </h2>
-
         </div>
     </x-slot>
     <x-success-flash></x-success-flash>
