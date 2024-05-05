@@ -32,6 +32,11 @@
                 <x-form.input id="speciality"
                     class="block w-full mt-1 focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md shadow-sm"
                     type="text" name="speciality" :value="old('speciality')" required autofocus />
+                <div class="text-red-500">
+                    @error('speciality')
+                        {{ $message }}
+                    @enderror
+                </div>
             </div>
 
             <div class="flex items-center justify-end mt-4">

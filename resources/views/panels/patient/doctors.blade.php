@@ -177,7 +177,7 @@
                     <div class="p-4 flex items-center justify-end">
                         <a href="{{ route('patiens.doctor.book.appointment', ['id' => $doctor->id]) }}" class="text-blue-500 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200">
                             <i class="fa-regular fa-calendar-check"></i> Prendre Rendez-vous
-                        </a>
+                        </a>    
                     </div>
                 </div>
             `;

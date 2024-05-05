@@ -1,6 +1,5 @@
 <head>
     <link rel="stylesheet" href="{{ asset('css/add_doctor_modal.css') }}">
-    <script src="{{ asset('js/add_doctor_modal.js') }}"></script>
 </head>
 @if ($errors->any())
     <script>
@@ -204,4 +203,3 @@
         </div>
     </div>
 </x-modal>
-<script src="{{ asset('js/validations/admin/add_patient_modal.js') }}"></script>

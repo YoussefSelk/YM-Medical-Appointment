@@ -379,7 +379,6 @@ class AdminController extends Controller
     // CRUD Functions
 
     public function doctor_notify(Request $request, $id)
-
     {
         $OriginalTitle = $request->input('title');
         $title = $request->input('title');
@@ -415,7 +414,6 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Notification Sent !!');
     }
     public function patient_notify(Request $request, $id)
-
     {
         $OriginalTitle = $request->input('title');
         $title = $request->input('title');
@@ -842,13 +840,16 @@ class AdminController extends Controller
         $degree = htmlspecialchars($request->input('degree'));
         $speciality = htmlspecialchars($request->input('speciality'));
 
-        if ($this->isXssAttackDetected(
-            [$originalName, $originalVille, $originalRue, $originalEmail, $originalDegree, $originalSpeciality],
-            [$name, $ville, $rue, $email, $degree, $speciality]
-        )) {
-            return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
+        if (!empty($name) && !empty($birthdate) && !empty($ville) && !empty($rue) && !empty($email) && !empty($phone) && !empty($gender) && !empty($degree) && !empty($speciality)) {
+            if (
+                $this->isXssAttackDetected(
+                    [$originalName, $originalVille, $originalRue, $originalEmail, $originalDegree, $originalSpeciality],
+                    [$name, $ville, $rue, $email, $degree, $speciality]
+                )
+            ) {
+                return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
+            }
         }
-
 
         $rules = [
             'nom' => 'required|string|max:255',
@@ -938,10 +939,11 @@ class AdminController extends Controller
         $cin = htmlspecialchars($originalCin);
 
         // Check for XSS Attacks
-        if ($this->isXssAttackDetected([$originalName, $originalVille, $originalRue, $originalEmail, $originalCin], [$name, $ville, $rue, $email, $cin])) {
-            return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
+        if (!empty($name) && !empty($ville) && !empty($rue) && !empty($email) && !empty($cin) && !empty($password) && !empty($phone) && !empty($gender)) {
+            if ($this->isXssAttackDetected([$originalName, $originalVille, $originalRue, $originalEmail, $originalCin], [$name, $ville, $rue, $email, $cin])) {
+                return redirect()->back()->with('error', 'XSS or SQL Injection attack detected. Please provide valid input.');
+            }
         }
-
         // Validation Rules
         $rules = [
             'nom' => 'required|string|max:255',
