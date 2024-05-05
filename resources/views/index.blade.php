@@ -515,19 +515,7 @@
 
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-12">
-                        <div class="single-footer">
-                            <h2>Newsletter</h2>
-                            <p>Subscribe to our newsletter and receive all our latest news, updates, and exclusive
-                                offers directly in your inbox!</p>
-                            <form action="mail/mail.php" method="get" target="_blank" class="newsletter-inner">
-                                <input name="email" placeholder="Email Address" class="common-input"
-                                    onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your email address'"
-                                    required="" type="email">
-                                <button class="button" type="submit"><i class="fa-regular fa-paper-plane"></i></button>
-                            </form>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>

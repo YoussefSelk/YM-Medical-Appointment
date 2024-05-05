@@ -13,7 +13,7 @@
     <div class="p-6 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
         <table class="min-w-full divide-y divide-gray-200" id="DataTable">
             <thead class="bg-gray-50">
-                <tr>
+                <tr class="dark:bg-gray-800 dark:text-white dark:border-gray-700">
                     <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>

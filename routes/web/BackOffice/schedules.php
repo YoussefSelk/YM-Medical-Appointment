@@ -19,7 +19,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
         ->name('admin.doctor.schedule.submit');
 
     Route::get('/admin/doctor-schedules', [AdminController::class, 'getDoctorSchedules'])
-        ->middleware('CheckDoctor')
         ->name('admin.doctor.schedules');
 
     Route::get('/admin/doctor-schedules/{id}/edit', [AdminController::class, 'editSchedule'])

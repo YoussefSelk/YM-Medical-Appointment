@@ -61,7 +61,7 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-700">
                     @foreach ($appointments as $appointment)
-                        <tr class="dark:bg-gray-700">
+                        <tr class="dark:bg-gray-800 dark:border-gray-700">
                             <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-200">
                                 {{ ucfirst($appointment->id) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-200">
