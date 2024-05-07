@@ -66,14 +66,41 @@
                     </div>
                     <i class="fas fa-calendar-check text-3xl text-purple-500 dark:text-purple-300"></i>
                 </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow-md p-4 flex items-center justify-between">
+                    @if ($ratings->isNotEmpty())
+
+                    <div>
+                        <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200">{{ $ratings->avg('rating') }}</p>
+                        <p class="text-gray-500 dark:text-gray-400">My Rating</p>
+                    </div>
+                    <i class="fas fa-solid fa-star text-3xl text-blue-500 dark:text-blue-300"></i>
+
+                    @else
+                    <p>No Rating</p>
+
+                    @endif
+
+                </div>
+
             </div>
+
         </div>
+
     </div>
 
     <div class=" m-4  rounded-md  overflow-hidden flex flex-col md:flex-row  dark:bg-dark-eval-1 ">
         <div class=" p-6 bg-white m-3 dark:bg-dark-eval-1 rounded-md md:w-1/2 w-full  ">
             <strong class="text-lg text-gray-800 dark:text-gray-200"> Upcoming Appointments: </strong> <i class="fa-solid fa-calendar-check"></i>
             <div class="m-4">
+                @if (count($upcommingAppointments) == 0)
+
+                    <div class="border-b border-gray-200 dark:border-gray-600 py-2">
+                        <p class="text-gray-800 dark:text-gray-200">No Upcomming Appointments</p>
+                    </div>
+
+                @else
+
                 @foreach($upcommingAppointments  as $appointment)
                     <div class="border-b border-gray-200 dark:border-gray-600 py-2">
                         <p class="text-gray-800 dark:text-gray-200"><strong>Patient  name : </strong> </p>
@@ -84,12 +111,24 @@
                         <p class="text-gray-500 dark:text-gray-400">{{ $appointment->reason }}</p>
                     </div>
                 @endforeach
+
+                @endif
+
             </div>
         </div>
 
         <div class="p-6 bg-white dark:bg-dark-eval-1 rounded-md md:w-1/2 m-3 w-full ">
             <strong class="text-lg text-gray-800 dark:text-gray-200">Recent Patient Visits:</strong> <i class="fa-solid fa-bed-pulse"></i>
             <div class="m-4">
+
+                @if (count($recentVisits) == 0)
+
+                <div class="border-b border-gray-200 dark:border-gray-600 py-2">
+                    <p class="text-gray-800 dark:text-gray-200">No recent patient visits</p>
+                </div>
+
+                @else
+
                 @foreach($recentVisits as $visit)
                     <div class="border-b border-gray-200 dark:border-gray-600 py-2">
                         <p class="text-gray-800 dark:text-gray-200"><strong>Patient  name : </strong> </p>
@@ -98,13 +137,37 @@
                         <p class="text-gray-500 dark:text-gray-400">{{ $visit->appointment_date }}</p>
                     </div>
                 @endforeach
+
+                @endif
             </div>
         </div>
 
     </div>
 
 
+    <div class="p-6 bg-white dark:bg-dark-eval-1 rounded-md md:w-1/2 m-3 w-full ">
 
+        <strong class="text-lg text-gray-800 dark:text-gray-200">My reviews :</strong> <i class="fa-solid fa-star"></i>
+
+        <div class=" p-6 bg-white m-3 dark:bg-dark-eval-1 rounded-md md:w-1/2 w-full  ">
+            @if (count($ratings) == 0)
+
+                <div class="border-b border-gray-200 dark:border-gray-600 py-2">
+                    <p class="text-gray-800 dark:text-gray-200">No reviews</p>
+                </div>
+
+            @else
+            @foreach($ratings as $review)
+                <div class="border-b border-gray-200 dark:border-gray-600 py-2">
+                    <p class="text-gray-800 dark:text-gray-200"><strong>Patient  name : </strong> </p>
+                    <p class="text-gray-800 dark:text-gray-200">{{ $review->patient->user->name }}</p>
+                    <p class="text-gray-800 dark:text-gray-200"> <strong> Review : </strong> </p>
+                    <p class="text-gray-500 dark:text-gray-400">{{ $review->comment }}</p>
+                </div>
+            @endforeach
+            @endif
+
+    </div>
 
 
 </x-doctor-layout>

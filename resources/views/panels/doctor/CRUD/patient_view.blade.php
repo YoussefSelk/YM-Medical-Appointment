@@ -182,7 +182,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Starting Hour</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Doctor's comment</th>
-                      
+
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -203,7 +203,7 @@
                                 @elseif ($item->status == 'Cancelled')
                                     <span
                                         class="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $item->status }}</span>
-                                @elseif ($item->status == 'Approved')
+                                @else
                                     <span
                                         class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">{{ $item->status }}</span>
                                 @endif

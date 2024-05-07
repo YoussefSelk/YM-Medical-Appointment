@@ -55,8 +55,8 @@
                         </option>
                         <option value="Pending"
                             {{ old('status', $appointment->status) == 'Pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="Completed"
-                            {{ old('status', $appointment->status) == 'Completed' ? 'selected' : '' }}>Completed
+                        <option value="Approved"
+                            {{ old('status', $appointment->status) == 'Completed' ? 'selected' : '' }}>Approved
                         </option>
                     </x-form.select>
                     @error('status')

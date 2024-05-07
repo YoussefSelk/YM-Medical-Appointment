@@ -80,7 +80,7 @@
                                 @if ($appointment->status == 'Pending')
                                     <span
                                         class="bg-yellow-100 text-yellow-800 dark:bg-yellow-500 dark:text-yellow-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $appointment->status }}</span>
-                                @elseif ($appointment->status == 'expired')
+                                @elseif ($appointment->status == 'Expired')
                                     <span
                                         class="bg-red-100 text-red-800 dark:bg-red-500 dark:text-red-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $appointment->status }}</span>
                                 @elseif ($appointment->status == 'Cancelled')

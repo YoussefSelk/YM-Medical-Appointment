@@ -10,6 +10,7 @@ use App\Models\Patient;
 use App\Models\Schedule;
 use App\Models\Speciality;
 use App\Models\User;
+use App\Models\Rating;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
@@ -28,16 +29,19 @@ class DoctorController extends Controller
         $patients = Patient::whereIn('id', $patientIds)->get();
 
         $upcommingAppointments = Appointment::where('doctor_id', Auth::user()->doctor->id)
-        ->where('appointment_date', '>', Carbon::now())->get(); 
+        ->where('appointment_date', '>', Carbon::now())->get();
 
         $recentVisits = Appointment::where('doctor_id', Auth::user()->doctor->id)
         ->where('appointment_date', '<', Carbon::now())
         ->where('status', 'Approved')
         ->get();
 
+        $ratings = Rating::where('doctor_id', Auth::user()->doctor->id)->get();
+
         return view('panels.doctor.index')->with('appointments', $appointments)->with('schedule', $schedule)
         ->with('patients', $patients)->with('upcommingAppointments', $upcommingAppointments)
-        ->with('recentVisits', $recentVisits);
+        ->with('recentVisits', $recentVisits)
+        ->with('ratings', $ratings);
     }
 
     public function appointments()
@@ -210,7 +214,7 @@ class DoctorController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'status' => 'required|in:Pending,Completed,Cancelled,Expired',
+            'status' => 'required|in:Pending,Approved,Cancelled,Expired',
             'doctor_comment' => 'nullable|string',
         ]);
 
