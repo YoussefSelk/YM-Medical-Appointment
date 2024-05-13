@@ -118,6 +118,13 @@ class DoctorController extends Controller
         return view('panels.doctor.CRUD.appointment_details')->with(compact('appointment'))->with(compact('patient'));
     }
 
+    public function reviews(){
+
+        $ratings = Rating::where('doctor_id', Auth::user()->doctor->id)->get();
+
+        return view('panels.doctor.reviews')->with(compact('ratings'));
+    }
+
     //Operations's Functions
 
     public function deleteSchedule($id)

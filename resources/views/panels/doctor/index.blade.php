@@ -115,6 +115,11 @@
                 @endif
 
             </div>
+
+            <a href="{{route('doctor.appointments')}}" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 ">
+                View all appointments</a>
+
+
         </div>
 
         <div class="p-6 bg-white dark:bg-dark-eval-1 rounded-md md:w-1/2 m-3 w-full ">
@@ -140,34 +145,51 @@
 
                 @endif
             </div>
+
+
         </div>
 
     </div>
 
 
-    <div class="p-6 bg-white dark:bg-dark-eval-1 rounded-md md:w-1/2 m-3 w-full ">
+    <div class="p-6 bg-white dark:bg-dark-eval-1 rounded-md m-3 w-full">
+        <strong class="text-lg text-gray-800 dark:text-gray-200">My reviews:</strong>
+        <i class="fa-solid fa-star"></i>
 
-        <strong class="text-lg text-gray-800 dark:text-gray-200">My reviews :</strong> <i class="fa-solid fa-star"></i>
-
-        <div class=" p-6 bg-white m-3 dark:bg-dark-eval-1 rounded-md md:w-1/2 w-full  ">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             @if (count($ratings) == 0)
-
                 <div class="border-b border-gray-200 dark:border-gray-600 py-2">
                     <p class="text-gray-800 dark:text-gray-200">No reviews</p>
                 </div>
-
             @else
-            @foreach($ratings as $review)
-                <div class="border-b border-gray-200 dark:border-gray-600 py-2">
-                    <p class="text-gray-800 dark:text-gray-200"><strong>Patient  name : </strong> </p>
-                    <p class="text-gray-800 dark:text-gray-200">{{ $review->patient->user->name }}</p>
-                    <p class="text-gray-800 dark:text-gray-200"> <strong> Review : </strong> </p>
-                    <p class="text-gray-500 dark:text-gray-400">{{ $review->comment }}</p>
-                </div>
-            @endforeach
+                @php $reviewCount = 0; @endphp
+                @foreach($ratings as $index => $review)
+                    @if($reviewCount < 4) <!-- Display only 4 reviews -->
+                        <div class="border-b border-gray-200 dark:border-gray-600 py-2">
+                            <p class="text-gray-800 dark:text-gray-200"><strong>Patient name:</strong> {{ $review->patient->user->name }}</p>
+                            <p class="text-gray-800 dark:text-gray-200"><strong>Review:</strong> {{ $review->comment }}</p>
+                            @if(($index + 1) % 2 == 0)
+                                <style>
+                                    .review-item:nth-child({{ $index + 1 }}) p strong::after {
+                                        content: ":";
+                                        float: right;
+                                        margin-left: 5px;
+                                    }
+                                </style>
+                            @endif
+                        </div>
+                        @php $reviewCount++; @endphp
+                    @endif
+                @endforeach
             @endif
+        </div>
 
+        <a href="{{route('doctor.myreviews')}}" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            View more
+        </a>
     </div>
+
+
 
 
 </x-doctor-layout>

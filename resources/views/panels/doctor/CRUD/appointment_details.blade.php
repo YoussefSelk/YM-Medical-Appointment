@@ -13,6 +13,9 @@
         </h2>
     </x-slot>
 
+    <x-success-flash></x-success-flash>
+    <x-error-flash></x-error-flash>
+
     <div class="p-6 mb-2 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">

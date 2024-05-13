@@ -50,6 +50,8 @@ include 'web/FrontOffice/doctor/schedule.php';
 
 include 'web/FrontOffice/doctor/patient.php';
 
+include 'web/FrontOffice/doctor/reviews.php';
+
 //Profile Routes
 include 'web/FrontOffice/others/profile.php';
 

@@ -104,5 +104,11 @@
                 <i class="fa-solid fa-bed-pulse"></i>
             </x-slot>
         </x-sidebar.link>
+        <x-sidebar.link title="My Ratings" href="{{ route('doctor.myreviews') }}" :isActive="request()->routeIs('doctor.myreviews')">
+            <x-slot name="icon">
+                <i class="fa-solid fa-star"></i>
+            </x-slot>
+        </x-sidebar.link>
+
     @endif
 </x-perfect-scrollbar>

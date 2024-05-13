@@ -8,6 +8,7 @@ use App\Models\Application;
 use Illuminate\Http\Request;
 use App\Models\Patient;
 use App\Models\Doctor;
+use App\Models\Rating;
 use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
@@ -31,8 +32,9 @@ class HomeController extends Controller
     {
         $patients = Patient::all();
         $doctors = Doctor::all();
+        $ratings = Rating::all();
 
-        return view('index',  ['ignoreTailwind' => true], compact('patients', 'doctors'));
+        return view('index',  ['ignoreTailwind' => true], compact('patients', 'doctors','ratings'));
     }
     public function apply()
     {

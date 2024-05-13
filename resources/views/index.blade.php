@@ -309,6 +309,17 @@
                     <!-- End Single Fun -->
                 </div>
 
+                <div class="col-lg-3 col-md-6 col-12">
+                    <!-- Start Single Fun -->
+                    <div class="single-fun">
+                        <i class="fa-solid fa-star"></i>
+                        <div class="content">
+                            <span class="counter">{{ $ratings ? count($ratings) : 0 }}</span>
+                            <p>Satisfaction Ratings</p>
+                        </div>
+                    </div>
+                    <!-- End Single Fun -->
+                </div>
             </div>
         </div>
     </div>
@@ -515,7 +526,7 @@
 
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
