@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'patient'])->group(function () {
     //Book Appointment Routes
     Route::get('/patient/doctor/{id}/book/appointment', [PatientController::class, 'appointment'])
-        ->middleware('CheckDoctor')
         ->name('patiens.doctor.book.appointment');
 
     Route::get('/patient/doctor/{id}/book/appointment/getHours', [PatientController::class, 'getAvailableHours'])
