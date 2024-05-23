@@ -1,18 +1,18 @@
 <head>
-    <title>YM | Health Tips</title>
+    <title>YM | Health Articles</title>
 </head>
 <x-patient-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight dark:text-white">
             <span class="mr-2"><i class="fa-solid fa-list" style="color: #74C0FC;"></i></span>
-            {{ __('Health Tips Page') }}
+            {{ __('Health Articles Page') }}
         </h2>
     </x-slot>
     <x-success-flash></x-success-flash>
     <x-error-flash></x-error-flash>
 
     <div class="container mx-auto">
-        <h1 class="text-3xl font-bold mb-8">Health Tips</h1>
+        <h1 class="text-3xl font-bold mb-8">Health Articles</h1>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @if (isset($healthTips) && count($healthTips) > 0)
                 @foreach ($healthTips as $index => $healthTip)

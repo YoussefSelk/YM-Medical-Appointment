@@ -16,5 +16,5 @@ Route::middleware(['auth', 'doctor'])->group(function () {
         Route::get('doctor/appointment/{id}/details',[DoctorController::class , 'appointmentDetails'])
         ->name('doctor.CRUD.appointment.details');
 
-    //Doctor Patients Routes
+    
 });

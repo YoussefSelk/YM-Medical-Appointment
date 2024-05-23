@@ -80,7 +80,7 @@
                 <i class="fa-regular fa-calendar-check"></i>
             </x-slot>
         </x-sidebar.link>
-        <x-sidebar.link title="Health Tips " href="{{ route('patiens.health.tips.view', authUser()->patient->id) }}"
+        <x-sidebar.link title="Health Articles " href="{{ route('patiens.health.tips.view', authUser()->patient->id) }}"
             :isActive="request()->routeIs('patiens.health.tips.view')">
             <x-slot name="icon">
                 <i class="fa-solid fa-staff-snake"></i>
