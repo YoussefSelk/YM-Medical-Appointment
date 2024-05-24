@@ -537,7 +537,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-12">
                         <div class="copyright-content">
-                            <p>© Copyright 2018 | All Rights Reserved by <strong>YM | Medical Appointments</strong> </p>
+                            <p>© Copyright 2024 | All Rights Reserved by <strong>YM | Medical Appointments</strong> </p>
                         </div>
                     </div>
                 </div>

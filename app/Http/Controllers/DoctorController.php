@@ -416,6 +416,13 @@ class DoctorController extends Controller
     }
 
 
+    public function getAppointmentsForCalendar(Request $request)
+    {
+        $doctor_id = Auth::user()->doctor->id;
+        $appointments = Appointment::where('doctor_id', $doctor_id)->get();
+        
+        return response()->json($appointments);
+    }
 
 
 }

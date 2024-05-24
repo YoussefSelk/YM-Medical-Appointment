@@ -165,7 +165,7 @@
 <script>
     function confirmDelete(doctorId) {
         Swal.fire({
-            title: 'Are you sure you want to delete this Patient Account?',
+            title: 'Are you sure you want to delete this Doctor Account?',
             text: 'All related Data Will Be Deleted With This Item',
             icon: 'warning',
             showCancelButton: true,

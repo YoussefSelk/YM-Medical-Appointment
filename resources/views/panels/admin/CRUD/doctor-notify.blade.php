@@ -37,7 +37,7 @@
         </nav>
     </div>
     <div class="p-6 mt-6 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
-        <h3 class="text-lg font-semibold mb-4">Send Notification to Patient</h3>
+        <h3 class="text-lg font-semibold mb-4">Send Notification to Doctor</h3>
         <form method="POST" action="{{ route('admin.doctor.notify.submit', $doctor->id) }}">
             @csrf
 
