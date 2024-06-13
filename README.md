@@ -21,15 +21,14 @@ This application facilitates the scheduling and management of medical appointmen
 - **Notifications**: Send notifications to doctors and patients.
 - **Security**: Protection against brute force attacks, XSS, SQL Injection, and CSRF attacks.
 
-![Features Icon](https://img.icons8.com/ios/50/000000/features-list.png)
 
 ## Technologies Used
 
-- **Frontend**: HTML, CSS, JavaScript, Tailwind CSS, Vite.js ![Frontend Icon](https://img.icons8.com/ios/50/000000/html-5.png)
-- **Backend**: PHP, Laravel ![Backend Icon](https://img.icons8.com/ios/50/000000/php.png)
-- **Libraries and Frameworks**: jQuery, DataTable.js, DomPdf, Alpine.js, Chart.js, FontAwesome, Sweetalert2, jQuery UI, jQuery Migrate.js, Animate.css, UI Avatar, Laravel charts ![Libraries Icon](https://img.icons8.com/ios/50/000000/library.png)
-- **Database**: MariaDB (managed through HeidiSQL) ![Database Icon](https://img.icons8.com/ios/50/000000/database.png)
-- **Development Tools**: Visual Studio Code, XAMPP, Git, GitHub, Browser DevTools ![DevTools Icon](https://img.icons8.com/ios/50/000000/code.png)
+- **Frontend**: HTML, CSS, JavaScript, Tailwind CSS, Vite.js 
+- **Backend**: PHP, Laravel
+- **Libraries and Frameworks**: jQuery, DataTable.js, DomPdf, Alpine.js, Chart.js, FontAwesome, Sweetalert2, jQuery UI, jQuery Migrate.js, Animate.css, UI Avatar, Laravel charts 
+- **Database**: MariaDB (managed through HeidiSQL) 
+- **Development Tools**: Visual Studio Code, XAMPP, Git, GitHub, Browser DevTools 
 
 ## Installation
 
@@ -96,7 +95,6 @@ Follow these steps to set up the project on your local machine.
 
 Your application should now be running at `http://localhost:8000`.
 
-![Installation Icon](https://img.icons8.com/ios/50/000000/installation.png)
 
 ## Usage
 
@@ -112,20 +110,9 @@ Doctors can manage their appointments, schedules, patient profiles, and view eva
 
 Patients can schedule and manage their appointments, view doctor profiles, and read health-related articles.
 
-## Contributing
 
-We welcome contributions from the community. Please follow these steps to contribute:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourFeature`).
-3. Commit your changes (`git commit -m 'Add your feature'`).
-4. Push to the branch (`git push origin feature/YourFeature`).
-5. Create a Pull Request.
-
-![Contributing Icon](https://img.icons8.com/ios/50/000000/conference.png)
 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-![License Icon](https://img.icons8.com/ios/50/000000/license.png)
