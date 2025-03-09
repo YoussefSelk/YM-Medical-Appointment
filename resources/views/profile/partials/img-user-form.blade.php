@@ -11,7 +11,6 @@
 
     <form method="post" action="{{ route('profile.img') }}" enctype="multipart/form-data" class="mt-6 space-y-6">
         @csrf
-
         <div class="space-y-2">
             <label for="img"
                 class="cursor-pointer flex items-center justify-center w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-300 focus:bg-gray-300 transition duration-200 ease-in-out">
