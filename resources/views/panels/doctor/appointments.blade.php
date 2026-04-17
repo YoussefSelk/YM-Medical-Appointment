@@ -1,94 +1,50 @@
-<head>
-    <title>My appointments</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
-</head>
-
-
 <x-doctor-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-white">
             {{ __('My appointments') }}
         </h2>
     </x-slot>
 
-
     <x-success-flash></x-success-flash>
     <x-error-flash></x-error-flash>
 
-    <div class="p-6 mt-7 overflow-hidden bg-white rounded-md shadow-md dark:bg-dark-eval-1">
+    <div class="mt-7 overflow-hidden rounded-md bg-white p-6 dark:bg-dark-eval-1">
         <div class="overflow-x-auto">
             <table id="DataTable" class="w-full">
                 <thead>
                     <tr>
-                        <th
-                            class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                            #</th>
-
-                        <th
-                            class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                            Date</th>
-                        <th
-                            class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                            Patient </th>
-                        <th
-                            class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                            Reason</th>
-                        <th
-                            class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                            Status</th>
-
-                        <th
-                            class="px-5 py-3 border-b-2 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                            Action</th>
+                        <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">#</th>
+                        <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">Date</th>
+                        <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">Patient</th>
+                        <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">Reason</th>
+                        <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">Status</th>
+                        <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($appointments as $item)
                         <tr class="transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <td
-                                class="py-2 px-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                {{ $item->id }}</td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm dark:border-gray-700 dark:bg-gray-800">{{ $item->id }}</td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm dark:border-gray-700 dark:bg-gray-800">{{ $item->appointment_date }}</td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm dark:border-gray-700 dark:bg-gray-800">{{ $item->patient->user->name }}</td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm dark:border-gray-700 dark:bg-gray-800">{{ $item->reason }}</td>
 
-                            <td
-                                class="py-2 px-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                {{ $item->appointment_date }}</td>
-                            <td
-                                class="py-2 px-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                {{ $item->patient->user->name }}</td>
-                            <td class="py-2 px-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                {{ $item->reason }}
-                            </td>
-
-                            <td
-                                class="py-2 px-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm dark:border-gray-700 dark:bg-gray-800">
                                 @if ($item->status == 'Pending')
-                                    <span
-                                        class="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $item->status }}</span>
+                                    <span class="me-2 rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">{{ $item->status }}</span>
                                 @elseif ($item->status == 'Expired')
-                                    <span
-                                        class="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $item->status }}</span>
+                                    <span class="me-2 rounded bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300">{{ $item->status }}</span>
                                 @elseif ($item->status == 'Cancelled')
-                                    <span
-                                        class="bg-gray-100 text-red-800 dark:bg-red-900 dark:text-red-300 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $item->status }}</span>
+                                    <span class="me-2 rounded bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300">{{ $item->status }}</span>
                                 @else
-                                    <span
-                                        class="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $item->status }}</span>
+                                    <span class="me-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">{{ $item->status }}</span>
                                 @endif
                             </td>
 
-                            <td
-                                class="py-2 px-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                 <a href="{{route('doctor.CRUD.appointment.edit', [$item->id])}}" class="font-medium text-blue-600 dark:text-blue-500 mr-2"><i
-                                    class="fa-regular fa-pen-to-square"></i>
-                                 </a>
-
-                                    <a href="{{ route('doctor.CRUD.appointment.details', [$item->id]) }}"  class="font-medium text-blue-600 dark:text-blue-500 "><i
-                                        class="fa-regular fa-eye"></i>
-                                    </a>
+                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm dark:border-gray-700 dark:bg-gray-800">
+                                <a href="{{ route('doctor.CRUD.appointment.edit', [$item->id]) }}" class="mr-2 font-medium text-blue-600 dark:text-blue-500"><i class="fa-regular fa-pen-to-square"></i></a>
+                                <a href="{{ route('doctor.CRUD.appointment.details', [$item->id]) }}" class="font-medium text-blue-600 dark:text-blue-500"><i class="fa-regular fa-eye"></i></a>
                             </td>
-
-
                         </tr>
                     @endforeach
                 </tbody>
@@ -96,13 +52,13 @@
         </div>
     </div>
 
-    <div class="overflow-x-auto p-6 bg-white text-dark-eval-1 shadow-md flex justify-center dark:bg-dark-eval-1">
+    <div class="mt-7 flex justify-center overflow-x-auto rounded-md bg-white p-6 text-dark-eval-1 shadow-md dark:bg-dark-eval-1">
         <div id="calendar" class="w-full lg:w-3/4 xl:w-2/3"></div>
     </div>
 
-
-
     @include('includes.table')
-</x-doctor-layout>
 
-<script src="{{ asset('js/fullcalendar/doctor_calendar.js') }}"></script>
+    @push('scripts')
+        <script src="{{ asset('js/fullcalendar/doctor_calendar.js') }}"></script>
+    @endpush
+</x-doctor-layout>

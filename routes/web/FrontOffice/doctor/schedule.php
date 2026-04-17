@@ -13,8 +13,11 @@ Route::middleware(['auth', 'doctor'])->group(function () {
     Route::delete('/doctor/schedule/{id}', [DoctorController::class, 'deleteSchedule'])->name('doctor.schedule.delete');
     Route::post('/doctor/{id}/schedule/add', [DoctorController::class, 'add_schedule'])->name('doctor.schedule.add');
 
-    Route::get('/doctor/schedules/index', [DoctorController::class, 'getSchedules'])->name('doctor.schedules.index');
-    Route::get('/doctor/schedules/availableHours',[DoctorController::class, 'getAvailableHours'])->name('doctor.schedules.getAvailableHours');
+    Route::get('/doctor/schedules/index', [DoctorController::class, 'getSchedules'])
+        ->middleware('throttle:60,1')->name('doctor.schedules.index');
+    Route::get('/doctor/schedules/availableHours',[DoctorController::class, 'getAvailableHours'])
+        ->middleware('throttle:60,1')->name('doctor.schedules.getAvailableHours');
 
     //Doctor Patients Routes
 });
+

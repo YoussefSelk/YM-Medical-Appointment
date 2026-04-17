@@ -14,17 +14,16 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        // Create a sample user
-        User::create([
-            'name' => 'Admin',
+        // Create or update admin credentials so login always works after seeding
+        User::updateOrCreate([
             'email' => 'admin@example.com',
+        ], [
+            'name' => 'Admin',
             'password' => Hash::make('Estk@23@24'),
             'user_type' => 'admin',
             'gender' => 'male',
             'phone' => '0123456789',
         ]);
-
-        // Add more users as needed
 
     }
 }

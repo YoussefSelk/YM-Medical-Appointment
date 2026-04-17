@@ -3,7 +3,310 @@
 @import "perfect-scrollbar/css/perfect-scrollbar.css";
 @import "tailwindcss/utilities";
 
-.dark .ps__rail-y,
-.dark .ps__rail-x {
-    background-color: transparent !important;
+@layer base {
+    :root {
+        --app-bg: #f3f7ff;
+        --app-bg-dark: #151823;
+        --app-surface: #ffffff;
+        --app-surface-muted: #f8fbff;
+        --app-border: #d9e4f5;
+        --app-text: #0f172a;
+        --app-text-muted: #475569;
+        --app-primary: #2563eb;
+        --app-primary-soft: #e2ecff;
+    }
+
+    * {
+        border-color: var(--app-border);
+    }
+
+    body {
+        min-height: 100vh;
+        color: var(--app-text);
+        background: var(--app-bg);
+        text-rendering: optimizeLegibility;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    .dark body {
+        background: var(--app-bg-dark);
+    }
+
+    .dark .ps__rail-y,
+    .dark .ps__rail-x {
+        background-color: transparent !important;
+    }
+
+    ::-webkit-scrollbar {
+        width: 7px;
+        height: 7px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #e5e7eb;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+    }
 }
+
+@layer components {
+    .app-shell {
+        min-height: 100vh;
+        background-image: radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.12), transparent 35%),
+            radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.08), transparent 30%);
+    }
+
+    .app-shell .app-frame {
+        transition-property: margin;
+        transition-duration: 180ms;
+        transition-timing-function: ease;
+    }
+
+    .app-shell .app-content {
+        width: 100%;
+        max-width: 1600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .app-shell .app-header {
+        padding: 1rem;
+    }
+
+    .app-shell .app-main {
+        flex: 1;
+        padding: 0 1rem 1.5rem;
+    }
+
+    .app-shell .app-main > * + * {
+        margin-top: 1.25rem;
+    }
+
+    .app-shell .app-main .bg-white,
+    .app-shell .app-main [class*="dark:bg-dark-eval-1"] {
+        border: 1px solid var(--app-border);
+        border-radius: 1rem;
+        box-shadow: 0 20px 35px -30px rgba(15, 23, 42, 0.55);
+    }
+
+    .app-shell .app-main .overflow-x-auto,
+    .app-shell .app-main [class*="overflow-x-auto"] {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .app-shell .app-main table {
+        width: 100%;
+        min-width: max-content;
+    }
+
+    .app-shell .app-main table th,
+    .app-shell .app-main table td {
+        vertical-align: middle;
+    }
+
+    .app-shell .app-main input[type="text"],
+    .app-shell .app-main input[type="email"],
+    .app-shell .app-main input[type="number"],
+    .app-shell .app-main input[type="password"],
+    .app-shell .app-main input[type="date"],
+    .app-shell .app-main input[type="time"],
+    .app-shell .app-main input[type="tel"],
+    .app-shell .app-main select,
+    .app-shell .app-main textarea {
+        border-radius: 0.75rem;
+        border-color: #c9d8ef;
+        background: #fbfdff;
+        color: var(--app-text);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .app-shell .app-main input:focus,
+    .app-shell .app-main select:focus,
+    .app-shell .app-main textarea:focus {
+        border-color: var(--app-primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .app-shell .app-main button,
+    .app-shell .app-main a.inline-flex,
+    .app-shell .app-main a[class*="rounded"] {
+        transition: all 0.2s ease;
+    }
+
+    .app-auth {
+        min-height: 100vh;
+        background-image: radial-gradient(circle at top left, rgba(59, 130, 246, 0.16), transparent 40%),
+            radial-gradient(circle at bottom right, rgba(2, 132, 199, 0.1), transparent 35%);
+    }
+
+    .app-auth-card {
+        border: 1px solid var(--app-border);
+        border-radius: 1rem;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 25px 50px -36px rgba(15, 23, 42, 0.45);
+    }
+
+    .app-home-nav {
+        border-bottom: 1px solid #dbe4f3;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(8px);
+    }
+
+    .flash-toast {
+        position: fixed;
+        top: 6rem;
+        right: 1rem;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: min(95vw, 360px);
+        padding: 0.85rem 1rem;
+        border-radius: 0.8rem;
+        color: #ffffff;
+        box-shadow: 0 16px 35px -20px rgba(15, 23, 42, 0.65);
+    }
+
+    .flash-toast--success {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+    }
+
+    .flash-toast--error {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .flash-toast__icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .dataTables_wrapper {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 0.25rem;
+    }
+
+    .dt-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.85rem;
+    }
+
+    button.dt-button,
+    a.dt-button {
+        border: 0 !important;
+        border-radius: 0.65rem !important;
+        background: #2563eb !important;
+        color: #ffffff !important;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        padding: 0.45rem 0.8rem !important;
+    }
+
+    .dataTables_filter,
+    .dataTables_length {
+        margin-bottom: 0.75rem;
+    }
+
+    .dataTables_filter input,
+    .dataTables_length select {
+        border-radius: 0.6rem;
+        border: 1px solid #c9d8ef;
+    }
+
+    .panel-summary-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .panel-summary-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .panel-action-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.7rem;
+        padding: 0.6rem 1rem;
+        font-weight: 600;
+        color: var(--app-primary);
+        background: var(--app-primary-soft);
+    }
+
+    .panel-action-button:hover {
+        background: #cfe0ff;
+    }
+}
+
+@media (min-width: 640px) {
+    .app-shell .app-header {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .app-shell .app-main {
+        padding: 0 1.5rem 1.75rem;
+    }
+}
+
+@media (max-width: 1023px) {
+    .app-shell .app-frame {
+        margin-left: 0 !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .app-shell .app-main {
+        padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+    }
+
+    .app-shell .app-main [class*="md:w-1/2"],
+    .app-shell .app-main [class*="md:w-1/3"],
+    .app-shell .app-main [class*="md:w-2/3"],
+    .app-shell .app-main [class*="lg:w-1/3"] {
+        width: 100% !important;
+    }
+
+    .app-shell .app-main [class*="mr-4"],
+    .app-shell .app-main [class*="mr-3"],
+    .app-shell .app-main [class*="ml-4"],
+    .app-shell .app-main [class*="ml-3"] {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .app-shell .app-main .grid {
+        gap: 0.9rem;
+    }
+
+    .app-shell .app-main table th,
+    .app-shell .app-main table td {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+
+    .flash-toast {
+        right: 0.75rem;
+        left: 0.75rem;
+        width: auto;
+    }
+}
+

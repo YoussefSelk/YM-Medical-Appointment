@@ -1,7 +1,10 @@
-<head>
+@push('styles')
     <link rel="stylesheet" href="{{ asset('css/add_doctor_modal.css') }}">
+@endpush
+
+@push('scripts')
     <script src="{{ asset('js/add_doctor_modal.js') }}"></script>
-</head>
+@endpush
 @if ($errors->any())
     <script>
         document.addEventListener('DOMContentLoaded', function() {

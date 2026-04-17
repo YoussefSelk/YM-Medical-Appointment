@@ -12,8 +12,8 @@ use App\Models\Speciality;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Validation\Rules;
 
 class DoctorRegisteredUserController extends Controller
 {
@@ -24,7 +24,10 @@ class DoctorRegisteredUserController extends Controller
      */
     public function create($token)
     {
-        $application = Application::where('registration_token', $token)->firstOrFail();
+        $application = Application::where('registration_token', $token)
+            ->where('status', 'approved')
+            ->where('token_expiry', '>', now())
+            ->firstOrFail();
         $specialities = Speciality::all();
         return view('auth.doctor-register', ['token' => $token, 'application' => $application, 'specialities' => $specialities]);
     }
@@ -53,16 +56,29 @@ class DoctorRegisteredUserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'gender' => 'required|string',
             'phone' => 'required|string',
             'birth_date' => 'required|date',
             'rue' => 'required|string|max:255',
             'ville' => 'required|string|max:255',
             'degree' => 'required|string|max:255',
-            'speciality' => 'required|string|max:255',
+            'speciality' => 'required|integer|exists:specialities,id',
             'token' => 'required|string',
         ]);
+
+        $application = Application::where('registration_token', $validatedData['token'])
+            ->where('status', 'approved')
+            ->where('token_expiry', '>', now())
+            ->first();
+
+        if (!$application) {
+            return redirect()->back()->with('error', 'Invalid or expired registration link.');
+        }
+
+        if (strcasecmp($application->email, $validatedData['email']) !== 0) {
+            return redirect()->back()->with('error', 'Registration email does not match approved application.');
+        }
 
         $rawInput = [
             $request->name,
@@ -124,6 +140,10 @@ class DoctorRegisteredUserController extends Controller
             $address->delete();
             return redirect()->back()->with('error', 'Error creating the doctor record. Please try again.');
         }
+
+        $application->registration_token = null;
+        $application->token_expiry = null;
+        $application->save();
 
         auth()->login($user);
 

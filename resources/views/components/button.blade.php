@@ -12,53 +12,53 @@
 @php
 
     $baseClasses =
-        'inline-flex items-center transition-colors font-medium select-none disabled:opacity-50 disabled:cursor-not-allowed';
+        'inline-flex items-center justify-center gap-2 font-semibold select-none transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed';
 
     switch ($variant) {
         case 'primary':
-            $variantClasses = 'bg-blue-500 text-white hover:bg-blue-600 ';
+            $variantClasses = 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm';
             break;
         case 'secondary':
             $variantClasses =
-                'bg-white text-gray-500 hover:bg-gray-100  dark:text-gray-400 dark:bg-dark-eval-1 dark:hover:bg-dark-eval-2 dark:hover:text-gray-200';
+                'bg-white text-slate-600 hover:bg-slate-100 focus:ring-slate-300 border border-slate-200 dark:border-slate-700 dark:text-gray-300 dark:bg-dark-eval-1 dark:hover:bg-dark-eval-2';
             break;
         case 'success':
-            $variantClasses = 'bg-green-500 text-white hover:bg-green-600';
+            $variantClasses = 'bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500 shadow-sm';
             break;
         case 'danger':
-            $variantClasses = 'bg-red-500 text-white hover:bg-red-600';
+            $variantClasses = 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-sm';
             break;
         case 'warning':
-            $variantClasses = 'bg-yellow-500 text-white hover:bg-yellow-600 ';
+            $variantClasses = 'bg-amber-500 text-white hover:bg-amber-600 focus:ring-amber-500 shadow-sm';
             break;
         case 'info':
-            $variantClasses = 'bg-cyan-500 text-white hover:bg-cyan-600 ';
+            $variantClasses = 'bg-cyan-600 text-white hover:bg-cyan-700 focus:ring-cyan-500 shadow-sm';
             break;
         case 'black':
             $variantClasses =
-                'bg-black text-gray-300 hover:text-white hover:bg-gray-800  dark:hover:bg-dark-eval-3';
+                'bg-slate-900 text-gray-100 hover:bg-slate-800 focus:ring-slate-500 dark:bg-dark-eval-2 dark:hover:bg-dark-eval-3';
             break;
         default:
-            $variantClasses = 'bg-blue-500 text-white hover:bg-blue-600 ';
+            $variantClasses = 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm';
     }
 
     switch ($size) {
         case 'sm':
-            $sizeClasses = $iconOnly ? 'p-1.5' : 'px-2.5 py-1.5 text-sm';
+            $sizeClasses = $iconOnly ? 'p-2' : 'px-3 py-2 text-sm';
             break;
         case 'base':
-            $sizeClasses = $iconOnly ? 'p-2' : 'px-4 py-2 text-base';
+            $sizeClasses = $iconOnly ? 'p-2.5' : 'px-4 py-2.5 text-sm';
             break;
         case 'lg':
         default:
-            $sizeClasses = $iconOnly ? 'p-3' : 'px-5 py-2 text-xl';
+            $sizeClasses = $iconOnly ? 'p-3.5' : 'px-5 py-3 text-base';
             break;
     }
 
     $classes = $baseClasses . ' ' . $sizeClasses . ' ' . $variantClasses;
 
     if (!$squared && !$pill) {
-        $classes .= ' rounded-md';
+        $classes .= ' rounded-xl';
     } elseif ($pill) {
         $classes .= ' rounded-full';
     }

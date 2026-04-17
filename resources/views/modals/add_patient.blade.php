@@ -1,6 +1,6 @@
-<head>
+@push('styles')
     <link rel="stylesheet" href="{{ asset('css/add_doctor_modal.css') }}">
-</head>
+@endpush
 @if ($errors->any())
     <script>
         document.addEventListener('DOMContentLoaded', function() {

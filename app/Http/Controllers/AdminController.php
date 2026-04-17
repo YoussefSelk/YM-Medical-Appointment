@@ -23,6 +23,8 @@ use App\Charts\AppoinmentsCharts;
 use App\Models\Application;
 use App\Models\Notification;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -42,7 +44,10 @@ class AdminController extends Controller
 
     public function apply_view()
     {
-        $applications = Application::all();
+        $applications = Application::query()
+            ->latest()
+            ->get();
+
         return view('panels.admin.doctors-apply')->with(compact('applications'));
     }
 
@@ -60,7 +65,8 @@ class AdminController extends Controller
 
     public function doctor_details($id)
     {
-        $doctor = Doctor::find($id);
+        $doctor = Doctor::with(['user.address', 'speciality', 'Appointments'])
+            ->find($id);
         return view('panels.admin.CRUD.doctor-view')->with(compact("doctor"));
     }
     public function speciality_details($id)
@@ -76,154 +82,337 @@ class AdminController extends Controller
     }
     public function specialities()
     {
-        $specialities = Speciality::all();
+        $specialities = Speciality::query()
+            ->orderBy('name')
+            ->get();
         return view('panels.admin.specialities')->with(compact("specialities"));
     }
     public function patient_details($id)
     {
-        $patient = Patient::find($id);
+        $patient = Patient::with(['user.address', 'Appointments'])
+            ->find($id);
         return view('panels.admin.CRUD.patient-details')->with(compact("patient"));
     }
     public function appointment_detail($id)
     {
-        $appointment = Appointment::find($id);
+        $appointment = Appointment::with(['doctor.user', 'patient.user', 'schedule'])
+            ->find($id);
         return view('panels.admin.CRUD.appointment-detail')->with(compact("appointment"));
     }
     public function appointments()
     {
 
-        $appointments = Appointment::all();
+        $appointments = Appointment::with(['doctor.user', 'patient.user', 'schedule'])
+            ->latest('appointment_date')
+            ->get();
         return view('panels.admin.appointments')->with(compact("appointments"));
     }
     public function schedules() //schedules function return the schedules page of the admin panel
     {
-        $doctors = Doctor::all();
+        $doctors = Doctor::with(['user', 'speciality'])
+            ->orderByDesc('id')
+            ->get();
         return view('panels.admin.schedules')->with(compact("doctors"));
     }
     public function schedule($id)
     {
-        $doctor = Doctor::find($id);
+        $doctor = Doctor::with(['user', 'schedules'])
+            ->find($id);
         if (!$doctor) {
             abort(404);
         }
         $schedule = $doctor->schedules;
         return view('panels.admin.CRUD.doctor-schedule')->with(compact("doctor"))->with(compact("schedule"));
     }
-    public function index() //index function return the home page for admin panel
+    public function index(Request $request) //index function return the home page for admin panel
     {
+        $selectedRange = (int) $request->query('range', 30);
+        $allowedRanges = [7, 30, 90];
 
-        $shedules = Schedule::all();
-        $doctors = Doctor::all();
-        $Patients = Patient::all();
-        $appointments = Appointment::all();
+        if (!in_array($selectedRange, $allowedRanges, true)) {
+            $selectedRange = 30;
+        }
 
-        //-------------------------------------------------//
+        $dashboardData = Cache::remember(
+            "admin.dashboard.{$selectedRange}",
+            now()->addSeconds(45),
+            function () use ($selectedRange) {
+                $rangeStart = now()->copy()->subDays($selectedRange)->startOfDay();
+                $previousRangeStart = now()->copy()->subDays($selectedRange * 2)->startOfDay();
+                $previousRangeEnd = now()->copy()->subDays($selectedRange)->startOfDay();
 
-        $doctors_chart_Created_At_Data = Doctor::orderBy('created_at')
-            ->get()
-            ->groupBy(function ($doctor) {
-                return $doctor->created_at->format('Y-m-d');
-            })
-            ->map(function ($group) {
-                return $group->count();
-            });
+                $totalDoctors = Doctor::count();
+                $totalPatients = Patient::count();
+                $totalAppointments = Appointment::count();
+                $totalSchedules = Schedule::count();
+
+                $appointmentsCurrentRange = Appointment::where('created_at', '>=', $rangeStart)->count();
+                $appointmentsPreviousRange = Appointment::whereBetween('created_at', [$previousRangeStart, $previousRangeEnd])->count();
+                $appointmentsGrowth = null;
+
+                if ($appointmentsPreviousRange > 0) {
+                    $appointmentsGrowth = round((($appointmentsCurrentRange - $appointmentsPreviousRange) / $appointmentsPreviousRange) * 100, 1);
+                } elseif ($appointmentsCurrentRange > 0) {
+                    $appointmentsGrowth = 100;
+                }
+
+                $appointmentsStatusCounts = Appointment::query()
+                    ->selectRaw('status, COUNT(*) as total')
+                    ->groupBy('status')
+                    ->orderBy('status')
+                    ->pluck('total', 'status')
+                    ->toArray();
+
+                $normalizedStatusCounts = collect($appointmentsStatusCounts)
+                    ->mapWithKeys(function ($count, $status) {
+                        return [strtolower((string) $status) => (int) $count];
+                    })
+                    ->toArray();
+
+                $approvedAppointments = (int) ($normalizedStatusCounts['approved'] ?? 0);
+                $pendingAppointments = (int) ($normalizedStatusCounts['pending'] ?? 0);
+                $cancelledAppointments = (int) (($normalizedStatusCounts['cancelled'] ?? 0) + ($normalizedStatusCounts['canceled'] ?? 0));
+                $otherAppointments = max(0, $totalAppointments - ($approvedAppointments + $pendingAppointments + $cancelledAppointments));
+
+                $todayAppointments = Appointment::whereDate('appointment_date', now()->toDateString())->count();
+                $upcomingWeekAppointments = Appointment::whereBetween('appointment_date', [
+                    now()->toDateString(),
+                    now()->copy()->addDays(7)->toDateString(),
+                ])->count();
+
+                $newDoctorsInRange = Doctor::where('created_at', '>=', $rangeStart)->count();
+                $newPatientsInRange = Patient::where('created_at', '>=', $rangeStart)->count();
+
+                $pendingApplications = Application::where('status', 'pending')->count();
+                $approvedApplications = Application::where('status', 'approved')->count();
+                $rejectedApplications = Application::where('status', 'rejected')->count();
+
+                $activeDoctors = Doctor::where('status', 'active')->count();
+                $averageRating = round((float) (Rating::avg('rating') ?? 0), 1);
+
+                $openScheduleSlots = Schedule::where(function ($query) {
+                    $query->where('status', 'false')
+                        ->orWhere('status', false)
+                        ->orWhere('status', '0')
+                        ->orWhere('status', 0);
+                })->count();
+
+                $startOfWeek = now()->startOfWeek();
+                $endOfWeek = now()->endOfWeek();
+
+                $weeklyAppointmentsMap = Appointment::whereBetween('appointment_date', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
+                    ->selectRaw('appointment_date, COUNT(*) as total')
+                    ->groupBy('appointment_date')
+                    ->pluck('total', 'appointment_date');
+
+                $weeklyAppointments = collect(range(0, 6))->map(function ($offset) use ($startOfWeek, $weeklyAppointmentsMap) {
+                    $date = $startOfWeek->copy()->addDays($offset);
+
+                    return [
+                        'label' => $date->format('D'),
+                        'date' => $date->toDateString(),
+                        'count' => (int) ($weeklyAppointmentsMap[$date->toDateString()] ?? 0),
+                    ];
+                });
+
+                $doctorCreatedByDate = Doctor::query()
+                    ->selectRaw('DATE(created_at) as date_key, COUNT(*) as total')
+                    ->groupBy('date_key')
+                    ->orderBy('date_key')
+                    ->pluck('total', 'date_key')
+                    ->toArray();
+
+                $patientCreatedByDate = Patient::query()
+                    ->selectRaw('DATE(created_at) as date_key, COUNT(*) as total')
+                    ->groupBy('date_key')
+                    ->orderBy('date_key')
+                    ->pluck('total', 'date_key')
+                    ->toArray();
+
+                $appointmentCreatedByDate = Appointment::query()
+                    ->selectRaw('DATE(created_at) as date_key, COUNT(*) as total')
+                    ->groupBy('date_key')
+                    ->orderBy('date_key')
+                    ->pluck('total', 'date_key')
+                    ->toArray();
+
+                $maleDoctorCount = User::where('gender', 'male')->where('user_type', 'doctor')->count();
+                $femaleDoctorCount = User::where('gender', 'female')->where('user_type', 'doctor')->count();
+                $malePatientCount = User::where('gender', 'male')->where('user_type', 'patient')->count();
+                $femalePatientCount = User::where('gender', 'female')->where('user_type', 'patient')->count();
+
+                return [
+                    'totalDoctors' => $totalDoctors,
+                    'totalPatients' => $totalPatients,
+                    'totalAppointments' => $totalAppointments,
+                    'totalSchedules' => $totalSchedules,
+                    'appointmentsCurrentRange' => $appointmentsCurrentRange,
+                    'appointmentsGrowth' => $appointmentsGrowth,
+                    'approvedAppointments' => $approvedAppointments,
+                    'pendingAppointments' => $pendingAppointments,
+                    'cancelledAppointments' => $cancelledAppointments,
+                    'otherAppointments' => $otherAppointments,
+                    'todayAppointments' => $todayAppointments,
+                    'upcomingWeekAppointments' => $upcomingWeekAppointments,
+                    'newDoctorsInRange' => $newDoctorsInRange,
+                    'newPatientsInRange' => $newPatientsInRange,
+                    'pendingApplications' => $pendingApplications,
+                    'approvedApplications' => $approvedApplications,
+                    'rejectedApplications' => $rejectedApplications,
+                    'activeDoctors' => $activeDoctors,
+                    'averageRating' => $averageRating,
+                    'openScheduleSlots' => $openScheduleSlots,
+                    'weeklyAppointments' => $weeklyAppointments,
+                    'doctorCreatedByDate' => $doctorCreatedByDate,
+                    'patientCreatedByDate' => $patientCreatedByDate,
+                    'appointmentCreatedByDate' => $appointmentCreatedByDate,
+                    'appointmentStatusCounts' => $appointmentsStatusCounts,
+                    'maleDoctorCount' => $maleDoctorCount,
+                    'femaleDoctorCount' => $femaleDoctorCount,
+                    'malePatientCount' => $malePatientCount,
+                    'femalePatientCount' => $femalePatientCount,
+                ];
+            }
+        );
+
+        $unreadAdminNotifications = Notification::where('user_id', Auth::id())
+            ->where('is_read', false)
+            ->count();
+
+        $recentAppointments = Appointment::with(['doctor.user', 'patient.user', 'schedule'])
+            ->latest('appointment_date')
+            ->latest('created_at')
+            ->take(8)
+            ->get();
+
+        $topRatedDoctors = Doctor::with(['user', 'speciality'])
+            ->withCount('ratings')
+            ->withAvg('ratings', 'rating')
+            ->orderByDesc('ratings_avg_rating')
+            ->orderByDesc('ratings_count')
+            ->take(5)
+            ->get();
+
+        $specialityLoad = Speciality::withCount('doctors')
+            ->orderByDesc('doctors_count')
+            ->take(5)
+            ->get();
+
+        $maxSpecialityDoctors = max(1, (int) $specialityLoad->max('doctors_count'));
 
         $Doctor_Chart_Created_At = new DoctorCharts;
-        $Doctor_Chart_Created_At->labels($doctors_chart_Created_At_Data->keys());
-        $Doctor_Chart_Created_At->dataset('Number Of Doctors', 'bar', $doctors_chart_Created_At_Data->values())
+        $Doctor_Chart_Created_At->labels(array_keys($dashboardData['doctorCreatedByDate']));
+        $Doctor_Chart_Created_At->dataset('Number Of Doctors', 'bar', array_values($dashboardData['doctorCreatedByDate']))
             ->backgroundColor('#3B82F6');
-
-        //-------------------------------------------------//
-
-        $male_doctor_count = User::where('gender', 'male')->where('user_type', 'doctor')->count();
-        $female_doctor_count = User::where('gender', 'female')->where('user_type', 'doctor')->count();
 
         $gender_chart = new DoctorCharts;
         $gender_chart->labels(['Male', 'Female']);
-        $gender_chart->dataset('Number Of Doctors by Gender', 'doughnut', [$male_doctor_count, $female_doctor_count])
-            ->backgroundColor(['#3B82F6', '#FF00CC']);
-
-        //-------------------------------------------------//
-
-        $patients_chart_Created_At_Data = Patient::orderBy('created_at')
-            ->get()
-            ->groupBy(function ($patient) {
-                return $patient->created_at->format('Y-m-d');
-            })
-            ->map(function ($group) {
-                return $group->count();
-            });
+        $gender_chart->dataset('Number Of Doctors by Gender', 'doughnut', [
+            $dashboardData['maleDoctorCount'],
+            $dashboardData['femaleDoctorCount'],
+        ])->backgroundColor(['#3B82F6', '#FF00CC']);
 
         $Patient_Chart_Created_At = new PatientCharts;
-        $Patient_Chart_Created_At->labels($patients_chart_Created_At_Data->keys());
-        $Patient_Chart_Created_At->dataset('Number Of Patient', 'bar', $patients_chart_Created_At_Data->values())
+        $Patient_Chart_Created_At->labels(array_keys($dashboardData['patientCreatedByDate']));
+        $Patient_Chart_Created_At->dataset('Number Of Patient', 'bar', array_values($dashboardData['patientCreatedByDate']))
             ->backgroundColor('#3B82F6');
-
-        //-------------------------------------------------//
-
-        $patient_male_patient_count = User::where('gender', 'male')->where('user_type', 'patient')->count();
-        $patient_female_patient_count = User::where('gender', 'female')->where('user_type', 'patient')->count();
 
         $patient_gender_chart = new PatientCharts;
         $patient_gender_chart->labels(['Male', 'Female']);
-        $patient_gender_chart->dataset('Number Of Patients by Gender', 'doughnut', [$patient_male_patient_count, $patient_female_patient_count])
-            ->backgroundColor(['#3B82F6', '#FF00CC']);
+        $patient_gender_chart->dataset('Number Of Patients by Gender', 'doughnut', [
+            $dashboardData['malePatientCount'],
+            $dashboardData['femalePatientCount'],
+        ])->backgroundColor(['#3B82F6', '#FF00CC']);
 
-        //-------------------------------------------------//
-
-        $appointments_chart_data = Appointment::orderBy('created_at')
-            ->get()
-            ->groupBy(function ($appointment) {
-                return $appointment->created_at->format('Y-m-d');
-            })
-            ->map(function ($group) {
-                return $group->count();
-            });
         $Appointments_Chart_Created_At = new AppoinmentsCharts;
-        $Appointments_Chart_Created_At->labels($appointments_chart_data->keys());
-        $Appointments_Chart_Created_At->dataset('Number Of Patient', 'bar', $appointments_chart_data->values())
+        $Appointments_Chart_Created_At->labels(array_keys($dashboardData['appointmentCreatedByDate']));
+        $Appointments_Chart_Created_At->dataset('Number Of Patient', 'bar', array_values($dashboardData['appointmentCreatedByDate']))
             ->backgroundColor('#3B82F6');
 
-        //-------------------------------------------------//
-
-        $appointments_status_chart_data = Appointment::orderBy('created_at')
-            ->get()
-            ->groupBy('status')
-            ->map(function ($group) {
-                return $group->count();
-            });
-
         $Appointments_Chart_Status = new AppoinmentsCharts;
-        $Appointments_Chart_Status->labels($appointments_status_chart_data->keys());
-        $Appointments_Chart_Status->dataset('Number Of Appointments by Status', 'doughnut', $appointments_status_chart_data->values())
-            ->backgroundColor(['#3B82F6', '#34D399', '#F87171', '#A78BFA', '#FBBF24']); // You can add more colors if needed
+        $Appointments_Chart_Status->labels(array_keys($dashboardData['appointmentStatusCounts']));
+        $Appointments_Chart_Status->dataset('Number Of Appointments by Status', 'doughnut', array_values($dashboardData['appointmentStatusCounts']))
+            ->backgroundColor(['#3B82F6', '#34D399', '#F87171', '#A78BFA', '#FBBF24']);
 
-
-        return view('panels.admin.index')->with(compact('Appointments_Chart_Status'))->with(compact('Appointments_Chart_Created_At'))->with(compact('patient_gender_chart'))->with(compact('Patient_Chart_Created_At'))->with(compact('gender_chart'))->with(compact('Doctor_Chart_Created_At'))->with('shedules', $shedules)->with('doctors', $doctors)->with('patients', $Patients)->with('appointments', $appointments);
+        return view('panels.admin.index', [
+            'Appointments_Chart_Status' => $Appointments_Chart_Status,
+            'Appointments_Chart_Created_At' => $Appointments_Chart_Created_At,
+            'patient_gender_chart' => $patient_gender_chart,
+            'Patient_Chart_Created_At' => $Patient_Chart_Created_At,
+            'gender_chart' => $gender_chart,
+            'Doctor_Chart_Created_At' => $Doctor_Chart_Created_At,
+            'shedulesCount' => $dashboardData['totalSchedules'],
+            'doctorsCount' => $dashboardData['totalDoctors'],
+            'patientsCount' => $dashboardData['totalPatients'],
+            'appointmentsCount' => $dashboardData['totalAppointments'],
+            'selectedRange' => $selectedRange,
+            'allowedRanges' => $allowedRanges,
+            'appointmentsCurrentRange' => $dashboardData['appointmentsCurrentRange'],
+            'appointmentsGrowth' => $dashboardData['appointmentsGrowth'],
+            'approvedAppointments' => $dashboardData['approvedAppointments'],
+            'pendingAppointments' => $dashboardData['pendingAppointments'],
+            'cancelledAppointments' => $dashboardData['cancelledAppointments'],
+            'otherAppointments' => $dashboardData['otherAppointments'],
+            'todayAppointments' => $dashboardData['todayAppointments'],
+            'upcomingWeekAppointments' => $dashboardData['upcomingWeekAppointments'],
+            'newDoctorsInRange' => $dashboardData['newDoctorsInRange'],
+            'newPatientsInRange' => $dashboardData['newPatientsInRange'],
+            'pendingApplications' => $dashboardData['pendingApplications'],
+            'approvedApplications' => $dashboardData['approvedApplications'],
+            'rejectedApplications' => $dashboardData['rejectedApplications'],
+            'activeDoctors' => $dashboardData['activeDoctors'],
+            'averageRating' => $dashboardData['averageRating'],
+            'unreadAdminNotifications' => $unreadAdminNotifications,
+            'openScheduleSlots' => $dashboardData['openScheduleSlots'],
+            'recentAppointments' => $recentAppointments,
+            'topRatedDoctors' => $topRatedDoctors,
+            'specialityLoad' => $specialityLoad,
+            'maxSpecialityDoctors' => $maxSpecialityDoctors,
+            'weeklyAppointments' => $dashboardData['weeklyAppointments'],
+        ]);
     }
 
     public function doctor() //doctor function return the doctor page for admin panel
     {
-        $specialities = Speciality::all();
-        $doctors = Doctor::all();
+        $specialities = Speciality::query()
+            ->orderBy('name')
+            ->get();
+
+        $doctors = Doctor::with(['user.address', 'speciality'])
+            ->withCount('Appointments')
+            ->orderByDesc('id')
+            ->get();
+
         return view('panels.admin.doctor')->with('doctors', $doctors)->with('specialities', $specialities);
     }
 
     public function patient()
     {
-        $patients = Patient::all();
+        $patients = Patient::with(['user.address'])
+            ->withCount('Appointments')
+            ->orderByDesc('id')
+            ->get();
+
         return view('panels.admin.patient')->with(compact("patients"));
     }
 
     public function edit_doctor_view($id)
     {
-        $specialities = Speciality::all();
-        $doctor = Doctor::where("id", $id)->first();
+        $specialities = Speciality::query()
+            ->orderBy('name')
+            ->get();
+        $doctor = Doctor::with(['user.address', 'speciality'])
+            ->where("id", $id)
+            ->first();
+
         return view('panels.admin.CRUD.doctor-edit')->with('doctor', $doctor)->with('specialities', $specialities);
     }
     public function edit_patient_view($id)
     {
-        $patient = Patient::where("id", $id)->first();
+        $patient = Patient::with(['user.address'])
+            ->where("id", $id)
+            ->first();
+
         return view('panels.admin.CRUD.patient-edit')->with('patient', $patient);
     }
 
@@ -265,7 +454,7 @@ class AdminController extends Controller
                 'to' => $appointment->patient->user->email,
                 'subject' => 'Appointment Canceled',
                 'content' => 'Your appointment [#' . $appointment->id . '] has been Canceled. Please find the details below:',
-                'contactLink' => 'http://127.0.0.1:8000/patient/my/appointments/' . $appointment->patient->id,
+                'contactLink' => route('patiens.my.appointments', $appointment->patient->id),
                 'contactText' => 'My Appointments',
                 'phoneNumber' => '+1234567890',
             ]);
@@ -284,7 +473,7 @@ class AdminController extends Controller
                 'to' => $appointment->patient->user->email,
                 'subject' => 'Appointment Approved',
                 'content' => 'Your appointment [#' . $appointment->id . '] has been Approved. Please find the details below:',
-                'contactLink' => 'http://127.0.0.1:8000/patient/my/appointments/' . $appointment->patient->id,
+                'contactLink' => route('patiens.my.appointments', $appointment->patient->id),
                 'contactText' => 'My Appointments',
                 'phoneNumber' => '+1234567890',
             ]);
@@ -585,8 +774,12 @@ class AdminController extends Controller
             // Redirect back or do whatever you want after saving
             return redirect()->back()->with('success', 'Schedule saved successfully');
         } catch (\Exception $e) {
-            // Log or display the error message
-            dd($e->getMessage());
+            Log::error('Admin schedule creation failed', [
+                'doctor_id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect()->back()->with('error', 'Unable to save schedule right now.');
         }
     }
 

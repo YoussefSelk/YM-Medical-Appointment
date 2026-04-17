@@ -1,195 +1,124 @@
-<head>
-    <title>Doctor's Dashboard</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/main.css?v=1628755089081">
-</head>
-
 <x-doctor-layout>
 
     <x-slot name="header">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <h2 class="text-xl font-semibold leading-tight">
-                {{ __('Doctor\'s Dashboard') }}
-            </h2>
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+                <h2 class="text-2xl font-semibold leading-tight text-slate-800 dark:text-slate-100">
+                    {{ __('Doctor Dashboard') }}
+                </h2>
+                <p class="mt-1 text-sm text-slate-500 dark:text-slate-300">Track appointments, patient activity, and ratings in one view.</p>
+            </div>
         </div>
     </x-slot>
 
-    <div class="p-6 bg-white rounded-md shadow-md overflow-hidden flex flex-col md:flex-row justify-around dark:bg-dark-eval-1">
-        <div class="md:flex justify-center items-center md:w-1/2">
-            <div class="p-8 flex items-center">
-                <div class="mr-12">
-                    @php
-                        $user = Auth::user()->img;
-                    @endphp
-                    @if ($user)
-                        <img src="{{ asset('storage/profile_pictures/' . $user) }}" alt="Profile Picture"
-                            class="w-24 h-24 md:w-36 md:h-36 lg:w-48 lg:h-48 rounded-3xl">
+    <x-success-flash></x-success-flash>
+    <x-error-flash></x-error-flash>
+
+    @php
+        $profileImage = Auth::user()->img;
+    @endphp
+
+    <section class="grid gap-5 lg:grid-cols-[1.2fr_1fr]">
+        <div class="rounded-2xl bg-white p-6 dark:bg-dark-eval-1">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div class="shrink-0">
+                    @if ($profileImage)
+                        <img src="{{ asset('storage/profile_pictures/' . $profileImage) }}" alt="Profile Picture"
+                            class="h-24 w-24 rounded-2xl object-cover shadow sm:h-28 sm:w-28">
                     @else
-                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}" alt="test"
-                            class="w-24 h-24 md:w-36 md:h-36 lg:w-48 lg:h-48 rounded-3xl">
+                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}" alt="Profile Picture"
+                            class="h-24 w-24 rounded-2xl shadow sm:h-28 sm:w-28">
                     @endif
                 </div>
+
                 <div>
-                    <div class="uppercase tracking-wide text-sm text-blue-500 font-semibold">Welcome to the Doctor Panel
-                    </div>
-                    <div>
-                        <p class="mt-2 text-gray-500">{!! __('Dr. <strong>:name</strong>', ['name' => auth()->user()->name]) !!}</p>
-                    </div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-300">Doctor Workspace</p>
+                    <h3 class="mt-1 text-xl font-semibold text-slate-800 dark:text-slate-100">Dr. {{ auth()->user()->name }}</h3>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Manage daily schedules, follow-up consultations, and patient care from this dashboard.</p>
                 </div>
             </div>
         </div>
 
-        <div class="p-6 bg-white dark:bg-dark-eval-1 rounded-md md:w-1/2">
-            <strong class="text-lg text-gray-800 dark:text-gray-200">Counts:</strong>
+        <div class="grid gap-3 sm:grid-cols-2">
+            <div class="rounded-xl bg-white p-4 dark:bg-dark-eval-1">
+                <p class="text-xs uppercase tracking-wide text-slate-500">Schedules</p>
+                <p class="mt-2 text-2xl font-semibold text-slate-800 dark:text-slate-100">{{ count($schedule) }}</p>
+            </div>
+            <div class="rounded-xl bg-white p-4 dark:bg-dark-eval-1">
+                <p class="text-xs uppercase tracking-wide text-slate-500">Patients</p>
+                <p class="mt-2 text-2xl font-semibold text-slate-800 dark:text-slate-100">{{ count($patients) }}</p>
+            </div>
+            <div class="rounded-xl bg-white p-4 dark:bg-dark-eval-1">
+                <p class="text-xs uppercase tracking-wide text-slate-500">Bookings</p>
+                <p class="mt-2 text-2xl font-semibold text-slate-800 dark:text-slate-100">{{ count($appointments) }}</p>
+            </div>
+            <div class="rounded-xl bg-white p-4 dark:bg-dark-eval-1">
+                <p class="text-xs uppercase tracking-wide text-slate-500">Average Rating</p>
+                <p class="mt-2 text-2xl font-semibold text-slate-800 dark:text-slate-100">
+                    {{ $ratings->isNotEmpty() ? number_format((float) $ratings->avg('rating'), 1) : 'N/A' }}
+                </p>
+            </div>
+        </div>
+    </section>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                <div class="bg-white dark:bg-gray-800 rounded-md shadow-md p-4 flex items-center justify-between">
-                    <div>
-                        <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200">{{ count($schedule) }}</p>
-                        <p class="text-gray-500 dark:text-gray-400">Schedules</p>
-                    </div>
-                    <i class="fas fa-calendar text-3xl text-blue-500 dark:text-blue-300"></i>
-                </div>
-
-                <div class="bg-white dark:bg-gray-800 rounded-md shadow-md p-4 flex items-center justify-between">
-                    <div>
-                        <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200">{{ count($patients) }}</p>
-                        <p class="text-gray-500 dark:text-gray-400">My patients</p>
-                    </div>
-                    <i class="fas fa-solid fa-bed-pulse text-3xl text-blue-500 dark:text-blue-300"></i>
-                </div>
-
-                <div class="bg-white dark:bg-gray-800 rounded-md shadow-md p-4 flex items-center justify-between">
-                    <div>
-                        <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200">{{ count($appointments) }}</p>
-                        <p class="text-gray-500 dark:text-gray-400">Bookings</p>
-                    </div>
-                    <i class="fas fa-calendar-check text-3xl text-purple-500 dark:text-purple-300"></i>
-                </div>
-
-                <div class="bg-white dark:bg-gray-800 rounded-md shadow-md p-4 flex items-center justify-between">
-                    @if ($ratings->isNotEmpty())
-
-                    <div>
-                        <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200">{{ $ratings->avg('rating') }}</p>
-                        <p class="text-gray-500 dark:text-gray-400">My Rating</p>
-                    </div>
-                    <i class="fas fa-solid fa-star text-3xl text-blue-500 dark:text-blue-300"></i>
-
-                    @else
-                    <p>No Rating</p>
-
-                    @endif
-
-                </div>
-
+    <section class="grid gap-5 xl:grid-cols-2">
+        <div class="rounded-2xl bg-white p-6 dark:bg-dark-eval-1">
+            <div class="mb-4 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100">Upcoming Appointments</h3>
+                <a href="{{ route('doctor.appointments') }}" class="text-sm font-medium text-blue-600 hover:text-blue-700">View all</a>
             </div>
 
-        </div>
-
-    </div>
-
-    <div class=" m-4  rounded-md  overflow-hidden flex flex-col md:flex-row  dark:bg-dark-eval-1 ">
-        <div class=" p-6 bg-white m-3 dark:bg-dark-eval-1 rounded-md md:w-1/2 w-full  ">
-            <strong class="text-lg text-gray-800 dark:text-gray-200"> Upcoming Appointments: </strong> <i class="fa-solid fa-calendar-check"></i>
-            <div class="m-4">
-                @if (count($upcommingAppointments) == 0)
-
-                    <div class="border-b border-gray-200 dark:border-gray-600 py-2">
-                        <p class="text-gray-800 dark:text-gray-200">No Upcomming Appointments</p>
+            <div class="space-y-3">
+                @forelse ($upcommingAppointments as $appointment)
+                    <div class="rounded-xl border border-slate-100 p-4 dark:border-slate-700">
+                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ $appointment->patient->user->name }}</p>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-300">{{ $appointment->appointment_date }}</p>
+                        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ $appointment->reason }}</p>
                     </div>
-
-                @else
-
-                @foreach($upcommingAppointments  as $appointment)
-                    <div class="border-b border-gray-200 dark:border-gray-600 py-2">
-                        <p class="text-gray-800 dark:text-gray-200"><strong>Patient  name : </strong> </p>
-                        <p class="text-gray-800 dark:text-gray-200">{{ $appointment->patient->user->name }}</p>
-                        <p class="text-gray-800 dark:text-gray-200"> <strong> Appointment date : </strong> </p>
-                        <p class="text-gray-500 dark:text-gray-400">{{ $appointment->appointment_date }}</p>
-                        <p class="text-gray-800 dark:text-gray-200"> <strong> Reason : </strong> </p>
-                        <p class="text-gray-500 dark:text-gray-400">{{ $appointment->reason }}</p>
-                    </div>
-                @endforeach
-
-                @endif
-
+                @empty
+                    <p class="rounded-xl border border-dashed border-slate-200 p-4 text-sm text-slate-500 dark:border-slate-700">
+                        No upcoming appointments.
+                    </p>
+                @endforelse
             </div>
-
-            <a href="{{route('doctor.appointments')}}" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 ">
-                View all appointments</a>
-
-
         </div>
 
-        <div class="p-6 bg-white dark:bg-dark-eval-1 rounded-md md:w-1/2 m-3 w-full ">
-            <strong class="text-lg text-gray-800 dark:text-gray-200">Recent Patient Visits:</strong> <i class="fa-solid fa-bed-pulse"></i>
-            <div class="m-4">
-
-                @if (count($recentVisits) == 0)
-
-                <div class="border-b border-gray-200 dark:border-gray-600 py-2">
-                    <p class="text-gray-800 dark:text-gray-200">No recent patient visits</p>
-                </div>
-
-                @else
-
-                @foreach($recentVisits as $visit)
-                    <div class="border-b border-gray-200 dark:border-gray-600 py-2">
-                        <p class="text-gray-800 dark:text-gray-200"><strong>Patient  name : </strong> </p>
-                        <p class="text-gray-800 dark:text-gray-200">{{ $visit->patient->user->name }}</p>
-                        <p class="text-gray-800 dark:text-gray-200"> <strong> Visit date : </strong> </p>
-                        <p class="text-gray-500 dark:text-gray-400">{{ $visit->appointment_date }}</p>
+        <div class="rounded-2xl bg-white p-6 dark:bg-dark-eval-1">
+            <h3 class="mb-4 text-lg font-semibold text-slate-800 dark:text-slate-100">Recent Patient Visits</h3>
+            <div class="space-y-3">
+                @forelse ($recentVisits as $visit)
+                    <div class="rounded-xl border border-slate-100 p-4 dark:border-slate-700">
+                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ $visit->patient->user->name }}</p>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-300">{{ $visit->appointment_date }}</p>
                     </div>
-                @endforeach
-
-                @endif
+                @empty
+                    <p class="rounded-xl border border-dashed border-slate-200 p-4 text-sm text-slate-500 dark:border-slate-700">
+                        No recent visits.
+                    </p>
+                @endforelse
             </div>
+        </div>
+    </section>
 
-
+    <section class="rounded-2xl bg-white p-6 dark:bg-dark-eval-1">
+        <div class="mb-4 flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100">Latest Reviews</h3>
+            <a href="{{ route('doctor.myreviews') }}" class="text-sm font-medium text-blue-600 hover:text-blue-700">View more</a>
         </div>
 
-    </div>
-
-
-    <div class="p-6 bg-white dark:bg-dark-eval-1 rounded-md m-3 w-full">
-        <strong class="text-lg text-gray-800 dark:text-gray-200">My reviews:</strong>
-        <i class="fa-solid fa-star"></i>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            @if (count($ratings) == 0)
-                <div class="border-b border-gray-200 dark:border-gray-600 py-2">
-                    <p class="text-gray-800 dark:text-gray-200">No reviews</p>
+        <div class="grid gap-4 md:grid-cols-2">
+            @forelse ($ratings->take(4) as $review)
+                <div class="rounded-xl border border-slate-100 p-4 dark:border-slate-700">
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ $review->patient->user->name }}</p>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ $review->comment }}</p>
+                    <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-amber-600">Rating: {{ $review->rating }}/5</p>
                 </div>
-            @else
-                @php $reviewCount = 0; @endphp
-                @foreach($ratings as $index => $review)
-                    @if($reviewCount < 4) <!-- Display only 4 reviews -->
-                        <div class="border-b border-gray-200 dark:border-gray-600 py-2">
-                            <p class="text-gray-800 dark:text-gray-200"><strong>Patient name:</strong> {{ $review->patient->user->name }}</p>
-                            <p class="text-gray-800 dark:text-gray-200"><strong>Review:</strong> {{ $review->comment }}</p>
-                            @if(($index + 1) % 2 == 0)
-                                <style>
-                                    .review-item:nth-child({{ $index + 1 }}) p strong::after {
-                                        content: ":";
-                                        float: right;
-                                        margin-left: 5px;
-                                    }
-                                </style>
-                            @endif
-                        </div>
-                        @php $reviewCount++; @endphp
-                    @endif
-                @endforeach
-            @endif
+            @empty
+                <p class="rounded-xl border border-dashed border-slate-200 p-4 text-sm text-slate-500 dark:border-slate-700 md:col-span-2">
+                    No reviews yet.
+                </p>
+            @endforelse
         </div>
-
-        <a href="{{route('doctor.myreviews')}}" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-            View more
-        </a>
-    </div>
-
-
-
+    </section>
 
 </x-doctor-layout>

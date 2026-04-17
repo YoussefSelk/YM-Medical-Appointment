@@ -1,5 +1,10 @@
 <x-guest-layout>
     <x-auth-card>
+        <div class="mb-2">
+            <h1 class="text-2xl font-semibold text-slate-800 dark:text-slate-100">Welcome back</h1>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-300">Sign in to access your medical workspace.</p>
+        </div>
+
         <!-- Session Status -->
         <x-auth-session-status class="mb-4" :status="session('status')" />
 
@@ -75,7 +80,7 @@
                 @endif
                 <div>
                     <a href="{{ route('home') }}"
-                        class="inline-block text-sm px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg">
+                        class="inline-flex items-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-100">
                         {{ __('Back to Landing Page') }}
                     </a>
                 </div>

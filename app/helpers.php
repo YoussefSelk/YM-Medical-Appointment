@@ -28,12 +28,19 @@ if (!function_exists('authUser')) {
 if (!function_exists('sendSupportEmail')) {
     function sendSupportEmail($data)
     {
+        $content = nl2br(e((string) ($data['content'] ?? '')));
+        $contactLink = filter_var($data['contactLink'] ?? '', FILTER_VALIDATE_URL)
+            ? $data['contactLink']
+            : config('app.url');
+        $contactText = trim(strip_tags((string) ($data['contactText'] ?? 'Contact us')));
+        $phoneNumber = preg_replace('/[^0-9+\\-\\s\\(\\)]/', '', (string) ($data['phoneNumber'] ?? ''));
+
         Mail::to($data['to'])
             ->send(new Support([
-                'content' => $data['content'],
-                'contactLink' => $data['contactLink'],
-                'contactText' => $data['contactText'],
-                'phoneNumber' => $data['phoneNumber'],
+                'content' => $content,
+                'contactLink' => $contactLink,
+                'contactText' => $contactText,
+                'phoneNumber' => $phoneNumber,
             ]));
     }
 }

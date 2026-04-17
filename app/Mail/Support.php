@@ -25,10 +25,12 @@ class Support extends Mailable implements ShouldQueue
      */
     public function __construct(array $data)
     {
-        $this->content = $data['content'];
-        $this->contactLink = $data['contactLink'];
-        $this->contactText = $data['contactText'];
-        $this->phoneNumber = $data['phoneNumber'];
+        $this->content = nl2br(e((string) ($data['content'] ?? '')));
+        $this->contactLink = filter_var($data['contactLink'] ?? '', FILTER_VALIDATE_URL)
+            ? $data['contactLink']
+            : config('app.url');
+        $this->contactText = trim(strip_tags((string) ($data['contactText'] ?? 'Contact us')));
+        $this->phoneNumber = preg_replace('/[^0-9+\\-\\s\\(\\)]/', '', (string) ($data['phoneNumber'] ?? ''));
     }
 
     /**

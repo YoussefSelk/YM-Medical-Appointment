@@ -13,7 +13,8 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                sans: ['Manrope', ...defaultTheme.fontFamily.sans],
+                display: ['Sora', ...defaultTheme.fontFamily.sans],
             },
 
             colors: {

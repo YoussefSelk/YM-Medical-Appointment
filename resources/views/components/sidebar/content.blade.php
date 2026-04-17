@@ -1,4 +1,4 @@
-<x-perfect-scrollbar as="nav" aria-label="main" class="flex flex-col flex-1 gap-4 px-3 ">
+<x-perfect-scrollbar as="nav" aria-label="main" class="flex flex-1 flex-col gap-3 px-3">
 
     @if (auth()->user()->user_type === 'admin')
         <x-sidebar.link title="Dashboard" href="{{ route(auth()->user()->getDashboardRouteAttribute()) }}"
@@ -33,8 +33,13 @@
         <x-sidebar.sublink title="Text with icon" href="{{ route('buttons.text-icon') }}" :active="request()->routeIs('buttons.text-icon')" />
     </x-sidebar.dropdown> --}}
 
-    <div x-transition x-show="isSidebarOpen || isSidebarHovered" class="text-sm text-gray-500">
-        Links
+    <div x-transition x-show="isSidebarOpen || isSidebarHovered"
+        class="mt-1 px-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+        @if (auth()->user()->user_type === 'admin')
+            Administration
+        @else
+            Workspace
+        @endif
     </div>
     @if (auth()->user()->user_type === 'admin')
         <x-sidebar.link title="Doctors" href="{{ route('admin.doctor') }}" :isActive="request()->routeIs('admin.doctor')">
@@ -47,7 +52,7 @@
                 <i class="fa-solid fa-bed-pulse"></i>
             </x-slot>
         </x-sidebar.link>
-        <x-sidebar.link title="Apointments" href="{{ route('admin.appointments') }}" :isActive="request()->routeIs('admin.appointments')">
+        <x-sidebar.link title="Appointments" href="{{ route('admin.appointments') }}" :isActive="request()->routeIs('admin.appointments')">
             <x-slot name="icon">
                 <i class="fa-regular fa-calendar-check"></i>
             </x-slot>
@@ -62,7 +67,7 @@
                 <i class="fa-solid fa-briefcase"></i>
             </x-slot>
         </x-sidebar.link>
-        <x-sidebar.link title="Doctors Applies" href="{{ route('admin.apply') }}" :isActive="request()->routeIs('admin.apply')">
+        <x-sidebar.link title="Doctor Applications" href="{{ route('admin.apply') }}" :isActive="request()->routeIs('admin.apply')">
             <x-slot name="icon">
                 <i class="fa-solid fa-file-contract"></i>
             </x-slot>

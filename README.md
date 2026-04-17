@@ -1,118 +1,161 @@
-# Medical Appointment Management Application ![Medical Icon](https://img.icons8.com/ios/50/000000/stethoscope.png)
+# YM Medical Appointment
 
-This application facilitates the scheduling and management of medical appointments. It is designed to improve the efficiency and accessibility of medical services for both patients and healthcare providers.
+A production-ready Laravel platform for managing medical appointments across **patients, doctors, and administrators**.
 
-![App Screenshot](https://via.placeholder.com/800x400)
+[![Laravel](https://img.shields.io/badge/Laravel-10.x-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/docs/10.x)
+[![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Build Tool](https://img.shields.io/badge/Vite-5.x-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 
 ## Table of Contents
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+1. [Project Purpose](#project-purpose)
+2. [Core Features](#core-features)
+3. [Roles and Permissions](#roles-and-permissions)
+4. [Tech Stack](#tech-stack)
+5. [Quick Start](#quick-start)
+6. [Configuration](#configuration)
+7. [Default Admin Access](#default-admin-access)
+8. [Useful Commands](#useful-commands)
+9. [Security Notes](#security-notes)
+10. [Troubleshooting](#troubleshooting)
+11. [Testing](#testing)
+12. [License](#license)
 
-## Features
+## Project Purpose
+YM Medical Appointment digitizes clinic workflows by centralizing scheduling, doctor-patient coordination, and platform operations in one system.
 
-- **User Management**: Separate panels for administrators, doctors, and patients.
-- **Appointment Scheduling**: Easy scheduling, modification, and cancellation of appointments.
-- **Doctor and Patient Management**: Manage doctors' and patients' profiles and their respective appointments.
-- **Specialty Management**: Manage medical specialties and related doctors.
-- **Notifications**: Send notifications to doctors and patients.
-- **Security**: Protection against brute force attacks, XSS, SQL Injection, and CSRF attacks.
+This project helps teams:
+- reduce manual appointment errors,
+- make booking faster for patients,
+- give doctors a clear live schedule,
+- provide admins full operational control and visibility.
 
+## Core Features
+| Area | Capabilities |
+| --- | --- |
+| Authentication | Multi-role login (Admin, Doctor, Patient), profile management |
+| Appointments | Book, approve, reject, cancel, and track appointment lifecycle |
+| Doctor Operations | Schedule availability, manage requests, review patient history |
+| Patient Experience | Browse doctors, manage bookings, view health content |
+| Admin Back Office | Manage users, applications, specialities, dashboards, exports |
+| Reporting | Charts and PDF exports for operational insights |
+| Notifications | In-app notifications and workflow updates |
 
-## Technologies Used
+## Roles and Permissions
+| Role | Main Responsibilities |
+| --- | --- |
+| `Admin` | Manages doctors, patients, schedules, appointments, applications, and platform settings |
+| `Doctor` | Manages personal schedule, appointments, and patient interactions |
+| `Patient` | Finds doctors, books appointments, and monitors personal bookings |
 
-- **Frontend**: HTML, CSS, JavaScript, Tailwind CSS, Vite.js 
-- **Backend**: PHP, Laravel
-- **Libraries and Frameworks**: jQuery, DataTable.js, DomPdf, Alpine.js, Chart.js, FontAwesome, Sweetalert2, jQuery UI, jQuery Migrate.js, Animate.css, UI Avatar, Laravel charts 
-- **Database**: MariaDB (managed through HeidiSQL) 
-- **Development Tools**: Visual Studio Code, XAMPP, Git, GitHub, Browser DevTools 
+## Tech Stack
+| Layer | Tools |
+| --- | --- |
+| Backend | Laravel 10, PHP 8.1+, Sanctum |
+| Frontend | Blade, Tailwind CSS, Bootstrap 5, Alpine.js, jQuery |
+| Build | Vite, npm |
+| Database | MySQL or MariaDB |
+| Packages | DomPDF, Laravel Charts, Heroicons, SweetAlert2, FullCalendar |
 
-## Installation
+## Quick Start
+### 1. Clone the repository
+```bash
+git clone https://github.com/YoussefSelk/YM-Medical-Appointment.git
+cd YM-Medical-Appointment
+```
 
-Follow these steps to set up the project on your local machine.
+### 2. Install dependencies
+```bash
+composer install
+npm install
+```
 
-### Prerequisites
+### 3. Create your environment file
+```bash
+cp .env.example .env
+```
+On Windows PowerShell:
+```powershell
+Copy-Item .env.example .env
+```
 
-- PHP (>= 7.3)
-- Composer
-- Node.js and npm
-- XAMPP (or any other LAMP stack)
+### 4. Configure environment values
+Update `.env` with your database and app settings.
 
-### Steps
+### 5. Prepare application
+```bash
+php artisan key:generate
+php artisan migrate:fresh --seed
+php artisan storage:link
+```
 
-1. **Clone the repository:**
-    ```sh
-    git clone https://github.com/YoussefSelk/YM-Medical-Appointment.git
-    cd YM-Medical-Appointment
-    ```
+### 6. Run the app
+```bash
+php artisan serve
+npm run dev
+```
 
-2. **Install PHP dependencies:**
-    ```sh
-    composer install
-    ```
+### 7. Optional scheduler worker
+```bash
+php artisan schedule:work
+```
 
-3. **Install JavaScript dependencies:**
-    ```sh
-    npm install
-    ```
+## Configuration
+Minimum required `.env` variables:
 
-4. **Set up the database:**
-    - Create a database named `your_database_name`.
-    - Update your `.env` file with your database credentials.
+| Key | Purpose |
+| --- | --- |
+| `APP_URL` | Base URL of the application |
+| `APP_ENV`, `APP_DEBUG` | Environment and debug mode |
+| `DB_*` | Database connection |
+| `MAIL_*` | SMTP/email integration |
+| `NEWS_API_KEY` | Optional: external health articles feed |
 
-5. **Run migrations and seed the database:**
-    ```sh
-    php artisan migrate:fresh --seed
-    ```
+## Default Admin Access
+After running `php artisan migrate:fresh --seed`:
 
-6. **Create a symbolic link for storage:**
-    ```sh
-    php artisan storage:link
-    ```
+- **Email:** `admin@example.com`
+- **Password:** `Estk@23@24`
 
-7. **Clear route cache:**
-    ```sh
-    php artisan route:clear
-    ```
+Seeder source: [database/seeders/UsersTableSeeder.php](database/seeders/UsersTableSeeder.php)
 
-8. **Start the development server:**
-    ```sh
-    php artisan serve
-    ```
+For real deployments, change this account immediately.
 
-9. **Start the scheduler worker:**
-    ```sh
-    php artisan schedule:work
-    ```
+## Useful Commands
+| Task | Command |
+| --- | --- |
+| Run tests | `php artisan test` |
+| Cache routes | `php artisan route:cache` |
+| Cache config | `php artisan config:cache` |
+| Build frontend assets | `npm run build` |
+| Clear app caches | `php artisan optimize:clear` |
 
-10. **Compile the assets:**
-    ```sh
-    npm run dev
-    ```
+## Security Notes
+- Keep `APP_DEBUG=false` outside local development.
+- Use strong production credentials and rotate defaults.
+- Route and role checks are enforced for protected operations.
+- Rate limiting is applied on sensitive/high-frequency endpoints.
+- Secure headers middleware is enabled.
 
-Your application should now be running at `http://localhost:8000`.
+## Troubleshooting
+### Login fails with seeded admin
+1. Re-run seeders: `php artisan migrate:fresh --seed`
+2. Clear caches: `php artisan optimize:clear`
+3. Confirm you are using:
+   - Email: `admin@example.com`
+   - Password: `Estk@23@24`
 
+### Too many redirects (`ERR_TOO_MANY_REDIRECTS`)
+1. Ensure `.env` has the correct `APP_URL` (for local: `http://127.0.0.1:8000`).
+2. Clear caches: `php artisan optimize:clear`
+3. Remove old browser cookies for `127.0.0.1`.
 
-## Usage
+## Testing
+Run the automated test suite:
 
-### Admin Panel ![Admin Icon](https://img.icons8.com/ios/50/000000/admin-settings.png)
-
-The admin panel allows administrators to manage doctors, patients, appointments, schedules, and specialties.
-
-### Doctor Panel ![Doctor Icon](https://img.icons8.com/ios/50/000000/doctor-male.png)
-
-Doctors can manage their appointments, schedules, patient profiles, and view evaluations.
-
-### Patient Panel ![Patient Icon](https://img.icons8.com/ios/50/000000/patient-oxygen-mask.png)
-
-Patients can schedule and manage their appointments, view doctor profiles, and read health-related articles.
-
-
+```bash
+php artisan test
+```
 
 ## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
+Licensed under the [MIT License](LICENSE).

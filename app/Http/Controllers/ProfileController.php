@@ -40,7 +40,7 @@ class ProfileController extends Controller
     {
         // Validate the incoming request
         $request->validate([
-            'img' => 'required|image|mimes:jpeg,png,gif|max:2048', // Adjust the max file size as needed
+            'img' => 'required|image|mimes:jpeg,png,gif,webp|max:2048',
         ]);
 
         // Check if the request has a file attached
@@ -50,6 +50,11 @@ class ProfileController extends Controller
 
             // Generate a unique filename for the image
             $imageName = uniqid('profile_img_') . '.' . $image->getClientOriginalExtension();
+
+            // Delete old profile image if it exists
+            if ($request->user()->img) {
+                Storage::disk('public')->delete('profile_pictures/' . $request->user()->img);
+            }
 
             // Store the image in the public storage directory
             $image->storeAs('public/profile_pictures', $imageName);
@@ -86,16 +91,41 @@ class ProfileController extends Controller
             $user->email_verified_at = null;
             $user->sendEmailVerificationNotification();
         }
-        $user->gender = $request->gender;
-        $user->address->ville = $request->ville;
+
+        if ($request->filled('gender')) {
+            $user->gender = htmlspecialchars($request->input('gender'));
+        }
+
+        if ($request->filled('phone')) {
+            $user->phone = htmlspecialchars($request->input('phone'));
+        }
 
         $user->save();
 
+        if ($user->address && ($request->filled('ville') || $request->filled('rue'))) {
+            if ($request->filled('ville')) {
+                $user->address->ville = htmlspecialchars($request->input('ville'));
+            }
+
+            if ($request->filled('rue')) {
+                $user->address->rue = htmlspecialchars($request->input('rue'));
+            }
+
+            $user->address->save();
+        }
+
         // Update patient's information if the user type is 'patient'
-        if ($user->user_type == 'patient') {
+        if ($user->user_type === 'patient' && $user->patient) {
             $patient = $user->patient;
-            $patient->cin = $request->cin;
-            $patient->birth_date = $request->birth_date;
+
+            if ($request->filled('cin')) {
+                $patient->cin = htmlspecialchars($request->input('cin'));
+            }
+
+            if ($request->filled('birth_date')) {
+                $patient->birth_date = $request->input('birth_date');
+            }
+
             $patient->save();
         }
 
@@ -116,7 +146,7 @@ class ProfileController extends Controller
         // Check if the user has a profile picture
         if ($request->user()->img) {
             // Delete profile picture from storage
-            Storage::disk('public')->delete($request->user()->img);
+            Storage::disk('public')->delete('profile_pictures/' . $request->user()->img);
 
             // Update user's img column to null
             $request->user()->img = null;
@@ -151,28 +181,26 @@ class ProfileController extends Controller
 
         Auth::logout();
 
-        if ($user->user_type === 'patient') {
-            $id = $user->patient->id;
-            $patient = Patient::find($id);
-            if ($patient) {
-                $user = User::find($patient->user->id);
-                $address = Address::find($patient->user->address->id);
+        if ($user->user_type === 'patient' && $user->patient) {
+            $patient = Patient::find($user->patient->id);
+            if ($patient && $patient->user) {
+                $patientUser = User::find($patient->user->id);
+                $address = $patient->user->address;
                 $appointments = Appointment::where('patient_id', $patient->id)->get();
                 if ($appointments->isNotEmpty()) {
                     $appointments->each->delete();
                 }
                 $patient->delete();
-                if ($user) {
-                    $user->delete();
+                if ($patientUser) {
+                    $patientUser->delete();
 
                     if ($address) {
                         $address->delete();
                     }
                 }
             }
-        } else if ($user->user_type === 'doctor') {
-            $id = $user->doctor->id;
-            $doctor = Doctor::find($id);
+        } else if ($user->user_type === 'doctor' && $user->doctor) {
+            $doctor = Doctor::find($user->doctor->id);
             if ($doctor) {
                 $address = $user->address;
                 $schedules = Schedule::where('doctor_id', $doctor->id)->get();

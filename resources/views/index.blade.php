@@ -393,7 +393,7 @@
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <a href="{{ route('home.apply') }}" target="_blank"
+                                <a href="{{ route('home.apply') }}" target="_blank" rel="noopener noreferrer"
                                     class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Read More &
                                     Apply !!!</a>
                             </div>
@@ -585,7 +585,7 @@
     <!-- Magnific Popup JS -->
     <script src="{{ asset('js/landingpage/jquery.magnific-popup.min.js') }}"></script>
     <!-- Counter Up CDN JS -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="{{ asset('js/landingpage/bootstrap.min.js') }}"></script>
     <!-- Main JS -->

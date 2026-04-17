@@ -2,197 +2,232 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Patient;
+use App\Models\Rating;
 use App\Models\Schedule;
 use App\Models\Speciality;
-use App\Models\User;
-use App\Models\Rating;
-use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class DoctorController extends Controller
 {
-    //Views's Functions
+    private function currentDoctor(): Doctor
+    {
+        $doctor = Auth::user()?->doctor;
+
+        abort_if(!$doctor, 403, 'Unauthorized action.');
+
+        return $doctor;
+    }
+
+    private function findDoctorScheduleOrFail(int $id, Doctor $doctor): Schedule
+    {
+        return Schedule::where('id', $id)
+            ->where('doctor_id', $doctor->id)
+            ->firstOrFail();
+    }
+
+    private function findDoctorAppointmentOrFail(int $id, Doctor $doctor): Appointment
+    {
+        return Appointment::where('id', $id)
+            ->where('doctor_id', $doctor->id)
+            ->firstOrFail();
+    }
+
+    private function ensurePatientBelongsToDoctor(Patient $patient, Doctor $doctor): void
+    {
+        $isLinked = Appointment::where('doctor_id', $doctor->id)
+            ->where('patient_id', $patient->id)
+            ->exists();
+
+        abort_if(!$isLinked, 403, 'Unauthorized action.');
+    }
 
     public function index()
     {
-        $appointments = Auth::user()->doctor->Appointments;
+        $doctor = $this->currentDoctor();
 
-        $schedule = Auth::user()->doctor->schedules;
+        $appointments = $doctor->appointments;
+        $schedule = $doctor->schedules;
 
-        $patientIds = Auth::user()->doctor->Appointments->pluck('patient_id')->unique();
-
+        $patientIds = $appointments->pluck('patient_id')->unique();
         $patients = Patient::whereIn('id', $patientIds)->get();
 
-        $upcommingAppointments = Appointment::where('doctor_id', Auth::user()->doctor->id)
-        ->where('appointment_date', '>', Carbon::now())->get();
+        $upcommingAppointments = Appointment::where('doctor_id', $doctor->id)
+            ->whereDate('appointment_date', '>', Carbon::today())
+            ->get();
 
-        $recentVisits = Appointment::where('doctor_id', Auth::user()->doctor->id)
-        ->where('appointment_date', '<', Carbon::now())
-        ->where('status', 'Approved')
-        ->get();
+        $recentVisits = Appointment::where('doctor_id', $doctor->id)
+            ->whereDate('appointment_date', '<', Carbon::today())
+            ->where('status', 'Approved')
+            ->get();
 
-        $ratings = Rating::where('doctor_id', Auth::user()->doctor->id)->get();
+        $ratings = Rating::where('doctor_id', $doctor->id)->get();
 
-        return view('panels.doctor.index')->with('appointments', $appointments)->with('schedule', $schedule)
-        ->with('patients', $patients)->with('upcommingAppointments', $upcommingAppointments)
-        ->with('recentVisits', $recentVisits)
-        ->with('ratings', $ratings);
+        return view('panels.doctor.index')
+            ->with('appointments', $appointments)
+            ->with('schedule', $schedule)
+            ->with('patients', $patients)
+            ->with('upcommingAppointments', $upcommingAppointments)
+            ->with('recentVisits', $recentVisits)
+            ->with('ratings', $ratings);
     }
 
     public function appointments()
     {
+        $doctor = $this->currentDoctor();
 
-        $appointments = Auth::user()->doctor->Appointments;
+        $appointments = $doctor->appointments;
+
         return view('panels.doctor.appointments')->with(compact('appointments'));
     }
 
     public function schedule()
     {
-        $doctor = Auth::user()->doctor;
-        $schedule = Auth::user()->doctor->schedules;
+        $doctor = $this->currentDoctor();
+        $schedule = $doctor->schedules;
+
         return view('panels.doctor.schedule')->with(compact('schedule'))->with('doctor', $doctor);
     }
 
     public function editSchedule($id)
     {
-
-        $schedule = Schedule::find($id);
-
-        if (!$schedule) {
-            abort(404);
-        }
+        $doctor = $this->currentDoctor();
+        $schedule = $this->findDoctorScheduleOrFail((int) $id, $doctor);
 
         return view('panels.doctor.CRUD.edit_schedule')->with(compact('schedule'));
     }
 
     public function editAppointmentView($id)
     {
-
-        $appointment = Appointment::find($id);
-
-        if (!$appointment) {
-            abort(404);
-        }
+        $doctor = $this->currentDoctor();
+        $appointment = $this->findDoctorAppointmentOrFail((int) $id, $doctor);
 
         return view('panels.doctor.CRUD.edit_appointment')->with(compact('appointment'));
     }
 
-    public function mypatients(){
+    public function mypatients()
+    {
+        $doctor = $this->currentDoctor();
 
-        $patientIds = Auth::user()->doctor->Appointments->pluck('patient_id')->unique();
+        $patientIds = $doctor->appointments->pluck('patient_id')->unique();
 
         $patients = Patient::whereIn('id', $patientIds)->get();
-        $appointments = Appointment::whereIn('patient_id', $patientIds)->get();
+        $appointments = Appointment::where('doctor_id', $doctor->id)
+            ->whereIn('patient_id', $patientIds)
+            ->get();
 
         return view('panels.doctor.mypatients', with(compact('patients', 'appointments')));
-
     }
 
-    public function patientView($id){
+    public function patientView($id)
+    {
+        $doctor = $this->currentDoctor();
+        $patient = Patient::findOrFail((int) $id);
 
-        $patient = Patient::find($id);
-        $appointments = Appointment::where('patient_id', $id)->get();
+        $this->ensurePatientBelongsToDoctor($patient, $doctor);
+
+        $appointments = Appointment::where('patient_id', $patient->id)
+            ->where('doctor_id', $doctor->id)
+            ->get();
+
         return view('panels.doctor.CRUD.patient_view')->with(compact('patient'))->with(compact('appointments'));
     }
 
+    public function bookAppointmentView($id)
+    {
+        $doctor = $this->currentDoctor();
+        $patient = Patient::findOrFail((int) $id);
 
-    public function bookAppointmentView($id){
-        $doctors = Doctor::all();
-        $patient = Patient::find($id);
+        $this->ensurePatientBelongsToDoctor($patient, $doctor);
+
+        $doctors = Doctor::where('id', $doctor->id)->get();
         $specialities = Speciality::all();
-        $schedules = Schedule::all();
-        return view('panels.doctor.CRUD.patient_book')->with(compact('patient'))->with(compact('specialities'))->with(compact('schedules'))
-        ->with(compact('doctors'));
+        $schedules = Schedule::where('doctor_id', $doctor->id)
+            ->where('status', 'false')
+            ->get();
+
+        return view('panels.doctor.CRUD.patient_book')
+            ->with(compact('patient'))
+            ->with(compact('specialities'))
+            ->with(compact('schedules'))
+            ->with(compact('doctors'));
     }
 
-    public function appointmentDetails($id){
-
-        $appointment = Appointment::find($id);
-        $patient = Patient::find($appointment->patient_id);
+    public function appointmentDetails($id)
+    {
+        $doctor = $this->currentDoctor();
+        $appointment = $this->findDoctorAppointmentOrFail((int) $id, $doctor);
+        $patient = Patient::findOrFail($appointment->patient_id);
 
         return view('panels.doctor.CRUD.appointment_details')->with(compact('appointment'))->with(compact('patient'));
     }
 
-    public function reviews(){
-
-        $ratings = Rating::where('doctor_id', Auth::user()->doctor->id)->get();
+    public function reviews()
+    {
+        $doctor = $this->currentDoctor();
+        $ratings = Rating::where('doctor_id', $doctor->id)->get();
 
         return view('panels.doctor.reviews')->with(compact('ratings'));
     }
 
-    //Operations's Functions
-
     public function deleteSchedule($id)
     {
-        // Find the schedule by its ID
-        $schedule = Schedule::find($id);
+        $doctor = $this->currentDoctor();
+        $schedule = $this->findDoctorScheduleOrFail((int) $id, $doctor);
 
-        // If the schedule doesn't exist, redirect back with an error message
-        if (!$schedule) {
-            return redirect()->back()->with('error', 'Schedule not found.');
-        }
+        Appointment::where('schedule_id', $schedule->id)
+            ->where('doctor_id', $doctor->id)
+            ->delete();
 
-        $appointments = Appointment::where('schedule_id', $id)->get();
-        if ($appointments) {
-            foreach ($appointments as $appointment) {
-                $appointment->delete();
-            }
-        }
-
-        // Delete the schedule
         $schedule->delete();
 
-        // Redirect back with a success message
         return redirect()->back()->with('success', 'Schedule deleted successfully.');
     }
 
     public function updateSchedule(Request $request, $id)
     {
-        $schedule = Schedule::find($id);
-        if (!$schedule) {
-            abort(404);
-        }
+        $doctor = $this->currentDoctor();
+        $schedule = $this->findDoctorScheduleOrFail((int) $id, $doctor);
 
-        $validator = Validator::make($request->all(), [
-        'day' => 'required|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
-        'start_time' => 'required',
-        'end_time' => 'required|after:start_time',
-    ], [
-        'day.required' => 'Please select a day.',
-        'day.in' => 'Invalid day selected.',
-        'start_time.required' => 'Please enter a start time.',
-
-        'end_time.required' => 'Please enter an end time.',
-        'end_time.date_format' => 'Invalid end time format. ',
-        'end_time.after' => 'End time must be after start time.',
-
-        ]);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'day' => 'required|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+                'start_time' => 'required',
+                'end_time' => 'required|after:start_time',
+            ],
+            [
+                'day.required' => 'Please select a day.',
+                'day.in' => 'Invalid day selected.',
+                'start_time.required' => 'Please enter a start time.',
+                'end_time.required' => 'Please enter an end time.',
+                'end_time.after' => 'End time must be after start time.',
+            ]
+        );
 
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
-
 
         $schedule->day = ucfirst(strtolower($request->input('day')));
         $schedule->start = $request->input('start_time');
         $schedule->end = $request->input('end_time');
         $schedule->save();
+
         return redirect()->route('doctor.schedule')->with('success', 'Schedule updated successfully.');
     }
 
-
-
-
     public function getAppointmentDetails($id)
     {
-        $appointment = Appointment::findOrFail($id);
+        $doctor = $this->currentDoctor();
+        $appointment = $this->findDoctorAppointmentOrFail((int) $id, $doctor);
 
         $data = [
             'id' => $appointment->id,
@@ -203,22 +238,16 @@ class DoctorController extends Controller
                 'appointmentDate' => $appointment->appointment_date,
                 'reason' => $appointment->reason,
                 'doctorName' => $appointment->doctor->user->name,
-            ]
+            ],
         ];
 
         return response()->json($data);
     }
 
-
-
-
     public function updateAppointment(Request $request, $id)
     {
-
-        $appointment = Appointment::find($id);
-        if (!$appointment) {
-            return redirect()->back()->with('error', 'Appointment not found.');
-        }
+        $doctor = $this->currentDoctor();
+        $appointment = $this->findDoctorAppointmentOrFail((int) $id, $doctor);
 
         $validator = Validator::make($request->all(), [
             'status' => 'required|in:Pending,Approved,Cancelled,Expired',
@@ -226,9 +255,7 @@ class DoctorController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
         $appointment->status = ucfirst(strtolower($request->input('status')));
@@ -240,189 +267,181 @@ class DoctorController extends Controller
 
     public function getSchedules()
     {
-        $user = Auth::user();
-        $doctor = $user->doctor;
+        $doctor = $this->currentDoctor();
 
-        // Retrieve all schedules for the doctor with the given ID
         $schedules = Schedule::where('doctor_id', $doctor->id)->get();
 
-        // Get the start and end of the current week
         $startDate = Carbon::now()->startOfWeek();
         $endDate = Carbon::now()->endOfWeek();
 
-        // Transform the schedule data into the format expected by FullCalendar
         $events = [];
+
         foreach ($schedules as $schedule) {
-            // Parse the start and end times for the current schedule
             $startTime = Carbon::parse($schedule->start);
             $endTime = Carbon::parse($schedule->end);
-
-            // Get the current date (Monday) and iterate through each day of the week
             $currentDate = clone $startDate;
 
             while ($currentDate->lte($endDate)) {
-                // Check if the current date matches the schedule day
                 if ($currentDate->englishDayOfWeek == $schedule->day) {
-                    // Assign the schedule to the current day of the week
                     $events[] = [
                         'id' => $schedule->id,
-                        'title' => 'Available', // Customize as needed
+                        'title' => 'Available',
                         'start' => $currentDate->copy()->setTime($startTime->hour, $startTime->minute)->toDateTimeString(),
                         'end' => $currentDate->copy()->setTime($endTime->hour, $endTime->minute)->toDateTimeString(),
                     ];
                 }
 
-                // Move to the next day
                 $currentDate->addDay();
             }
         }
 
-        // Return the events as a JSON response
         return response()->json($events);
     }
 
     public function add_schedule(Request $request, $id)
     {
+        $doctor = $this->currentDoctor();
+
+        abort_if((int) $id !== (int) $doctor->id, 403, 'Unauthorized action.');
+
         try {
-            // Validate the request data
             $validatedData = $request->validate([
-                'start_times' => 'nullable|array', // Validate 'start_times' as array
-                'start_times.*' => 'nullable|array', // Each item inside 'start_times' should be an array
-                'start_times.*.*' => 'nullable|date_format:H:i', // Validate as time format (HH:MM)
+                'start_times' => 'nullable|array',
+                'start_times.*' => 'nullable|array',
+                'start_times.*.*' => 'nullable|date_format:H:i',
             ]);
 
-            // Check if 'start_times' is empty
             if (empty($validatedData['start_times'])) {
                 return redirect()->back()->with('error', 'Please select at least one time slot.');
             }
 
-            // Iterate through the submitted data and store in the database
             foreach ($validatedData['start_times'] as $day => $startTimes) {
-                if ($startTimes) { // Check if there are start times for this day
-                    foreach ($startTimes as $startTime) {
-                        // Check if there's an existing record with the same doctor_id, day, and start time
-                        $existingSchedule = Schedule::where('doctor_id', $id)
-                            ->where('day', ucfirst($day))
-                            ->where('start', $startTime)
-                            ->exists();
+                if (!$startTimes) {
+                    continue;
+                }
 
-                        // If there's no existing record, then insert the new schedule
-                        if (!$existingSchedule) {
-                            // Create a new Schedule instance
-                            $schedule = new Schedule();
-                            $schedule->start = $startTime;
+                foreach ($startTimes as $startTime) {
+                    $existingSchedule = Schedule::where('doctor_id', $doctor->id)
+                        ->where('day', ucfirst($day))
+                        ->where('start', $startTime)
+                        ->exists();
 
-                            // Set the end time to 30 minutes later than the start time
-                            $schedule->end = date('H:i', strtotime('+30 minutes', strtotime($startTime)));
-
-                            $schedule->day = ucfirst($day); // Capitalize the day name
-                            $schedule->doctor_id = $id;
-                            $schedule->status = 'false';
-                            $schedule->save();
-                        } else {
-                            return redirect()->back()->with('error', 'Schedule already Exist');
-                        }
+                    if ($existingSchedule) {
+                        return redirect()->back()->with('error', 'Schedule already exists.');
                     }
+
+                    $schedule = new Schedule();
+                    $schedule->start = $startTime;
+                    $schedule->end = date('H:i', strtotime('+30 minutes', strtotime($startTime)));
+                    $schedule->day = ucfirst($day);
+                    $schedule->doctor_id = $doctor->id;
+                    $schedule->status = 'false';
+                    $schedule->save();
                 }
             }
 
-            // Redirect back or do whatever you want after saving
-            return redirect()->back()->with('success', 'Schedule saved successfully');
-        } catch (\Exception $e) {
-            // Log or display the error message
-            dd($e->getMessage());
+            return redirect()->back()->with('success', 'Schedule saved successfully.');
+        } catch (\Throwable $e) {
+            Log::error('Doctor schedule creation failed', [
+                'doctor_id' => $doctor->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect()->back()->with('error', 'Unable to save schedule right now.');
         }
     }
-
-
 
     public function book(Request $request, $P_ID)
     {
-        $reason_for_appointment = $request->input('reason');
-        $appointment_date = $request->input('appointment_datee');
-        $schedule_id = $request->input('appointment_time');
-        $doctor_id = $request->input('doctor_id');
+        $doctor = $this->currentDoctor();
+        $patient = Patient::findOrFail((int) $P_ID);
 
-        // Validating form inputs
+        $this->ensurePatientBelongsToDoctor($patient, $doctor);
+
         $validator = Validator::make($request->all(), [
             'reason' => 'required|string|max:255',
-            'appointment_datee' => 'required|date',
-            'appointment_time' => 'required|exists:schedules,id', // Ensure the selected schedule ID exists in the database
+            'appointment_datee' => 'required|date|after_or_equal:today',
+            'appointment_time' => 'required|integer|exists:schedules,id',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('doctor.CRUD.patient.book',['id' => $P_ID])->with('error', 'Appointment booking failed');
+            return redirect()->route('doctor.CRUD.patient.book', ['id' => $P_ID])
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        // Creating the appointment
-        $appointment = Appointment::create([
-            'reason' => $reason_for_appointment,
-            'appointment_date' => $appointment_date,
-            'schedule_id' => $schedule_id, // Storing the selected schedule ID
-            'doctor_id' => $doctor_id,
-            'doctor_comment' => 'none',
-            'patient_id' => $P_ID,
-            'status' => 'Pending',
-        ]);
+        $schedule = Schedule::where('id', $request->input('appointment_time'))
+            ->where('doctor_id', $doctor->id)
+            ->first();
 
-        // If appointment is successfully created
-        if ($appointment) {
-            // Update the schedule to mark the booked time slot as unavailable
-            $schedule = Schedule::find($schedule_id);
-            if ($schedule) {
-                $schedule->update(['status' => 'true']);
-            }
-            return redirect()->route('doctor.mypatients')->with('success', 'Appointment booked successfully');
-        } else {
-            return redirect()->route('doctor.CRUD.patient.book')->with('error', 'Appointment booking failed');
+        if (!$schedule || $schedule->status !== 'false') {
+            return redirect()->route('doctor.CRUD.patient.book', ['id' => $P_ID])
+                ->with('error', 'Selected time slot is not available.');
         }
+
+        $appointmentDate = Carbon::parse($request->input('appointment_datee'));
+
+        if ($appointmentDate->format('l') !== $schedule->day) {
+            return redirect()->route('doctor.CRUD.patient.book', ['id' => $P_ID])
+                ->with('error', 'Selected date does not match the chosen schedule day.');
+        }
+
+        DB::transaction(function () use ($request, $doctor, $patient, $schedule) {
+            Appointment::create([
+                'reason' => $request->input('reason'),
+                'appointment_date' => $request->input('appointment_datee'),
+                'schedule_id' => $schedule->id,
+                'doctor_id' => $doctor->id,
+                'doctor_comment' => 'none',
+                'patient_id' => $patient->id,
+                'status' => 'Pending',
+            ]);
+
+            $schedule->update(['status' => 'true']);
+        });
+
+        return redirect()->route('doctor.mypatients')->with('success', 'Appointment booked successfully.');
     }
 
-
-
-    public function getAvailableHours(Request $request )
+    public function getAvailableHours(Request $request)
     {
-        // Retrieve the date from the request
-        $date = $request->input('date');
-        $doctor_id = $request->input('doctor_id');
-        // Convert the date to day of the week (e.g., Monday, Tuesday)
-        $dayOfWeek = Carbon::parse($date)->format('l');
+        $doctor = $this->currentDoctor();
 
-        // Retrieve available hours for the selected date and day of the week
+        $validated = $request->validate([
+            'date' => 'required|date',
+        ]);
+
+        $dayOfWeek = Carbon::parse($validated['date'])->format('l');
+
         $availableHours = Schedule::where('day', $dayOfWeek)
-            ->where('doctor_id', $doctor_id)
+            ->where('doctor_id', $doctor->id)
             ->where('status', 'false')
-            ->select('id', 'start') // Selecting both ID and start time
+            ->select('id', 'start')
             ->get();
 
-        // Return the available hours as JSON response
         return response()->json($availableHours);
-
     }
 
     public function getAppointments(Request $request)
     {
-        // Retrieve the date from the request
-        $date = $request->input('date');
-        $doctor_id = $request->input('doctor_id');
-        // Retrieve appointments for the specified doctor and date
-        $appointments = Appointment::where('doctor_id', $doctor_id)
-            ->whereDate('appointment_date', $date)
+        $doctor = $this->currentDoctor();
+
+        $validated = $request->validate([
+            'date' => 'required|date',
+        ]);
+
+        $appointments = Appointment::where('doctor_id', $doctor->id)
+            ->whereDate('appointment_date', $validated['date'])
             ->get();
 
-        // Return appointments as JSON response
         return response()->json($appointments);
-
     }
-
 
     public function getAppointmentsForCalendar(Request $request)
     {
-        $doctor_id = Auth::user()->doctor->id;
-        $appointments = Appointment::where('doctor_id', $doctor_id)->get();
-        
+        $doctor = $this->currentDoctor();
+        $appointments = Appointment::where('doctor_id', $doctor->id)->get();
+
         return response()->json($appointments);
     }
-
-
 }

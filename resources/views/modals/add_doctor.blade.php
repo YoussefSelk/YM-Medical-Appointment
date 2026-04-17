@@ -1,10 +1,6 @@
-<head>
-    {{-- <link rel="stylesheet" href="{{ asset('css/add_doctor_modal.css') }}"> --}}
+@push('scripts')
     <script src="{{ asset('js/add_doctor_modal.js') }}"></script>
-    <style>
-
-    </style>
-</head>
+@endpush
 @if ($errors->any())
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -300,4 +296,6 @@
         </div>
     </div>
 </x-modal>
-<script src="{{ asset('js/validations/admin/add_doctor_modal.js') }}"></script>
+@push('scripts')
+    <script src="{{ asset('js/validations/admin/add_doctor_modal.js') }}"></script>
+@endpush

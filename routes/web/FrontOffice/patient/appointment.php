@@ -11,6 +11,7 @@ Route::middleware(['auth', 'patient'])->group(function () {
         ->name('patiens.doctor.book.appointment');
 
     Route::get('/patient/doctor/{id}/book/appointment/getHours', [PatientController::class, 'getAvailableHours'])
+        ->middleware('throttle:60,1')
         ->middleware('CheckDoctor')
         ->name('patiens.doctor.book.appointment.getHours');
 
@@ -18,12 +19,15 @@ Route::middleware(['auth', 'patient'])->group(function () {
         ->name('patiens.doctor.book.appointment.submit');
 
     Route::get('/patient/doctor/{id}/appointments', [PatientController::class, 'getAppointments'])
+        ->middleware('throttle:60,1')
         ->name('fetch.appointments');
 
     Route::get('/patient/filter/doctors', [PatientController::class, 'filterDoctors'])
+        ->middleware('throttle:60,1')
         ->name('filter.doctors');
 
     Route::get('/patient/all/doctors', [PatientController::class, 'allDoctors'])
+        ->middleware('throttle:60,1')
         ->name('patiens.all.doctors');
 
     Route::get('/patient/my/appointments/{id}', [PatientController::class, 'patient_appointments'])
@@ -41,3 +45,4 @@ Route::middleware(['auth', 'patient'])->group(function () {
     Route::get('/patient/appointment/{id}/download-pdf',  [PatientController::class, 'downloadPDF_Appointment'])
         ->name('appointment.download-pdf');
 });
+

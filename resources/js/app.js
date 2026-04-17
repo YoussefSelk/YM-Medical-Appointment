@@ -9,40 +9,58 @@ window.PerfectScrollbar = PerfectScrollbar
 document.addEventListener('alpine:init', () => {
     Alpine.data('mainState', () => {
         let lastScrollTop = 0
-        const init = function () {
-            window.addEventListener('scroll', () => {
-                let st =
+        let ticking = false
+
+        const onScroll = (ctx) => {
+            if (ticking) {
+                return
+            }
+
+            ticking = true
+            window.requestAnimationFrame(() => {
+                const currentScrollTop =
                     window.pageYOffset || document.documentElement.scrollTop
-                if (st > lastScrollTop) {
-                    // downscroll
-                    this.scrollingDown = true
-                    this.scrollingUp = false
+
+                if (currentScrollTop > lastScrollTop) {
+                    ctx.scrollingDown = true
+                    ctx.scrollingUp = false
                 } else {
-                    // upscroll
-                    this.scrollingDown = false
-                    this.scrollingUp = true
-                    if (st == 0) {
-                        //  reset
-                        this.scrollingDown = false
-                        this.scrollingUp = false
-                    }
+                    ctx.scrollingDown = false
+                    ctx.scrollingUp = currentScrollTop > 0
                 }
-                lastScrollTop = st <= 0 ? 0 : st // For Mobile or negative scrolling
+
+                if (currentScrollTop === 0) {
+                    ctx.scrollingDown = false
+                    ctx.scrollingUp = false
+                }
+
+                lastScrollTop = Math.max(currentScrollTop, 0)
+                ticking = false
             })
+        }
+
+        const init = function () {
+            window.addEventListener('scroll', () => onScroll(this), {
+                passive: true,
+            })
+            this.handleWindowResize()
         }
 
         const getTheme = () => {
             if (window.localStorage.getItem('dark')) {
                 return JSON.parse(window.localStorage.getItem('dark'))
             }
+
             return (
                 !!window.matchMedia &&
                 window.matchMedia('(prefers-color-scheme: dark)').matches
             )
         }
+
         const setTheme = (value) => {
             window.localStorage.setItem('dark', value)
         }
+
         return {
             init,
             isDarkMode: getTheme(),
@@ -59,11 +77,7 @@ document.addEventListener('alpine:init', () => {
                 this.isSidebarHovered = value
             },
             handleWindowResize() {
-                if (window.innerWidth <= 1024) {
-                    this.isSidebarOpen = false
-                } else {
-                    this.isSidebarOpen = true
-                }
+                this.isSidebarOpen = window.innerWidth > 1024
             },
             scrollingDown: false,
             scrollingUp: false,

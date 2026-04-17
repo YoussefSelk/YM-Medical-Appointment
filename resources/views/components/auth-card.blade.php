@@ -1,11 +1,11 @@
-<main class="flex flex-col items-center flex-1 px-4 pt-6 sm:justify-center">
+<main class="flex flex-1 flex-col items-center px-4 py-6 sm:justify-center sm:py-10">
     <div>
-        <a href="/">
-            <x-application-logo class="w-20 h-20" />
+        <a href="/" class="inline-flex rounded-2xl bg-white/85 p-2 shadow-sm">
+            <x-application-logo class="h-20 w-20" />
         </a>
     </div>
 
-    <div class="w-full px-6 py-4 my-6 overflow-hidden bg-white rounded-md shadow-md sm:max-w-md dark:bg-dark-eval-1">
+    <div class="app-auth-card my-6 w-full overflow-hidden px-6 py-6 sm:max-w-md sm:px-8">
         {{ $slot }}
     </div>
 </main>

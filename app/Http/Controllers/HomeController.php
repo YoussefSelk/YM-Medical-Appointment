@@ -10,6 +10,7 @@ use App\Models\Patient;
 use App\Models\Doctor;
 use App\Models\Rating;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -44,15 +45,15 @@ class HomeController extends Controller
     public function apply_mail(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'details' => 'required|string',
-            'cv' => 'required|mimes:pdf,doc,docx|max:2048', // Max file size 2MB, allowed extensions: pdf, doc, docx
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'details' => 'required|string|max:5000',
+            'cv' => 'required|file|mimetypes:application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document|max:2048',
         ]);
 
         // Store CV
         $cv = $request->file('cv');
-        $cvName = 'CV_' . time() . '.' . $cv->getClientOriginalExtension();
+        $cvName = 'CV_' . Str::uuid()->toString() . '.' . ($cv->guessExtension() ?: 'pdf');
         $cv->storeAs('cv', $cvName, 'public');
         $attachmentPath = storage_path('app/public/cv/' . $cvName);
 

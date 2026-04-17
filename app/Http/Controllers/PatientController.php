@@ -2,43 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Rating;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Patient;
+use App\Models\Rating;
 use App\Models\Schedule;
 use App\Models\Speciality;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Stevebauman\Location\Facades\Location;
-use Geocoder\Provider\OpenStreetMap\OpenStreetMap;
-use Geocoder\Query\GeocodeQuery;
-use Geocoder\Query\ReverseQuery;
-use Geocoder\Provider\Nominatim\Nominatim;
+use Illuminate\Support\Facades\Validator;
 
 class PatientController extends Controller
 {
-    //XSS Attacks Functions
-
-    private function isXssAttackDetected(array $originalInputs, array $sanitizedInputs): bool
+    private function currentPatient(): Patient
     {
-        foreach ($originalInputs as $index => $originalInput) {
-            if ($originalInput !== $sanitizedInputs[$index]) {
-                return true;
-            }
-        }
-        return false;
+        $patient = Auth::user()?->patient;
+
+        abort_if(!$patient, 403, 'Unauthorized action.');
+
+        return $patient;
     }
 
-    // views Functions
+    private function ensureOwnPatientId(int $patientId): Patient
+    {
+        $patient = $this->currentPatient();
+
+        abort_if($patient->id !== $patientId, 403, 'Unauthorized action.');
+
+        return $patient;
+    }
+
+    private function findOwnedAppointmentOrFail(int $appointmentId, Patient $patient): Appointment
+    {
+        return Appointment::where('id', $appointmentId)
+            ->where('patient_id', $patient->id)
+            ->firstOrFail();
+    }
+
     public function index()
     {
-        $appointments = Auth::user()->patient->Appointments;
+        $patient = $this->currentPatient();
+        $appointments = $patient->appointments;
+
         return view('panels.patient.index')->with(compact('appointments'));
     }
 
@@ -46,85 +55,100 @@ class PatientController extends Controller
     {
         $specialities = Speciality::all();
         $doctors = Doctor::orderByDesc('avg_rating')->get();
-        return view('panels.patient.doctors')->with(compact('doctors'))->with(compact('specialities'));
+
+        return view('panels.patient.doctors')->with(compact('doctors', 'specialities'));
     }
+
     public function appointment(Request $request, $id)
     {
-        $doctor = Doctor::find($id);
+        $doctor = Doctor::with('schedules')->findOrFail((int) $id);
         $schedule = $doctor->schedules;
-        return view('panels.patient.appointment')->with(compact('schedule'))->with(compact('doctor'));
+
+        return view('panels.patient.appointment')->with(compact('schedule', 'doctor'));
     }
+
     public function patient_appointments($id)
     {
-        $appointments = Appointment::where('patient_id', $id)->get();
+        $patient = $this->ensureOwnPatientId((int) $id);
+        $appointments = Appointment::where('patient_id', $patient->id)->get();
+
         return view('panels.patient.my_appointments')->with(compact('appointments'));
     }
 
     public function appointment_detail($id)
     {
-        $appointment = Appointment::find($id);
+        $patient = $this->currentPatient();
+        $appointment = $this->findOwnedAppointmentOrFail((int) $id, $patient);
+
         return view('panels.patient.CRUD.my_appointment-view')->with(compact('appointment'));
     }
 
-    //Operation Functions
-
     public function getTips()
     {
-        $response = Http::get('https://newsapi.org/v2/top-headlines', [
-            'apiKey' => '9d4f0f76580e49e7b654623b3837ddd3',
-            'country' => 'us', // Fetch global health tips
+        $apiKey = config('services.newsapi.key');
+
+        if (empty($apiKey)) {
+            return back()->withError('Health tips are temporarily unavailable.');
+        }
+
+        $response = Http::timeout(10)->get('https://newsapi.org/v2/top-headlines', [
+            'apiKey' => $apiKey,
+            'country' => 'us',
             'category' => 'health',
             'pageSize' => 50,
         ]);
 
-        if ($response->successful()) {
-            $healthTips = $response->json();
-            $healthTips = collect($healthTips['articles'])->map(function ($article) {
-                if (!isset($article['urlToImage']) || empty($article['urlToImage'])) {
-                    $article['urlToImage'] = 'https://via.placeholder.com/150'; // Default image
-                }
-                return $article;
-            });
-
-            return view('panels.patient.health_tips', compact('healthTips'));
-        } else {
+        if (!$response->successful()) {
             return back()->withError('Failed to fetch health tips. Please try again later.');
         }
+
+        $healthTips = collect($response->json('articles', []))->map(function ($article) {
+            $imageUrl = $article['urlToImage'] ?? null;
+            $articleUrl = $article['url'] ?? null;
+
+            if (!filter_var($imageUrl, FILTER_VALIDATE_URL)) {
+                $article['urlToImage'] = 'https://via.placeholder.com/150';
+            } else {
+                $article['urlToImage'] = $imageUrl;
+            }
+
+            if (!filter_var($articleUrl, FILTER_VALIDATE_URL)) {
+                $article['url'] = '#';
+            }
+
+            return $article;
+        });
+
+        return view('panels.patient.health_tips', compact('healthTips'));
     }
-
-
 
     public function cancel_appointment($id)
     {
-        $appointment = Appointment::find($id);
-        if ($appointment) {
-            $appointment->update(['status' => 'Cancelled']);
-            $appointment->save();
-            return redirect()->back()->with('success', 'Appointment Canceled !!');
-        } else {
-            return redirect()->back()->with('error', 'Appointment Not Found !!');
-        }
+        $patient = $this->currentPatient();
+        $appointment = $this->findOwnedAppointmentOrFail((int) $id, $patient);
+
+        $appointment->update(['status' => 'Cancelled']);
+
+        return redirect()->back()->with('success', 'Appointment canceled.');
     }
+
     public function allDoctors()
     {
         $doctors = Doctor::with(['user.address', 'speciality'])
             ->orderByDesc('avg_rating')
             ->get();
+
         return response()->json($doctors);
     }
 
-
     public function filterDoctors(Request $request)
     {
-        // Validate and sanitize inputs
-        $specialityId = $request->input('speciality_id', null);
-        $city = $request->input('city', null);
-        $name = $request->input('name', null); // Get the name parameter
+        $specialityId = $request->input('speciality_id');
+        $city = $request->input('city');
+        $name = $request->input('name');
 
-        // Prepare the query
         $doctorsQuery = Doctor::with('user.address', 'speciality');
 
-        // Apply filters
         if ($specialityId) {
             $doctorsQuery->whereHas('speciality', function ($query) use ($specialityId) {
                 $query->where('id', $specialityId);
@@ -132,142 +156,159 @@ class PatientController extends Controller
         }
 
         if ($city) {
-            // Sanitize the city input to remove potentially harmful characters
-            $sanitizedCity = filter_var($city, FILTER_SANITIZE_STRING);
+            $sanitizedCity = trim(strip_tags((string) $city));
 
-            // Apply the city filter using parameterized query to prevent SQL injection
             $doctorsQuery->whereHas('user.address', function ($query) use ($sanitizedCity) {
                 $query->where('ville', 'like', "%{$sanitizedCity}%");
             });
         }
 
-        if ($name) { // Apply name filter if it's not empty
-            $doctorsQuery->whereHas('user', function ($query) use ($name) {
-                $query->where('name', 'like', "%{$name}%");
+        if ($name) {
+            $sanitizedName = trim(strip_tags((string) $name));
+
+            $doctorsQuery->whereHas('user', function ($query) use ($sanitizedName) {
+                $query->where('name', 'like', "%{$sanitizedName}%");
             });
         }
 
-        // Execute the query
         $doctors = $doctorsQuery->get();
 
-        // Return the result
         return response()->json($doctors);
     }
 
     public function getAvailableHours(Request $request, $id)
     {
-        // Retrieve the date from the request
-        $date = $request->input('date');
+        $request->validate([
+            'date' => ['required', 'date'],
+        ]);
 
-        // Convert the date to day of the week (e.g., Monday, Tuesday)
-        $dayOfWeek = Carbon::parse($date)->format('l');
+        $doctor = Doctor::findOrFail((int) $id);
+        $dayOfWeek = Carbon::parse($request->input('date'))->format('l');
 
-        // Retrieve available hours for the selected date and day of the week
         $availableHours = Schedule::where('day', $dayOfWeek)
-            ->where('doctor_id', $id)
+            ->where('doctor_id', $doctor->id)
             ->where('status', 'false')
-            ->select('id', 'start') // Selecting both ID and start time
+            ->select('id', 'start')
             ->get();
 
-        // Return the available hours as JSON response
         return response()->json($availableHours);
     }
 
     public function getAppointments(Request $request, $id)
     {
-        // Retrieve the date from the request
-        $date = $request->input('date');
+        $request->validate([
+            'date' => ['required', 'date'],
+        ]);
 
-        // Retrieve appointments for the specified doctor and date
-        $appointments = Appointment::where('doctor_id', $id)
-            ->whereDate('appointment_date', $date)
+        $doctor = Doctor::findOrFail((int) $id);
+
+        $appointments = Appointment::where('doctor_id', $doctor->id)
+            ->whereDate('appointment_date', $request->input('date'))
             ->get();
 
-        // Return appointments as JSON response
         return response()->json($appointments);
     }
+
     public function downloadPDF_Appointment($id)
     {
-        $appointment = Appointment::findOrFail($id);
+        $patient = $this->currentPatient();
+        $appointment = $this->findOwnedAppointmentOrFail((int) $id, $patient);
 
-        $pdf = PDF::loadView('pdf.appointment-details', compact('appointment'));
+        $pdf = Pdf::loadView('pdf.appointment-details', compact('appointment'));
 
         return $pdf->download('appointment_details.pdf');
     }
 
-
-    // CRUD Functions
     public function rateDoctor(Request $request, $doctorId, $patientId)
     {
-        // Validate the incoming request data
+        $patient = $this->ensureOwnPatientId((int) $patientId);
+        $doctor = Doctor::findOrFail((int) $doctorId);
+
         $validatedData = $request->validate([
             'rating' => 'required|integer|between:1,5',
             'comment' => 'nullable|string|max:255',
         ]);
 
+        $hasAppointmentWithDoctor = Appointment::where('doctor_id', $doctor->id)
+            ->where('patient_id', $patient->id)
+            ->where('status', 'Approved')
+            ->exists();
 
-        // Find the doctor and patient
-        $doctor = Doctor::findOrFail($doctorId);
-        $patient = Patient::findOrFail($patientId);
+        if (!$hasAppointmentWithDoctor) {
+            return redirect()->back()->with('error', 'You can rate only doctors you had approved appointments with.');
+        }
 
-        // Create a new rating
-        $rating = new Rating();
-        $rating->doctor_id = $doctor->id;
-        $rating->patient_id = $patient->id;
-        $rating->rating = $validatedData['rating'];
-        $rating->comment = $validatedData['comment'] ?? null; // If message is not provided, set it to null
-        $rating->save();
+        Rating::updateOrCreate(
+            [
+                'doctor_id' => $doctor->id,
+                'patient_id' => $patient->id,
+            ],
+            [
+                'rating' => $validatedData['rating'],
+                'comment' => $validatedData['comment'] ?? null,
+            ]
+        );
 
-        // Update the average rating for the doctor
-        $ratings = Rating::where('doctor_id', $doctor->id)->pluck('rating');
-        $avgRating = $ratings->isEmpty() ? 0 : $ratings->avg();
-        $doctor->avg_rating = $avgRating;
+        $doctor->avg_rating = (float) Rating::where('doctor_id', $doctor->id)->avg('rating');
         $doctor->save();
-        // Redirect back with success message
+
         return redirect()->back()->with('success', 'Rating submitted successfully');
     }
+
     public function bookAppointment(Request $request, $D_ID, $P_ID)
     {
-        $reason_for_appointment = $request->input('reason_for_appointment');
-        $appointment_date = $request->input('appointment_date');
-        $schedule_id = $request->input('appointment_time');
+        $patient = $this->ensureOwnPatientId((int) $P_ID);
+        $doctor = Doctor::findOrFail((int) $D_ID);
 
-        // Validating form inputs
         $validator = Validator::make($request->all(), [
             'reason_for_appointment' => 'required|string|max:255',
-            'appointment_date' => 'required|date',
-            'appointment_time' => 'required|exists:schedules,id', // Ensure the selected schedule ID exists in the database
+            'appointment_date' => 'required|date|after_or_equal:today',
+            'appointment_time' => 'required|integer|exists:schedules,id',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Creating the appointment
-        $appointment = Appointment::create([
-            'reason' => $reason_for_appointment,
-            'appointment_date' => $appointment_date,
-            'schedule_id' => $schedule_id, // Storing the selected schedule ID
-            'doctor_id' => $D_ID,
-            'doctor_comment' => 'none',
-            'patient_id' => $P_ID,
-            'status' => 'Pending',
-        ]);
+        $schedule = Schedule::where('id', $request->input('appointment_time'))
+            ->where('doctor_id', $doctor->id)
+            ->first();
 
-        if ($appointment) {
+        if (!$schedule || $schedule->status !== 'false') {
+            return redirect()->back()->with('error', 'Selected time slot is unavailable.');
+        }
 
-            sendSupportEmail([
-                'to' => $appointment->patient->user->email,
-                'subject' => 'Appointment Confirmation',
-                'content' => 'Your appointment has been successfully booked. Please find the details below:',
-                'contactLink' => 'http://127.0.0.1:8000/patient/my/appointments/' . $appointment->patient->id,
-                'contactText' => 'My Appointments',
-                'phoneNumber' => '+1234567890',
+        $appointmentDate = Carbon::parse($request->input('appointment_date'));
+
+        if ($appointmentDate->format('l') !== $schedule->day) {
+            return redirect()->back()->with('error', 'Selected date does not match the chosen schedule day.');
+        }
+
+        $appointment = DB::transaction(function () use ($request, $doctor, $patient, $schedule) {
+            $createdAppointment = Appointment::create([
+                'reason' => $request->input('reason_for_appointment'),
+                'appointment_date' => $request->input('appointment_date'),
+                'schedule_id' => $schedule->id,
+                'doctor_id' => $doctor->id,
+                'doctor_comment' => 'none',
+                'patient_id' => $patient->id,
+                'status' => 'Pending',
             ]);
 
-            return redirect()->back()->with('success', 'Appointment booked successfully');
-        } else {
-            return redirect()->back()->with('error', 'Appointment booking failed');
-        }
+            $schedule->update(['status' => 'true']);
+
+            return $createdAppointment;
+        });
+
+        sendSupportEmail([
+            'to' => $appointment->patient->user->email,
+            'subject' => 'Appointment Confirmation',
+            'content' => 'Your appointment has been successfully booked. Please find the details below:',
+            'contactLink' => route('patiens.my.appointments', $patient->id),
+            'contactText' => 'My Appointments',
+            'phoneNumber' => '+1234567890',
+        ]);
+
+        return redirect()->back()->with('success', 'Appointment booked successfully');
     }
 }

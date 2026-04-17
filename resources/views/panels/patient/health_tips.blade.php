@@ -27,7 +27,7 @@
                                 <h3 class="text-xl font-semibold mb-4">{{ $healthTip['title'] }}</h3>
                                 <p class="text-gray-700">{{ $healthTip['description'] }}</p>
                                 <a href="{{ $healthTip['url'] }}" class="text-blue-500 mt-4 inline-block"
-                                    target="_blank">Read more</a>
+                                    target="_blank" rel="noopener noreferrer">Read more</a>
                             </div>
                         </div>
                     </div>

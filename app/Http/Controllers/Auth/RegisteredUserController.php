@@ -125,17 +125,16 @@ class RegisteredUserController extends Controller
                     return redirect(RouteServiceProvider::PATIENT_HOME);
                 } else {
                     $user->delete();
-                    $patient->delete();
                     $address->delete();
                     return redirect()->back()->with('error', 'Something went wrong');
                 }
             } else {
-                $user->delete();
-                $address->delete();
+                if ($address) {
+                    $address->delete();
+                }
                 return redirect()->back()->with('error', 'Something went wrong');
             }
         } else {
-            $address->delete();
             return redirect()->back()->with('error', 'Something went wrong');
         }
     }
